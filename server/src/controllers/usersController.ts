@@ -1,25 +1,30 @@
 import { Request, Response } from 'express';
+import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import { User, UserInterface } from '../models';
 
-const login = async (req: Request, res: Response) => {
-  try {
-    const user = req.user as UserInterface;
+const login = (req: Request, res: Response) => {
+  passport.authenticate(
+    'local',
+    { session: false },
+    async (err: any, user: UserInterface) => {
+      try {
+        if (err || !user) {
+          return res.status(400).json({ error: 'Incorrect email or password' });
+        }
 
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
+        if (!process.env.SECRET) {
+          throw new Error('Secret environment variable not defined');
+        }
 
-    if (!process.env.SECRET) {
-      throw new Error('Secret environment variable not defined');
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.SECRET);
-    return res.json({ user, token });
-  } catch (error: any) {
-    return res.json({ error: error.message });
-  }
+        const token = jwt.sign({ id: user.id }, process.env.SECRET);
+        return res.json({ user, token });
+      } catch (error: any) {
+        return res.json({ error: error.message });
+      }
+    },
+  )(req, res);
 };
 
 const createAccount = async (req: Request, res: Response) => {
@@ -56,4 +61,10 @@ const createAccount = async (req: Request, res: Response) => {
   }
 };
 
-export { createAccount, login };
+const authenticateUser = (req: Request, res: Response) => {
+  const user = req.user as UserInterface;
+
+  res.json({ user });
+};
+
+export { createAccount, login, authenticateUser };

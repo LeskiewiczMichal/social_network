@@ -35,26 +35,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.createAccount = void 0;
+exports.authenticateUser = exports.login = exports.createAccount = void 0;
+const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt = __importStar(require("bcryptjs"));
 const models_1 = require("../models");
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const user = req.user;
-        if (!user) {
-            return res.status(400).json({ error: 'User not found' });
+const login = (req, res) => {
+    passport_1.default.authenticate('local', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            if (err || !user) {
+                return res.status(400).json({ error: 'Incorrect email or password' });
+            }
+            if (!process.env.SECRET) {
+                throw new Error('Secret environment variable not defined');
+            }
+            const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.SECRET);
+            return res.json({ user, token });
         }
-        if (!process.env.SECRET) {
-            throw new Error('Secret environment variable not defined');
+        catch (error) {
+            return res.json({ error: error.message });
         }
-        const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.SECRET);
-        return res.json({ user, token });
-    }
-    catch (error) {
-        return res.json({ error: error.message });
-    }
-});
+    }))(req, res);
+};
 exports.login = login;
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body.email ||
@@ -86,3 +88,8 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.createAccount = createAccount;
+const authenticateUser = (req, res) => {
+    const user = req.user;
+    res.json({ user });
+};
+exports.authenticateUser = authenticateUser;

@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const passport_1 = __importDefault(require("passport"));
 const usersController_1 = require("../controllers/usersController");
+const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 router.post('/', usersController_1.createAccount);
-router.post('/login', passport_1.default.authenticate('local', { session: false }), usersController_1.login);
+router.post('/login', usersController_1.login);
+router.post('/authenticate', middleware_1.verifyToken, usersController_1.authenticateUser);
 exports.default = router;
