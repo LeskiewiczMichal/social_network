@@ -31,15 +31,18 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const middleware_1 = require("./middleware");
+const routes_1 = require("./routes");
 dotenv.config();
 (0, middleware_1.mongoConfig)();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
+app.use(middleware_1.passportConfig);
 app.use(body_parser_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     res.send('Welcome');
 });
+app.use('/api/users', routes_1.usersRouter);
 app.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}`);
 });

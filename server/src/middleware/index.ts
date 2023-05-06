@@ -1,4 +1,4 @@
 import mongoConfig from './mongoConfig';
+import passportConfig from './passportConfig';
 
-// eslint-disable-next-line import/prefer-default-export
-export { mongoConfig };
+export { mongoConfig, passportConfig };
