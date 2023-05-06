@@ -1,9 +1,24 @@
 import { Request, Response } from 'express';
 import { User, UserInterface } from '../models';
+import { handleError } from '../utils';
+
+const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find();
+
+    if (!users) {
+      return res.status(404).json({ error: 'Users not found' });
+    }
+
+    return res.json({ users });
+  } catch (error: any) {
+    return handleError(res, 'Something went wrong on the server', 500);
+  }
+};
 
 const getUser = async (req: Request, res: Response) => {
   try {
-    const user = User.findById(req.params.userId);
+    const user = await User.findById(req.params.userId);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -11,7 +26,7 @@ const getUser = async (req: Request, res: Response) => {
 
     res.json({ user });
   } catch (error: any) {
-    return res.json({ error: error.message });
+    return handleError(res, 'Something went wrong on the server', 500);
   }
 };
 
@@ -41,7 +56,7 @@ const updateUserData = async (req: Request, res: Response) => {
     await user.save();
     return res.json({ message: 'Update successfull', user });
   } catch (error: any) {
-    return res.json({ error: error.message });
+    return handleError(res, 'Something went wrong on the server', 500);
   }
 };
 
@@ -56,8 +71,8 @@ const deleteUser = async (req: Request, res: Response) => {
     await User.deleteOne({ _id: user.id });
     return res.json({ message: 'User deleted succesfully' });
   } catch (error: any) {
-    return res.json({ error: error.message });
+    return handleError(res, 'Something went wrong on the server', 500);
   }
 };
 
-export { updateUserData, deleteUser, getUser };
+export { updateUserData, deleteUser, getUser, getAllUsers };

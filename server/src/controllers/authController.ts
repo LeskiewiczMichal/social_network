@@ -3,6 +3,7 @@ import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import { User, UserInterface } from '../models';
+import { handleError } from '../utils';
 
 const login = (req: Request, res: Response) => {
   passport.authenticate(
@@ -11,7 +12,7 @@ const login = (req: Request, res: Response) => {
     async (err: any, user: UserInterface) => {
       try {
         if (err || !user) {
-          return res.status(400).json({ error: 'Incorrect email or password' });
+          return res.status(401).json({ error: 'Incorrect email or password' });
         }
 
         if (!process.env.SECRET) {
@@ -21,7 +22,7 @@ const login = (req: Request, res: Response) => {
         const token = jwt.sign({ id: user.id }, process.env.SECRET);
         return res.json({ user, token });
       } catch (error: any) {
-        return res.json({ error: error.message });
+        return handleError(res, 'Something went wrong on the server', 500);
       }
     },
   )(req, res);
@@ -46,7 +47,7 @@ const loginGoogle = (req: Request, res: Response) => {
         const token = jwt.sign({ id: user.id }, process.env.SECRET);
         return res.json({ user, token });
       } catch (error: any) {
-        return res.json({ error: error.message });
+        return handleError(res, 'Something went wrong on the server', 500);
       }
     },
   )(req, res);
@@ -74,7 +75,6 @@ const createAccount = async (req: Request, res: Response) => {
       password: hash,
       email: req.body.email,
       firends: [],
-      posts: [],
       friendRequests: [],
       birthday: req.body.birthday,
     });
@@ -82,7 +82,7 @@ const createAccount = async (req: Request, res: Response) => {
     await user.save();
     return res.json({ user });
   } catch (error: any) {
-    return res.json({ error: error.message });
+    return handleError(res, 'Something went wrong on the server', 500);
   }
 };
 

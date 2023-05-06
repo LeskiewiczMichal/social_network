@@ -6,7 +6,6 @@ export interface UserInterface extends Document {
   password: string;
   email: string;
   friends: Schema.Types.ObjectId[];
-  posts: Schema.Types.ObjectId[];
   friendRequests: Schema.Types.ObjectId[];
   birthday: Date;
   googleId: string;
@@ -18,7 +17,6 @@ const userSchema: Schema = new Schema({
   password: { type: String, required: false },
   email: { type: String, required: true },
   friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
   friendRequests: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   birthday: { type: Date, required: false },
   googleId: { type: String, requried: false },

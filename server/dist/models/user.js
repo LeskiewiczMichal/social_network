@@ -7,7 +7,6 @@ const userSchema = new mongoose_1.Schema({
     password: { type: String, required: false },
     email: { type: String, required: true },
     friends: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
-    posts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Post' }],
     friendRequests: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     birthday: { type: Date, required: false },
     googleId: { type: String, requried: false },

@@ -40,11 +40,14 @@ const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt = __importStar(require("bcryptjs"));
 const models_1 = require("../models");
+const utils_1 = require("../utils");
 const login = (req, res) => {
     passport_1.default.authenticate('local', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             if (err || !user) {
-                return res.status(400).json({ error: 'Incorrect email or password' });
+                return res
+                    .status(401)
+                    .json({ message: 'Incorrect email or password' });
             }
             if (!process.env.SECRET) {
                 throw new Error('Secret environment variable not defined');
@@ -53,7 +56,7 @@ const login = (req, res) => {
             return res.json({ user, token });
         }
         catch (error) {
-            return res.json({ error: error.message });
+            return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
         }
     }))(req, res);
 };
@@ -64,7 +67,7 @@ const loginGoogle = (req, res) => {
             if (err || !user) {
                 return res
                     .status(404)
-                    .json({ error: "Couldn't find google account" });
+                    .json({ message: "Couldn't find google account" });
             }
             if (!process.env.SECRET) {
                 throw new Error('Secret environment variable not defined');
@@ -73,7 +76,7 @@ const loginGoogle = (req, res) => {
             return res.json({ user, token });
         }
         catch (error) {
-            return res.json({ error: error.message });
+            return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
         }
     }))(req, res);
 };
@@ -86,7 +89,7 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         !req.body.lastName) {
         return res
             .status(400)
-            .json({ error: 'Not all neccessery fields were provided' });
+            .json({ message: 'Not all neccessery fields were provided' });
     }
     try {
         const hash = yield bcrypt.hash(req.body.password, 10);
@@ -96,7 +99,6 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             password: hash,
             email: req.body.email,
             firends: [],
-            posts: [],
             friendRequests: [],
             birthday: req.body.birthday,
         });
@@ -104,7 +106,7 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.json({ user });
     }
     catch (error) {
-        return res.json({ error: error.message });
+        return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
     }
 });
 exports.createAccount = createAccount;

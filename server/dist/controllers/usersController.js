@@ -9,25 +9,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.deleteUser = exports.updateUserData = void 0;
+exports.getAllUsers = exports.getUser = exports.deleteUser = exports.updateUserData = void 0;
 const models_1 = require("../models");
+const utils_1 = require("../utils");
+const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield models_1.User.find();
+        if (!users) {
+            return res.status(404).json({ message: 'Users not found' });
+        }
+        return res.json({ users });
+    }
+    catch (error) {
+        return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
+    }
+});
+exports.getAllUsers = getAllUsers;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = models_1.User.findById(req.params.userId);
+        const user = yield models_1.User.findById(req.params.userId);
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ message: 'User not found' });
         }
         res.json({ user });
     }
     catch (error) {
-        return res.json({ error: error.message });
+        return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
     }
 });
 exports.getUser = getUser;
 const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ message: 'User not found' });
     }
     try {
         if (req.body.email) {
@@ -46,21 +60,21 @@ const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return res.json({ message: 'Update successfull', user });
     }
     catch (error) {
-        return res.json({ error: error.message });
+        return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
     }
 });
 exports.updateUserData = updateUserData;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ message: 'User not found' });
     }
     try {
         yield models_1.User.deleteOne({ _id: user.id });
         return res.json({ message: 'User deleted succesfully' });
     }
     catch (error) {
-        return res.json({ error: error.message });
+        return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
     }
 });
 exports.deleteUser = deleteUser;

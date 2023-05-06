@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const usersController_1 = require("../controllers/usersController");
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
+router.get('/', usersController_1.getAllUsers);
 router.get('/:userId', usersController_1.getUser);
 router.put('/', middleware_1.verifyToken, usersController_1.updateUserData);
 router.delete('/', middleware_1.verifyToken, usersController_1.deleteUser);

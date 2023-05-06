@@ -79,7 +79,6 @@ passport.use(
             firstName: profile.name?.givenName,
             lastName: profile.name?.familyName,
             friends: [],
-            posts: [],
             friendRequests: [],
           });
 

@@ -94,7 +94,6 @@ passport_1.default.use(new passport_google_oauth20_1.Strategy({
                     firstName: (_c = profile.name) === null || _c === void 0 ? void 0 : _c.givenName,
                     lastName: (_d = profile.name) === null || _d === void 0 ? void 0 : _d.familyName,
                     friends: [],
-                    posts: [],
                     friendRequests: [],
                 });
                 yield newUser.save();
