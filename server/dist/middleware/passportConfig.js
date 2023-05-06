@@ -37,11 +37,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = require("passport-local");
+const passport_google_oauth20_1 = require("passport-google-oauth20");
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
-const dotenv = __importStar(require("dotenv"));
 const bcrypt = __importStar(require("bcryptjs"));
 const models_1 = require("../models");
-dotenv.config();
+if (!process.env.GOOGLE_CLIENT_ID ||
+    !process.env.GOOGLE_CLIENT_SECRET ||
+    !process.env.GOOGLE_CLIENT_CALLBACK) {
+    throw new Error('Environment variables not defined');
+}
 const JWTStrategy = passport_jwt_1.default.Strategy;
 const ExtractJWT = passport_jwt_1.default.ExtractJwt;
 // Normal authentication
@@ -74,5 +78,71 @@ passport_1.default.use(new JWTStrategy({
         return cb(error);
     }
 })));
+passport_1.default.use(new passport_google_oauth20_1.Strategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CLIENT_CALLBACK,
+}, function (accessToken, refreshToken, profile, done) {
+    var _a, _b, _c, _d;
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = yield models_1.User.findOne({ googleId: profile.id });
+            if (!user) {
+                const newUser = new models_1.User({
+                    email: (_b = (_a = profile.emails) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.value,
+                    googleId: profile.id,
+                    firstName: (_c = profile.name) === null || _c === void 0 ? void 0 : _c.givenName,
+                    lastName: (_d = profile.name) === null || _d === void 0 ? void 0 : _d.familyName,
+                    friends: [],
+                    posts: [],
+                    friendRequests: [],
+                });
+                yield newUser.save();
+                return done(null, newUser);
+            }
+            return done(null, user);
+        }
+        catch (error) {
+            done(error);
+        }
+    });
+}));
+// Facebook authentication
+// passport.use(
+//   new FacebookStrategy(
+//     {
+//       clientID: process.env.FACEBOOK_APP_ID,
+//       clientSecret: process.env.FACEBOOK_APP_SECRET,
+//       callbackURL: 'http://www.localhost:8080/api/users/auth/facebook/callback',
+//     },
+//     async function (
+//       accessToken: string,
+//       refreshToken: string,
+//       profile: Profile,
+//       done: any,
+//     ) {
+//       try {
+//         const user = await User.findOne({ facebookId: profile.id });
+//         if (!user) {
+//           const newUser = new User({
+//             email: profile.emails?.[0]?.value,
+//             facebookId: profile.id,
+//             firstName: profile.name?.givenName,
+//             lastName: profile.name?.familyName,
+//             birthday: profile.birthday,
+//             friends: [],
+//             posts: [],
+//             friendRequests: [],
+//           });
+//           await newUser.save();
+//           return done(null, newUser);
+//         }
+//         return done(null, user);
+//       } catch (error: any) {
+//         done(error);
+//       }
+//     },
+//   ),
+// );
 const passportConfig = [passport_1.default.initialize()];
 exports.default = passportConfig;

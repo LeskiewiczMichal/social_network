@@ -1,4 +1,4 @@
 import usersRouter from './usersRouter';
+import authRouter from './authRouter';
 
-// eslint-disable-next-line import/prefer-default-export
-export { usersRouter };
+export { usersRouter, authRouter };

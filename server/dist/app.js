@@ -43,6 +43,7 @@ app.get('/', (req, res) => {
     res.send('Welcome');
 });
 app.use('/api/users', routes_1.usersRouter);
+app.use('/api/users/auth', routes_1.authRouter);
 app.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}`);
 });

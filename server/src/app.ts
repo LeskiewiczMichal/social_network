@@ -4,7 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import { mongoConfig, passportConfig } from './middleware';
-import { usersRouter } from './routes';
+import { usersRouter, authRouter } from './routes';
 
 dotenv.config();
 mongoConfig();
@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
   res.send('Welcome');
 });
 app.use('/api/users', usersRouter);
+app.use('/api/users/auth', authRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}`);
