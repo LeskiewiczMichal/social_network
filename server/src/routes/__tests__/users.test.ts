@@ -13,29 +13,33 @@ const app = express();
 serverConfig(app);
 app.use('/', usersRouter);
 
-const userId = new mongoose.Types.ObjectId();
+const userIdOne = new mongoose.Types.ObjectId();
+const userIdTwo = new mongoose.Types.ObjectId();
+const userIdThree = new mongoose.Types.ObjectId();
 const usersExample = [
   {
-    _id: userId,
+    _id: userIdOne,
     firstName: 'John',
     lastName: 'Doe',
     password: 'password123',
     email: 'john.doe@example.com',
-    friends: [],
+    friends: [`${userIdTwo}`, `${userIdThree}`],
     friendRequests: [],
     birthday: new Date('1990-01-01'),
   },
   {
+    _id: userIdTwo,
     firstName: 'Jane',
     lastName: 'Doe',
     password: 'password456',
     email: 'jane.doe@example.com',
     friends: [],
-    friendRequests: [],
+    friendRequests: [`${userIdOne}`, `${userIdThree}`],
     birthday: new Date('1995-05-04'),
     googleId: '5234553455',
   },
   {
+    _id: userIdThree,
     firstName: 'Marry',
     lastName: 'Christmas',
     password: 'password90',
@@ -45,16 +49,60 @@ const usersExample = [
     birthday: new Date('2000-03-09'),
   },
 ];
+const EXPECTED_USERS = [
+  {
+    firstName: 'John',
+    lastName: 'Doe',
+    password: 'password123',
+    email: 'john.doe@example.com',
+    friends: [`${userIdTwo}`, `${userIdThree}`],
+    friendRequests: [],
+    birthday: '1990-01-01T00:00:00.000Z',
+  },
+  {
+    firstName: 'Jane',
+    lastName: 'Doe',
+    password: 'password456',
+    email: 'jane.doe@example.com',
+    friends: [],
+    friendRequests: [`${userIdOne}`, `${userIdThree}`],
+    birthday: '1995-05-04T00:00:00.000Z',
+    googleId: '5234553455',
+  },
+  {
+    firstName: 'Marry',
+    lastName: 'Christmas',
+    password: 'password90',
+    email: 'marry.christmas@example.com',
+    friends: [],
+    friendRequests: [],
+    birthday: '2000-03-09T00:00:00.000Z',
+  },
+];
 
 describe('Users route tests', () => {
   let db: any;
   let token: string;
 
+  // Set up database
   beforeAll(async () => {
     try {
       db = await initializeMongoServer();
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  // Stop server
+  afterAll(async () => {
+    await db.stop();
+  });
+
+  // Insert mock users to database
+  beforeEach(async () => {
+    try {
       await User.insertMany(usersExample);
-      token = jwt.sign({ id: userId }, process.env.SECRET!, {
+      token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
         expiresIn: '1h',
       });
     } catch (error) {
@@ -62,8 +110,13 @@ describe('Users route tests', () => {
     }
   });
 
-  afterAll(async () => {
-    await db.stop();
+  // Delete all users
+  afterEach(async () => {
+    try {
+      await User.deleteMany({});
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   describe('Querying users', () => {
@@ -73,36 +126,7 @@ describe('Users route tests', () => {
         .expect('Content-Type', /json/)
         .expect((res) => {
           expect(res.body).toMatchObject({
-            users: [
-              {
-                firstName: 'John',
-                lastName: 'Doe',
-                password: 'password123',
-                email: 'john.doe@example.com',
-                friends: [],
-                friendRequests: [],
-                birthday: '1990-01-01T00:00:00.000Z',
-              },
-              {
-                firstName: 'Jane',
-                lastName: 'Doe',
-                password: 'password456',
-                email: 'jane.doe@example.com',
-                friends: [],
-                friendRequests: [],
-                birthday: '1995-05-04T00:00:00.000Z',
-                googleId: '5234553455',
-              },
-              {
-                firstName: 'Marry',
-                lastName: 'Christmas',
-                password: 'password90',
-                email: 'marry.christmas@example.com',
-                friends: [],
-                friendRequests: [],
-                birthday: '2000-03-09T00:00:00.000Z',
-              },
-            ],
+            users: EXPECTED_USERS,
           });
         })
         .expect(200, done);
@@ -110,19 +134,11 @@ describe('Users route tests', () => {
 
     test('Get single user by id', (done) => {
       request(app)
-        .get(`/${userId}`)
+        .get(`/${userIdOne}`)
         .expect('Content-Type', /json/)
         .expect((res) => {
           expect(res.body).toMatchObject({
-            user: {
-              firstName: 'John',
-              lastName: 'Doe',
-              password: 'password123',
-              email: 'john.doe@example.com',
-              friends: [],
-              friendRequests: [],
-              birthday: '1990-01-01T00:00:00.000Z',
-            },
+            user: EXPECTED_USERS[0],
           });
         })
         .expect(200, done);
@@ -151,10 +167,7 @@ describe('Users route tests', () => {
             user: {
               firstName: 'test',
               lastName: 'test',
-              password: 'password123',
               email: 'john@example.com',
-              friends: [],
-              friendRequests: [],
               birthday: '2000-01-01T00:00:00.000Z',
             },
           });
@@ -175,7 +188,7 @@ describe('Users route tests', () => {
         .expect('Content-Type', /json/)
         .expect({ message: 'User deleted succesfully' })
         .expect(200, () => {
-          User.findById(userId)
+          User.findById(userIdOne)
             .then((docs) => {
               expect(docs).toBeNull();
               done();
@@ -185,6 +198,38 @@ describe('Users route tests', () => {
               done(err);
             });
         });
+    });
+  });
+
+  describe('Friends', () => {
+    test('should return status 401 when JWT not provided', (done) => {
+      request(app).get(`/${userIdOne}/friends`).expect(401, done);
+    });
+
+    test('return empty array when user has no friends', (done) => {
+      request(app)
+        .get(`/${userIdThree}/friends`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            users: [],
+          });
+        })
+        .expect(200, done);
+    });
+
+    test("get all user's friends", (done) => {
+      request(app)
+        .get(`/${userIdOne}/friends`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            users: [EXPECTED_USERS[1], EXPECTED_USERS[2]],
+          });
+        })
+        .expect(200, done);
     });
   });
 });

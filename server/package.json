@@ -9,13 +9,16 @@
     "predev": "npm run build",
     "dev": "concurrently \"npx tsc -w\"  \"nodemon dist/app.js\" ",
     "lint": "./node_modules/.bin/eslint src/app.ts",
-    "test": "jest --testPathPattern=auth.test.ts --detectOpenHandles --forceExit"
+    "test": "jest --detectOpenHandles --forceExit",
+    "singleTest": "jest --testPathPattern=auth.test.ts --detectOpenHandles --forceExit"
   },
   "jest": {
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },
-    "testMatch": ["**/*.test.ts"]
+    "testMatch": [
+      "**/*.test.ts"
+    ]
   },
   "author": "",
   "license": "ISC",

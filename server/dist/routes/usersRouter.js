@@ -11,4 +11,5 @@ router.get('/', usersController_1.getAllUsers);
 router.get('/:userId', usersController_1.getUser);
 router.put('/', middleware_1.verifyToken, usersController_1.updateUserData);
 router.delete('/', middleware_1.verifyToken, usersController_1.deleteUser);
+router.get('/:userId/friends', middleware_1.verifyToken, usersController_1.getFriends);
 exports.default = router;

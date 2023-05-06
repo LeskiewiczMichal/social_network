@@ -1,4 +1,4 @@
-import handleError from './handleError';
+import handleError, { ERROR_MESSAGE } from './handleError';
+import handleNotFound from './handleNotFound';
 
-// eslint-disable-next-line import/prefer-default-export
-export { handleError };
+export { handleError, ERROR_MESSAGE, handleNotFound };

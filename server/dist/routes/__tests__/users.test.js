@@ -48,7 +48,9 @@ dotenv.config();
 const app = (0, express_1.default)();
 (0, middleware_1.serverConfig)(app);
 app.use('/', __1.usersRouter);
-const userId = new mongoose_1.default.Types.ObjectId();
+const userId = 'QWER';
+const userIdTwo = new mongoose_1.default.Types.ObjectId();
+const userIdThree = new mongoose_1.default.Types.ObjectId();
 const usersExample = [
     {
         _id: userId,
@@ -56,21 +58,23 @@ const usersExample = [
         lastName: 'Doe',
         password: 'password123',
         email: 'john.doe@example.com',
-        friends: [],
+        friends: [userIdTwo, userIdThree],
         friendRequests: [],
         birthday: new Date('1990-01-01'),
     },
     {
+        _id: userIdTwo,
         firstName: 'Jane',
         lastName: 'Doe',
         password: 'password456',
         email: 'jane.doe@example.com',
         friends: [],
-        friendRequests: [],
+        friendRequests: [userIdTwo, userIdThree],
         birthday: new Date('1995-05-04'),
         googleId: '5234553455',
     },
     {
+        _id: userIdThree,
         firstName: 'Marry',
         lastName: 'Christmas',
         password: 'password90',
@@ -212,6 +216,11 @@ describe('Users route tests', () => {
                     done(err);
                 });
             });
+        });
+    });
+    describe('Friends', () => {
+        test("get all user's friends", (done) => {
+            (0, supertest_1.default)(app).get('/');
         });
     });
 });
