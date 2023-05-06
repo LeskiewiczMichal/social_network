@@ -35,11 +35,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateUser = exports.login = exports.createAccount = void 0;
+exports.getUser = exports.deleteUser = exports.updateUserData = exports.authenticateUser = exports.login = exports.createAccount = void 0;
 const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt = __importStar(require("bcryptjs"));
 const models_1 = require("../models");
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = models_1.User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json({ user });
+    }
+    catch (error) {
+        return res.json({ error: error.message });
+    }
+});
+exports.getUser = getUser;
 const login = (req, res) => {
     passport_1.default.authenticate('local', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -93,3 +106,43 @@ const authenticateUser = (req, res) => {
     res.json({ user });
 };
 exports.authenticateUser = authenticateUser;
+const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+    try {
+        if (req.body.email) {
+            user.email = req.body.email;
+        }
+        if (req.body.firstName) {
+            user.firstName = req.body.firstName;
+        }
+        if (req.body.lastName) {
+            user.lastName = req.body.lastName;
+        }
+        if (req.body.birthday) {
+            user.birthday = req.body.birthday;
+        }
+        yield user.save();
+        return res.json({ message: 'Update successfull', user });
+    }
+    catch (error) {
+        return res.json({ error: error.message });
+    }
+});
+exports.updateUserData = updateUserData;
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+    try {
+        yield models_1.User.deleteOne({ _id: user.id });
+        return res.json({ message: 'User deleted succesfully' });
+    }
+    catch (error) {
+        return res.json({ error: error.message });
+    }
+});
+exports.deleteUser = deleteUser;
