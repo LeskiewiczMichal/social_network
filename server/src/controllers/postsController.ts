@@ -61,4 +61,28 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export { createPost, getPosts, getPostById };
+const updatePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const post = (await Post.findById(req.params.postId)) as PostInterface;
+
+    if (post.author.toString() !== user.id.toString()) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    if (req.body.title) {
+      post.title = req.body.title;
+    }
+
+    if (req.body.body) {
+      post.body = req.body.body;
+    }
+
+    await post.save();
+    return res.json({ post });
+  } catch (error) {
+    return handlePostsError(res, error);
+  }
+};
+
+export { createPost, getPosts, getPostById, updatePost };

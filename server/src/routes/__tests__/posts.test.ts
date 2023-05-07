@@ -126,4 +126,52 @@ describe('Posts route tests', () => {
         .expect(200, done);
     });
   });
+
+  describe('Update post', () => {
+    beforeAll(async () => {
+      try {
+        posts = await createFakePosts(DEFAULT_POSTS_PROPS);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(deleteAllPosts);
+
+    test("returns status 401 if user is not post's creator", (done) => {
+      request(app)
+        .put(`/${POST_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Unauthorized' })
+        .expect(401, done);
+    });
+
+    test('returns status 404 if post is not found', (done) => {
+      request(app)
+        .put('/000')
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Post not found' })
+        .expect(404, done);
+    });
+
+    test('returns modified post on success', (done) => {
+      const requestBody = { title: 'Modified', body: 'modified' };
+      request(app)
+        .put(`/${POST_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .send(requestBody)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            post: {
+              title: 'Modified',
+              body: 'modified',
+            },
+          });
+        })
+        .expect(200, done);
+    });
+  });
 });
