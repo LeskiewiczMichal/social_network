@@ -13,9 +13,9 @@ const app = express();
 serverConfig(app);
 app.use('/', usersRouter);
 
-const userIdOne = new mongoose.Types.ObjectId();
-const userIdTwo = new mongoose.Types.ObjectId();
-const userIdThree = new mongoose.Types.ObjectId();
+const userIdOne = new mongoose.Types.ObjectId('60a3f53d0452a53dd45263b0');
+const userIdTwo = new mongoose.Types.ObjectId('60a3f53d0452a53dd45263b1');
+const userIdThree = new mongoose.Types.ObjectId('60a3f53d0452a53dd45263b2');
 const usersExample = [
   {
     _id: userIdOne,
@@ -80,8 +80,6 @@ const EXPECTED_USERS = [
   },
 ];
 
-
-
 describe('Users route tests', () => {
   let db: any;
   let token: string;
@@ -118,9 +116,6 @@ describe('Users route tests', () => {
     beforeAll(async () => {
       try {
         await User.insertMany(usersExample);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
@@ -165,9 +160,6 @@ describe('Users route tests', () => {
     beforeAll(async () => {
       try {
         await User.insertMany(usersExample);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
@@ -205,9 +197,6 @@ describe('Users route tests', () => {
     beforeAll(async () => {
       try {
         await User.insertMany(usersExample);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
@@ -239,9 +228,6 @@ describe('Users route tests', () => {
     beforeAll(async () => {
       try {
         await User.insertMany(usersExample);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
@@ -301,9 +287,6 @@ describe('Users route tests', () => {
             birthday: new Date('1990-01-01'),
           },
         ]);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
@@ -372,9 +355,6 @@ describe('Users route tests', () => {
             birthday: new Date('1990-01-01'),
           },
         ]);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
