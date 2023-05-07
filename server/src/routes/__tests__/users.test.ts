@@ -9,18 +9,14 @@ import {
   deleteAllUsers,
   initializeMongoServer,
   createFakeUsers,
+  USER_IDS,
+  DEFAULT_USERS_PROPS,
 } from '../../__testUtils__';
 
 dotenv.config();
 const app = express();
 serverConfig(app);
 app.use('/', usersRouter);
-
-const IDS = {
-  one: new mongoose.Types.ObjectId(),
-  two: new mongoose.Types.ObjectId(),
-  three: new mongoose.Types.ObjectId(),
-};
 
 describe('Users route tests', () => {
   let users: any;
@@ -45,12 +41,7 @@ describe('Users route tests', () => {
 
   describe('Querying users', () => {
     beforeAll(async () => {
-      users = await createFakeUsers({
-        userOne: {},
-        userTwo: {},
-        userThree: {},
-        ids: IDS,
-      });
+      users = await createFakeUsers(DEFAULT_USERS_PROPS);
     });
 
     afterAll(deleteAllUsers);
@@ -69,7 +60,7 @@ describe('Users route tests', () => {
 
     test('Get single user by id', (done) => {
       request(app)
-        .get(`/${IDS.one}`)
+        .get(`/${USER_IDS.one}`)
         .expect('Content-Type', /json/)
         .expect((res) => {
           expect(res.body).toMatchObject({
@@ -91,12 +82,7 @@ describe('Users route tests', () => {
   describe('Update user data', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
-          userOne: {},
-          userTwo: {},
-          userThree: {},
-          ids: IDS,
-        });
+        users = await createFakeUsers(DEFAULT_USERS_PROPS);
       } catch (error) {
         console.error(error);
       }
@@ -133,12 +119,7 @@ describe('Users route tests', () => {
   describe('Delete user', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
-          userOne: {},
-          userTwo: {},
-          userThree: {},
-          ids: IDS,
-        });
+        users = await createFakeUsers(DEFAULT_USERS_PROPS);
       } catch (error) {
         console.error(error);
       }
@@ -170,10 +151,10 @@ describe('Users route tests', () => {
     beforeAll(async () => {
       try {
         users = await createFakeUsers({
-          userOne: { friends: [IDS.two, IDS.three] },
+          userOne: { friends: [USER_IDS.two, USER_IDS.three] },
           userTwo: {},
           userThree: {},
-          ids: IDS,
+          ids: USER_IDS,
         });
       } catch (error) {
         console.error(error);
@@ -214,11 +195,11 @@ describe('Users route tests', () => {
       try {
         users = await createFakeUsers({
           userOne: {
-            friendRequests: [IDS.two],
+            friendRequests: [USER_IDS.two],
           },
           userTwo: {},
           userThree: {},
-          ids: IDS,
+          ids: USER_IDS,
         });
       } catch (error) {
         console.error(error);
@@ -268,11 +249,11 @@ describe('Users route tests', () => {
       try {
         users = await createFakeUsers({
           userOne: {
-            friends: [IDS.two],
+            friends: [USER_IDS.two],
           },
           userTwo: {},
           userThree: {},
-          ids: IDS,
+          ids: USER_IDS,
         });
       } catch (error) {
         console.error(error);
@@ -321,11 +302,11 @@ describe('Users route tests', () => {
       try {
         users = await createFakeUsers({
           userOne: {
-            friendRequests: [IDS.two, IDS.three],
+            friendRequests: [USER_IDS.two, USER_IDS.three],
           },
           userTwo: {},
           userThree: {},
-          ids: IDS,
+          ids: USER_IDS,
         });
       } catch (error) {
         console.error(error);
@@ -362,9 +343,9 @@ describe('Users route tests', () => {
       try {
         users = await createFakeUsers({
           userOne: {},
-          userTwo: { friendRequests: [IDS.one] },
+          userTwo: { friendRequests: [USER_IDS.one] },
           userThree: {},
-          ids: IDS,
+          ids: USER_IDS,
         });
       } catch (error) {
         console.error(error);
@@ -405,10 +386,10 @@ describe('Users route tests', () => {
     beforeAll(async () => {
       try {
         users = await createFakeUsers({
-          userOne: { friendRequests: [IDS.two] },
+          userOne: { friendRequests: [USER_IDS.two] },
           userTwo: {},
           userThree: {},
-          ids: IDS,
+          ids: USER_IDS,
         });
       } catch (error) {
         console.error(error);

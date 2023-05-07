@@ -2,8 +2,13 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { serverConfig } from '../../middleware';
-import { User } from '../../models';
-import { createFakeUsers, initializeMongoServer, deleteAllUsers } from '..';
+import { Post, User } from '../../models';
+import {
+  createFakeUsers,
+  initializeMongoServer,
+  deleteAllUsers,
+  deleteAllPosts,
+} from '..';
 
 dotenv.config();
 const app = express();
@@ -59,10 +64,56 @@ describe('Utility functions', () => {
       await userTwo.save();
     });
 
-    test('Delets users from database', () => {
+    test('deletes users from database', () => {
       deleteAllUsers();
 
       User.find()
+        .then((docs) => {
+          expect(docs).toHaveLength(0);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  });
+
+  describe('Delete all posts', () => {
+    beforeEach(async () => {
+      const userOne = new User({
+        _id: IDS.one,
+        firstName: 'test',
+        lastName: 'test',
+        email: 'test@mail.com',
+        friends: [],
+        friendRequests: [],
+        birthday: new Date('2000-03-09'),
+      });
+      await userOne.save();
+
+      const postOne = new Post({
+        title: 'testOne',
+        body: 'testing body one',
+        author: IDS.one,
+        comments: [],
+        likes: [],
+      });
+
+      const postTwo = new Post({
+        title: 'testingTwo',
+        body: 'testing two',
+        author: IDS.one,
+        comments: [],
+        likes: [],
+      });
+
+      await postOne.save();
+      await postTwo.save();
+    });
+
+    test('deletes posts from database', () => {
+      deleteAllPosts();
+
+      Post.find()
         .then((docs) => {
           expect(docs).toHaveLength(0);
         })
