@@ -14,7 +14,7 @@ const commentSchema: Schema = new Schema(
     body: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: 'User' },
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    post: { type: Schema.Types.ObjectId, ref: 'Post' }
+    post: { type: Schema.Types.ObjectId, ref: 'Post' },
   },
   { timestamps: true },
 );

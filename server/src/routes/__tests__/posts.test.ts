@@ -4,7 +4,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { postsRouter } from '..';
 import { serverConfig } from '../../middleware';
-import { Post } from '../../models';
+import { Comment, Post } from '../../models';
 import {
   deleteAllPosts,
   initializeMongoServer,
@@ -171,6 +171,63 @@ describe('Posts route tests', () => {
             },
           });
         })
+        .expect(200, done);
+    });
+  });
+
+  describe('Delete posts', () => {
+    beforeAll(async () => {
+      try {
+        posts = await createFakePosts(DEFAULT_POSTS_PROPS);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(deleteAllPosts);
+
+    test("returns status 401 if user is not post's creator", (done) => {
+      request(app)
+        .delete(`/${POST_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Unauthorized' })
+        .expect(401, done);
+    });
+
+    test('returns status 404 if post is not found', (done) => {
+      request(app)
+        .delete('/000')
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Post not found' })
+        .expect(404, done);
+    });
+
+    test("deletes all post's comments", (done) => {
+      request(app)
+        .delete(`/${POST_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect(200, () => {
+          Comment.find({ post: POST_IDS.one })
+            .then((docs) => {
+              expect(docs).toHaveLength(0);
+              done();
+            })
+            .catch((error) => {
+              console.error(error);
+              done(error);
+            });
+        });
+    });
+
+    test('returns message on success', (done) => {
+      request(app)
+        .delete(`/${POST_IDS.two}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Post deleted successfully' })
         .expect(200, done);
     });
   });

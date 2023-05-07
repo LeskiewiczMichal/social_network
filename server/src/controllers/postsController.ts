@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Request, Response } from 'express';
-import { Post, PostInterface, UserInterface } from '../models';
+import { Comment, Post, PostInterface, UserInterface } from '../models';
 import { handleError, ERROR_MESSAGE } from '../utils';
 
 const handlePostsError = (res: Response, error: any) => {
@@ -85,4 +85,24 @@ const updatePost = async (req: Request, res: Response) => {
   }
 };
 
-export { createPost, getPosts, getPostById, updatePost };
+const deletePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const post = (await Post.findById(req.params.postId)) as PostInterface;
+
+    if (post.author.toString() !== user.id.toString()) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const commentIds = post.comments;
+
+    await Comment.deleteMany({ _id: { $in: commentIds } });
+    await Post.deleteOne({ _id: req.params.postId });
+
+    return res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    return handlePostsError(res, error);
+  }
+};
+
+export { createPost, getPosts, getPostById, updatePost, deletePost };

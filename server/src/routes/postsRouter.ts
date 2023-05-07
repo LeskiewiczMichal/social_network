@@ -4,6 +4,7 @@ import {
   getPosts,
   getPostById,
   updatePost,
+  deletePost
 } from '../controllers/postsController';
 import { verifyToken } from '../middleware';
 
@@ -13,6 +14,7 @@ router.use(verifyToken);
 
 router.get('/:postId', getPostById);
 router.put('/:postId', updatePost);
+router.delete('/:postId', deletePost);
 router.get('/', getPosts);
 router.post('/', createPost);
 
