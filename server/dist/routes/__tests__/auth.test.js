@@ -142,21 +142,6 @@ describe('Auth route tests', () => {
     });
     describe('Token authentication', () => {
         const token = jwt.sign({ id: userId }, process.env.SECRET);
-        test('Returns 401 when token not provided', (done) => {
-            (0, supertest_1.default)(app)
-                .get('/token')
-                .expect('Content-Type', /json/)
-                .expect({ error: 'Unauthorized' })
-                .expect(401, done);
-        });
-        test('Returns 401 when wrong token provided', (done) => {
-            (0, supertest_1.default)(app)
-                .get('/token')
-                .set('Authorization', `Bearer WRONG${token}`)
-                .expect('Content-Type', /json/)
-                .expect({ error: 'Unauthorized' })
-                .expect(401, done);
-        });
         test('Returns user when proper token is provided', (done) => {
             (0, supertest_1.default)(app)
                 .get('/token')

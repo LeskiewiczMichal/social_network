@@ -142,7 +142,7 @@ const deleteFriend = async (req: Request, res: Response) => {
   }
 };
 
-const addFriendRequest = async (req: Request, res: Response) => {
+const sendFriendRequest = async (req: Request, res: Response) => {
   try {
     const user = req.user as UserInterface;
     const friend = (await User.findById(req.params.userId)) as UserInterface;
@@ -163,6 +163,20 @@ const addFriendRequest = async (req: Request, res: Response) => {
   }
 };
 
+const getFriendRequests = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    await user.populate('friendRequests');
+
+    return res.json({ friendRequests: user.friendRequests });
+  } catch (error: any) {
+    if (error instanceof mongoose.Error.CastError) {
+      return handleError(res, 'User not found', 404);
+    }
+    return handleError(res, ERROR_MESSAGE, 500);
+  }
+};
+
 export {
   updateUserData,
   deleteUser,
@@ -171,5 +185,6 @@ export {
   getFriends,
   addFriend,
   deleteFriend,
-  addFriendRequest,
+  sendFriendRequest,
+  getFriendRequests,
 };

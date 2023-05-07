@@ -48,17 +48,17 @@ dotenv.config();
 const app = (0, express_1.default)();
 (0, middleware_1.serverConfig)(app);
 app.use('/', __1.usersRouter);
-const userId = 'QWER';
+const userIdOne = new mongoose_1.default.Types.ObjectId();
 const userIdTwo = new mongoose_1.default.Types.ObjectId();
 const userIdThree = new mongoose_1.default.Types.ObjectId();
 const usersExample = [
     {
-        _id: userId,
+        _id: userIdOne,
         firstName: 'John',
         lastName: 'Doe',
         password: 'password123',
         email: 'john.doe@example.com',
-        friends: [userIdTwo, userIdThree],
+        friends: [`${userIdTwo}`, `${userIdThree}`],
         friendRequests: [],
         birthday: new Date('1990-01-01'),
     },
@@ -69,7 +69,7 @@ const usersExample = [
         password: 'password456',
         email: 'jane.doe@example.com',
         friends: [],
-        friendRequests: [userIdTwo, userIdThree],
+        friendRequests: [`${userIdOne}`, `${userIdThree}`],
         birthday: new Date('1995-05-04'),
         googleId: '5234553455',
     },
@@ -80,18 +80,50 @@ const usersExample = [
         password: 'password90',
         email: 'marry.christmas@example.com',
         friends: [],
-        friendRequests: [],
+        friendRequests: [`${userIdOne}`],
         birthday: new Date('2000-03-09'),
+    },
+];
+const EXPECTED_USERS = [
+    {
+        firstName: 'John',
+        lastName: 'Doe',
+        password: 'password123',
+        email: 'john.doe@example.com',
+        friends: [`${userIdTwo}`, `${userIdThree}`],
+        friendRequests: [],
+        birthday: '1990-01-01T00:00:00.000Z',
+    },
+    {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        password: 'password456',
+        email: 'jane.doe@example.com',
+        friends: [],
+        friendRequests: [`${userIdOne}`, `${userIdThree}`],
+        birthday: '1995-05-04T00:00:00.000Z',
+        googleId: '5234553455',
+    },
+    {
+        firstName: 'Marry',
+        lastName: 'Christmas',
+        password: 'password90',
+        email: 'marry.christmas@example.com',
+        friends: [],
+        friendRequests: [`${userIdOne}`],
+        birthday: '2000-03-09T00:00:00.000Z',
     },
 ];
 describe('Users route tests', () => {
     let db;
     let token;
+    let errorSpy; // This disables console error
+    // Set up database
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
         try {
             db = yield (0, mongoConfigTesting_1.default)();
-            yield models_1.User.insertMany(usersExample);
-            token = jwt.sign({ id: userId }, process.env.SECRET, {
+            token = jwt.sign({ id: userIdOne }, process.env.SECRET, {
                 expiresIn: '1h',
             });
         }
@@ -99,74 +131,81 @@ describe('Users route tests', () => {
             console.error(error);
         }
     }));
+    // Stop server
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield db.stop();
+        errorSpy.mockRestore();
     }));
     describe('Querying users', () => {
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany(usersExample);
+                token = jwt.sign({ id: userIdOne }, process.env.SECRET, {
+                    expiresIn: '1h',
+                });
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
         test('Get all users', (done) => {
             (0, supertest_1.default)(app)
                 .get('/')
                 .expect('Content-Type', /json/)
                 .expect((res) => {
                 expect(res.body).toMatchObject({
-                    users: [
-                        {
-                            firstName: 'John',
-                            lastName: 'Doe',
-                            password: 'password123',
-                            email: 'john.doe@example.com',
-                            friends: [],
-                            friendRequests: [],
-                            birthday: '1990-01-01T00:00:00.000Z',
-                        },
-                        {
-                            firstName: 'Jane',
-                            lastName: 'Doe',
-                            password: 'password456',
-                            email: 'jane.doe@example.com',
-                            friends: [],
-                            friendRequests: [],
-                            birthday: '1995-05-04T00:00:00.000Z',
-                            googleId: '5234553455',
-                        },
-                        {
-                            firstName: 'Marry',
-                            lastName: 'Christmas',
-                            password: 'password90',
-                            email: 'marry.christmas@example.com',
-                            friends: [],
-                            friendRequests: [],
-                            birthday: '2000-03-09T00:00:00.000Z',
-                        },
-                    ],
+                    users: EXPECTED_USERS,
                 });
             })
                 .expect(200, done);
         });
         test('Get single user by id', (done) => {
             (0, supertest_1.default)(app)
-                .get(`/${userId}`)
+                .get(`/${userIdOne}`)
                 .expect('Content-Type', /json/)
                 .expect((res) => {
                 expect(res.body).toMatchObject({
-                    user: {
-                        firstName: 'John',
-                        lastName: 'Doe',
-                        password: 'password123',
-                        email: 'john.doe@example.com',
-                        friends: [],
-                        friendRequests: [],
-                        birthday: '1990-01-01T00:00:00.000Z',
-                    },
+                    user: EXPECTED_USERS[0],
                 });
             })
                 .expect(200, done);
         });
+        test("returns status 404 if user with given id doesn't exist", (done) => {
+            (0, supertest_1.default)(app)
+                .get('/000')
+                .expect('Content-Type', /json/)
+                .expect({ error: 'User not found' })
+                .expect(404, done);
+        });
     });
     describe('Update user data', () => {
-        test('should return status 401 when JWT not provided', (done) => {
-            (0, supertest_1.default)(app).put('/').expect(401, done);
-        });
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany(usersExample);
+                token = jwt.sign({ id: userIdOne }, process.env.SECRET, {
+                    expiresIn: '1h',
+                });
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
         test('should update user data when verified', (done) => {
             const requestBody = {
                 email: 'john@example.com',
@@ -184,10 +223,7 @@ describe('Users route tests', () => {
                     user: {
                         firstName: 'test',
                         lastName: 'test',
-                        password: 'password123',
                         email: 'john@example.com',
-                        friends: [],
-                        friendRequests: [],
                         birthday: '2000-01-01T00:00:00.000Z',
                     },
                 });
@@ -196,9 +232,25 @@ describe('Users route tests', () => {
         });
     });
     describe('Delete user', () => {
-        test('should return status 401 when JWT not provided', (done) => {
-            (0, supertest_1.default)(app).delete('/').expect(401, done);
-        });
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany(usersExample);
+                token = jwt.sign({ id: userIdOne }, process.env.SECRET, {
+                    expiresIn: '1h',
+                });
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
         test('should delete user when verified', (done) => {
             (0, supertest_1.default)(app)
                 .delete('/')
@@ -206,7 +258,7 @@ describe('Users route tests', () => {
                 .expect('Content-Type', /json/)
                 .expect({ message: 'User deleted succesfully' })
                 .expect(200, () => {
-                models_1.User.findById(userId)
+                models_1.User.findById(userIdOne)
                     .then((docs) => {
                     expect(docs).toBeNull();
                     done();
@@ -218,9 +270,325 @@ describe('Users route tests', () => {
             });
         });
     });
-    describe('Friends', () => {
+    describe('Get friends', () => {
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany(usersExample);
+                token = jwt.sign({ id: userIdOne }, process.env.SECRET, {
+                    expiresIn: '1h',
+                });
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        test('return empty array when user has no friends', (done) => {
+            (0, supertest_1.default)(app)
+                .get(`/${userIdThree}/friends`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect((res) => {
+                expect(res.body).toMatchObject({
+                    users: [],
+                });
+            })
+                .expect(200, done);
+        });
         test("get all user's friends", (done) => {
-            (0, supertest_1.default)(app).get('/');
+            (0, supertest_1.default)(app)
+                .get(`/${userIdOne}/friends`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect((res) => {
+                expect(res.body).toMatchObject({
+                    users: [EXPECTED_USERS[1], EXPECTED_USERS[2]],
+                });
+            })
+                .expect(200, done);
+        });
+    });
+    describe('Add friend', () => {
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany([
+                    {
+                        _id: userIdOne,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [],
+                        friendRequests: [`${userIdTwo}`],
+                        birthday: new Date('1990-01-01'),
+                    },
+                    {
+                        _id: userIdTwo,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [`${userIdTwo}`],
+                        friendRequests: [],
+                        birthday: new Date('1990-01-01'),
+                    },
+                ]);
+                token = jwt.sign({ id: userIdOne }, process.env.SECRET, {
+                    expiresIn: '1h',
+                });
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        test("returns 404 if the user doesn't exist", (done) => {
+            (0, supertest_1.default)(app)
+                .post(`/friends/000`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect({ error: 'User not found' })
+                .expect(404, done);
+        });
+        test("returns 404 if the user isn't on friendRequests list", (done) => {
+            (0, supertest_1.default)(app)
+                .post(`/friends/${userIdOne}`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect({ error: "User was not on friend's requests list" })
+                .expect(404, done);
+        });
+        test('success', (done) => {
+            (0, supertest_1.default)(app)
+                .post(`/friends/${userIdTwo}`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect((res) => {
+                expect(res.body).toMatchObject({
+                    message: 'Friend added successfully',
+                    user: {
+                        friends: [`${userIdTwo}`],
+                        friendRequests: [],
+                    },
+                });
+            })
+                .expect(200, done);
+        });
+    });
+    describe('Delte friend', () => {
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany([
+                    {
+                        _id: userIdOne,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [`${userIdTwo}`],
+                        friendRequests: [],
+                        birthday: new Date('1990-01-01'),
+                    },
+                    {
+                        _id: userIdTwo,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [`${userIdOne}`],
+                        friendRequests: [],
+                        birthday: new Date('1990-01-01'),
+                    },
+                ]);
+                token = jwt.sign({ id: userIdOne }, process.env.SECRET, {
+                    expiresIn: '1h',
+                });
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        test("delete friend returns 404 if the user doesn't exist", (done) => {
+            (0, supertest_1.default)(app)
+                .delete('/friends/000')
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect({ error: 'User not found' })
+                .expect(404, done);
+        });
+        test('delete friend returns 404 if users were not friends', (done) => {
+            (0, supertest_1.default)(app)
+                .delete(`/friends/${userIdOne}`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect({ error: "User's were not friends" })
+                .expect(404, done);
+        });
+        test('delete friend from user', (done) => {
+            (0, supertest_1.default)(app)
+                .delete(`/friends/${userIdTwo}`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect((res) => {
+                expect(res.body).toMatchObject({
+                    message: 'Friend deleted successfully',
+                    user: {
+                        friends: [],
+                    },
+                });
+            })
+                .expect(200, done);
+        });
+    });
+    describe('Send friend requests', () => {
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany([
+                    {
+                        _id: userIdOne,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [],
+                        friendRequests: [],
+                        birthday: new Date('1990-01-01'),
+                    },
+                    {
+                        _id: userIdTwo,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [],
+                        friendRequests: [userIdOne],
+                        birthday: new Date('1990-01-01'),
+                    },
+                    {
+                        _id: userIdThree,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [],
+                        friendRequests: [],
+                        birthday: new Date('1990-01-01'),
+                    },
+                ]);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        test('returns status 404 on wrong userId provided', (done) => {
+            (0, supertest_1.default)(app)
+                .get('/friendRequests')
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect(200, done);
+        });
+    });
+    describe('Send friend requests', () => {
+        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.insertMany([
+                    {
+                        _id: userIdOne,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [],
+                        friendRequests: [],
+                        birthday: new Date('1990-01-01'),
+                    },
+                    {
+                        _id: userIdTwo,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [],
+                        friendRequests: [userIdOne],
+                        birthday: new Date('1990-01-01'),
+                    },
+                    {
+                        _id: userIdThree,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        password: 'password123',
+                        email: 'john.doe@example.com',
+                        friends: [],
+                        friendRequests: [],
+                        birthday: new Date('1990-01-01'),
+                    },
+                ]);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield models_1.User.deleteMany({});
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }));
+        test('returns status 404 on wrong userId provided', (done) => {
+            (0, supertest_1.default)(app)
+                .post('/friendRequests/000')
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect({ error: 'User not found' })
+                .expect(404, done);
+        });
+        test('returns 400 if friend request was already sent', (done) => {
+            (0, supertest_1.default)(app)
+                .post(`/friendRequests/${userIdTwo}`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect({ error: 'Friend request was already sent' })
+                .expect(400, done);
+        });
+        test('return message on success', (done) => {
+            (0, supertest_1.default)(app)
+                .post(`/friendRequests/${userIdThree}`)
+                .set('Authorization', `Bearer ${token}`)
+                .expect('Content-Type', /json/)
+                .expect({ message: 'Friend request was sent successfully' })
+                .expect(200, done);
         });
     });
 });

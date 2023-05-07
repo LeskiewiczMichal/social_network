@@ -83,6 +83,8 @@ const EXPECTED_USERS = [
 describe('Users route tests', () => {
   let db: any;
   let token: string;
+  let tokenTwo: string;
+  let tokenThree: string;
   let errorSpy: jest.SpyInstance; // This disables console error
 
   // Set up database
@@ -90,6 +92,15 @@ describe('Users route tests', () => {
     errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     try {
       db = await initializeMongoServer();
+      token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+        expiresIn: '1h',
+      });
+      tokenTwo = jwt.sign({ id: userIdTwo }, process.env.SECRET!, {
+        expiresIn: '1h',
+      });
+      tokenThree = jwt.sign({ id: userIdThree }, process.env.SECRET!, {
+        expiresIn: '1h',
+      });
     } catch (error) {
       console.error(error);
     }
@@ -451,7 +462,7 @@ describe('Users route tests', () => {
             password: 'password123',
             email: 'john.doe@example.com',
             friends: [],
-            friendRequests: [],
+            friendRequests: [userIdTwo, userIdThree],
             birthday: new Date('1990-01-01'),
           },
           {
@@ -461,7 +472,7 @@ describe('Users route tests', () => {
             password: 'password123',
             email: 'john.doe@example.com',
             friends: [],
-            friendRequests: [userIdOne],
+            friendRequests: [],
             birthday: new Date('1990-01-01'),
           },
           {
@@ -475,9 +486,6 @@ describe('Users route tests', () => {
             birthday: new Date('1990-01-01'),
           },
         ]);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
@@ -491,13 +499,39 @@ describe('Users route tests', () => {
       }
     });
 
-    test('returns status 404 on wrong userId provided', (done) => {
+    test('returns empty list on success', (done) => {
       request(app)
-        .get('/000/friendRequests')
+        .get('/friendRequests')
+        .set('Authorization', `Bearer ${tokenTwo}`)
+        .expect('Content-Type', /json/)
+        .expect({ friendRequests: [] })
+        .expect(200, done);
+    });
+
+    test('returns list of people on success', (done) => {
+      request(app)
+        .get('/friendRequests')
         .set('Authorization', `Bearer ${token}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'User not found' })
-        .expect(404, done);
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            friendRequests: [
+              {
+                firstName: 'John',
+                lastName: 'Doe',
+                password: 'password123',
+                email: 'john.doe@example.com',
+              },
+              {
+                firstName: 'John',
+                lastName: 'Doe',
+                password: 'password123',
+                email: 'john.doe@example.com',
+              },
+            ],
+          });
+        })
+        .expect(200, done);
     });
   });
 
@@ -536,9 +570,6 @@ describe('Users route tests', () => {
             birthday: new Date('1990-01-01'),
           },
         ]);
-        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-          expiresIn: '1h',
-        });
       } catch (error) {
         console.error(error);
       }
@@ -554,7 +585,7 @@ describe('Users route tests', () => {
 
     test('returns status 404 on wrong userId provided', (done) => {
       request(app)
-        .post('/000/friendRequests')
+        .post('/friendRequests/000')
         .set('Authorization', `Bearer ${token}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'User not found' })
@@ -563,7 +594,7 @@ describe('Users route tests', () => {
 
     test('returns 400 if friend request was already sent', (done) => {
       request(app)
-        .post(`/${userIdTwo}/friendRequests`)
+        .post(`/friendRequests/${userIdTwo}`)
         .set('Authorization', `Bearer ${token}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Friend request was already sent' })
@@ -572,7 +603,7 @@ describe('Users route tests', () => {
 
     test('return message on success', (done) => {
       request(app)
-        .post(`/${userIdThree}/friendRequests`)
+        .post(`/friendRequests/${userIdThree}`)
         .set('Authorization', `Bearer ${token}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Friend request was sent successfully' })
