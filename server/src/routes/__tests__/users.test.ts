@@ -83,9 +83,11 @@ const EXPECTED_USERS = [
 describe('Users route tests', () => {
   let db: any;
   let token: string;
+  let errorSpy: jest.SpyInstance; // This disables console error
 
   // Set up database
   beforeAll(async () => {
+    errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     try {
       db = await initializeMongoServer();
     } catch (error) {
@@ -96,6 +98,7 @@ describe('Users route tests', () => {
   // Stop server
   afterAll(async () => {
     await db.stop();
+    errorSpy.mockRestore();
   });
 
   // Insert mock users to database
@@ -142,6 +145,14 @@ describe('Users route tests', () => {
           });
         })
         .expect(200, done);
+    });
+
+    test("returns status 404 if user with given id doesn't exist", (done) => {
+      request(app)
+        .get('/000')
+        .expect('Content-Type', /json/)
+        .expect({ error: 'User not found' })
+        .expect(404, done);
     });
   });
 

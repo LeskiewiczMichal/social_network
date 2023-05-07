@@ -3,7 +3,7 @@ import { UserInterface } from '../models';
 
 type HandleNotFoundProps = {
   res: Response;
-  data: UserInterface | UserInterface[];
+  data: UserInterface | UserInterface[] | null | undefined;
   message: string;
 };
 

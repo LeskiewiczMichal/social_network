@@ -5,6 +5,7 @@ import {
   getUser,
   getAllUsers,
   getFriends,
+  addFriend,
 } from '../controllers/usersController';
 import { verifyToken } from '../middleware';
 
@@ -15,5 +16,6 @@ router.get('/:userId', getUser);
 router.put('/', verifyToken, updateUserData);
 router.delete('/', verifyToken, deleteUser);
 router.get('/:userId/friends', verifyToken, getFriends);
+router.post('/:userId/friends/:friendId', verifyToken, addFriend);
 
 export default router;

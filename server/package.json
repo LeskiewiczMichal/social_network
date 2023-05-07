@@ -10,6 +10,7 @@
     "dev": "concurrently \"npx tsc -w\"  \"nodemon dist/app.js\" ",
     "lint": "./node_modules/.bin/eslint src/app.ts",
     "test": "jest --detectOpenHandles --forceExit",
+    "testClearCache": "jest --clearCache",
     "singleTest": "jest --testPathPattern=verifyToken.test.ts --detectOpenHandles --forceExit"
   },
   "jest": {
