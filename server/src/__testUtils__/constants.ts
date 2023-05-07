@@ -19,4 +19,12 @@ const DEFAULT_USERS_PROPS = {
   ids: USER_IDS,
 };
 
-export { USER_IDS, POST_IDS, DEFAULT_USERS_PROPS };
+const DEFAULT_POSTS_PROPS = {
+  postOne: {},
+  postTwo: {},
+  postThree: {},
+  postIds: POST_IDS,
+  authorId: USER_IDS.one,
+};
+
+export { USER_IDS, POST_IDS, DEFAULT_USERS_PROPS, DEFAULT_POSTS_PROPS };

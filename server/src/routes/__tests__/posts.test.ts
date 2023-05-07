@@ -9,6 +9,11 @@ import {
   deleteAllPosts,
   initializeMongoServer,
   createFakeUsers,
+  createFakePosts,
+  USER_IDS,
+  POST_IDS,
+  DEFAULT_USERS_PROPS,
+  DEFAULT_POSTS_PROPS,
 } from '../../__testUtils__';
 
 dotenv.config();
@@ -16,14 +21,8 @@ const app = express();
 serverConfig(app);
 app.use('/', postsRouter);
 
-const IDS = {
-  one: new mongoose.Types.ObjectId(),
-  two: new mongoose.Types.ObjectId(),
-  three: new mongoose.Types.ObjectId(),
-};
-const defaultUsers = { userOne: {}, userTwo: {}, userThree: {}, ids: IDS };
-
 describe('Posts route tests', () => {
+  let posts: any;
   let users: any;
   let db: any;
   let errorSpy: jest.SpyInstance; // This disables console error
@@ -33,7 +32,7 @@ describe('Posts route tests', () => {
     errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     try {
       db = await initializeMongoServer();
-      users = await createFakeUsers(defaultUsers);
+      users = await createFakeUsers(DEFAULT_USERS_PROPS);
     } catch (error) {
       console.error(error);
     }
@@ -45,9 +44,52 @@ describe('Posts route tests', () => {
     errorSpy.mockRestore();
   });
 
-//   describe('Querying posts', () => {
-//     afterAll(deleteAllPosts);
-//   })
+  describe('Querying posts', () => {
+    beforeAll(async () => {
+      try {
+        posts = await createFakePosts(DEFAULT_POSTS_PROPS);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(deleteAllPosts);
+
+    test('Get all posts', (done) => {
+      request(app)
+        .get('/')
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            posts: [posts.one, posts.two, posts.three],
+          });
+        })
+        .expect(200, done);
+    });
+
+    test('Get single post by id', (done) => {
+      request(app)
+        .get(`/${POST_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            post: posts.one,
+          });
+        })
+        .expect(200, done);
+    });
+
+    test("returns status 404 if post with given id doesn't exist", (done) => {
+      request(app)
+        .get('/000')
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Post not found' })
+        .expect(404, done);
+    });
+  });
 
   describe('Create post', () => {
     afterAll(deleteAllPosts);
@@ -65,7 +107,7 @@ describe('Posts route tests', () => {
       const requestBody = {
         title: 'Testing',
         body: 'This post is for testing',
-        author: IDS.one,
+        author: USER_IDS.one,
       };
       request(app)
         .post('/')
@@ -77,13 +119,11 @@ describe('Posts route tests', () => {
             post: {
               title: 'Testing',
               body: 'This post is for testing',
-              author: IDS.one.toString(),
+              author: USER_IDS.one.toString(),
             },
           });
         })
         .expect(200, done);
     });
   });
-
-
 });

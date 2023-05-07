@@ -10,7 +10,7 @@ type CreateFakePostsProps = {
     two: mongoose.Types.ObjectId;
     three: mongoose.Types.ObjectId;
   };
-  userId: mongoose.Types.ObjectId;
+  authorId: mongoose.Types.ObjectId;
 };
 
 const createFakeUsers = async (props: CreateFakePostsProps) => {
@@ -18,7 +18,7 @@ const createFakeUsers = async (props: CreateFakePostsProps) => {
     _id: props.postIds.one,
     title: 'Testing',
     body: 'Testing post number one',
-    author: props.userId,
+    author: props.authorId,
     comments: [],
     likes: [],
     ...props.postOne,
@@ -28,7 +28,7 @@ const createFakeUsers = async (props: CreateFakePostsProps) => {
     _id: props.postIds.two,
     title: 'TesterPost',
     body: 'Testing post number two',
-    author: props.userId,
+    author: props.authorId,
     comments: [],
     likes: [],
     ...props.postTwo,
@@ -38,7 +38,7 @@ const createFakeUsers = async (props: CreateFakePostsProps) => {
     _id: props.postIds.three,
     title: 'TesterPost',
     body: 'Testing post number three',
-    author: props.userId,
+    author: props.authorId,
     comments: [],
     likes: [],
     ...props.postThree,
@@ -55,16 +55,19 @@ const createFakeUsers = async (props: CreateFakePostsProps) => {
   const expectedPostOne = {
     ...defaultPostOne,
     _id: props.postIds.one.toString(),
+    author: postOne.author.toString(),
   };
 
   const expectedPostTwo = {
     ...defaultPostTwo,
     _id: props.postIds.two.toString(),
+    author: postTwo.author.toString(),
   };
 
   const expectedPostThree = {
     ...defaultPostThree,
     _id: props.postIds.three.toString(),
+    author: postThree.author.toString(),
   };
 
   return {

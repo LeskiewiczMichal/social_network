@@ -3,6 +3,13 @@ import { Request, Response } from 'express';
 import { Post, PostInterface, UserInterface } from '../models';
 import { handleError, ERROR_MESSAGE } from '../utils';
 
+const handlePostsError = (res: Response, error: any) => {
+  if (error instanceof mongoose.Error.CastError) {
+    return handleError(res, 'Post not found', 404);
+  }
+  return handleError(res, ERROR_MESSAGE, 500);
+};
+
 const getPosts = async (req: Request, res: Response) => {
   try {
     const posts = (await Post.find()) as PostInterface[];
@@ -13,6 +20,16 @@ const getPosts = async (req: Request, res: Response) => {
       return handleError(res, 'User not found', 404);
     }
     return handleError(res, ERROR_MESSAGE, 500);
+  }
+};
+
+const getPostById = async (req: Request, res: Response) => {
+  try {
+    const post = (await Post.findById(req.params.postId)) as PostInterface;
+
+    return res.json({ post });
+  } catch (error: any) {
+    return handlePostsError(res, error);
   }
 };
 
@@ -44,4 +61,4 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export { createPost, getPosts };
+export { createPost, getPosts, getPostById };
