@@ -7,6 +7,7 @@ import {
   getFriends,
   addFriend,
   deleteFriend,
+  addFriendRequest,
 } from '../controllers/usersController';
 import { verifyToken } from '../middleware';
 
@@ -19,5 +20,6 @@ router.delete('/', verifyToken, deleteUser);
 router.get('/:userId/friends', verifyToken, getFriends);
 router.post('/friends/:friendId', verifyToken, addFriend);
 router.delete('/friends/:friendId', verifyToken, deleteFriend);
+router.post('/:userId/friendRequests', verifyToken, addFriendRequest);
 
 export default router;

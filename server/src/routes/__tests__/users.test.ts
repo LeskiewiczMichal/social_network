@@ -439,4 +439,144 @@ describe('Users route tests', () => {
         .expect(200, done);
     });
   });
+
+  describe('Get friend requests', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany([
+          {
+            _id: userIdOne,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [],
+            friendRequests: [],
+            birthday: new Date('1990-01-01'),
+          },
+          {
+            _id: userIdTwo,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [],
+            friendRequests: [userIdOne],
+            birthday: new Date('1990-01-01'),
+          },
+          {
+            _id: userIdThree,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [],
+            friendRequests: [],
+            birthday: new Date('1990-01-01'),
+          },
+        ]);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    test('returns status 404 on wrong userId provided', (done) => {
+      request(app)
+        .get('/000/friendRequests')
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'User not found' })
+        .expect(404, done);
+    });
+  });
+
+  describe('Send friend requests', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany([
+          {
+            _id: userIdOne,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [],
+            friendRequests: [],
+            birthday: new Date('1990-01-01'),
+          },
+          {
+            _id: userIdTwo,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [],
+            friendRequests: [userIdOne],
+            birthday: new Date('1990-01-01'),
+          },
+          {
+            _id: userIdThree,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [],
+            friendRequests: [],
+            birthday: new Date('1990-01-01'),
+          },
+        ]);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    test('returns status 404 on wrong userId provided', (done) => {
+      request(app)
+        .post('/000/friendRequests')
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'User not found' })
+        .expect(404, done);
+    });
+
+    test('returns 400 if friend request was already sent', (done) => {
+      request(app)
+        .post(`/${userIdTwo}/friendRequests`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Friend request was already sent' })
+        .expect(400, done);
+    });
+
+    test('return message on success', (done) => {
+      request(app)
+        .post(`/${userIdThree}/friendRequests`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Friend request was sent successfully' })
+        .expect(200, done);
+    });
+  });
 });
