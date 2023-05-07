@@ -45,7 +45,7 @@ const usersExample = [
     password: 'password90',
     email: 'marry.christmas@example.com',
     friends: [],
-    friendRequests: [],
+    friendRequests: [`${userIdOne}`],
     birthday: new Date('2000-03-09'),
   },
 ];
@@ -75,7 +75,7 @@ const EXPECTED_USERS = [
     password: 'password90',
     email: 'marry.christmas@example.com',
     friends: [],
-    friendRequests: [],
+    friendRequests: [`${userIdOne}`],
     birthday: '2000-03-09T00:00:00.000Z',
   },
 ];
@@ -101,28 +101,26 @@ describe('Users route tests', () => {
     errorSpy.mockRestore();
   });
 
-  // Insert mock users to database
-  beforeEach(async () => {
-    try {
-      await User.insertMany(usersExample);
-      token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
-        expiresIn: '1h',
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  // Delete all users
-  afterEach(async () => {
-    try {
-      await User.deleteMany({});
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
   describe('Querying users', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany(usersExample);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     test('Get all users', (done) => {
       request(app)
         .get('/')
@@ -157,6 +155,25 @@ describe('Users route tests', () => {
   });
 
   describe('Update user data', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany(usersExample);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     test('should update user data when verified', (done) => {
       const requestBody = {
         email: 'john@example.com',
@@ -184,6 +201,25 @@ describe('Users route tests', () => {
   });
 
   describe('Delete user', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany(usersExample);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     test('should delete user when verified', (done) => {
       request(app)
         .delete('/')
@@ -204,7 +240,26 @@ describe('Users route tests', () => {
     });
   });
 
-  describe('Friends', () => {
+  describe('Get friends', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany(usersExample);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     test('return empty array when user has no friends', (done) => {
       request(app)
         .get(`/${userIdThree}/friends`)
@@ -230,26 +285,154 @@ describe('Users route tests', () => {
         })
         .expect(200, done);
     });
+  });
 
-    test("add friend returns 404 if the user doesn't exist", (done) => {
+  describe('Add friend', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany([
+          {
+            _id: userIdOne,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [],
+            friendRequests: [`${userIdTwo}`],
+            birthday: new Date('1990-01-01'),
+          },
+          {
+            _id: userIdTwo,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [`${userIdTwo}`],
+            friendRequests: [],
+            birthday: new Date('1990-01-01'),
+          },
+        ]);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    test("returns 404 if the user doesn't exist", (done) => {
       request(app)
-        .post(`/${userIdThree}/friends/000`)
+        .post(`/friends/000`)
         .set('Authorization', `Bearer ${token}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'User not found' })
         .expect(404, done);
     });
 
-    test('add friend to user', (done) => {
+    test("returns 404 if the user isn't on friendRequests list", (done) => {
       request(app)
-        .post(`/${userIdThree}/friends/${userIdOne}`)
+        .post(`/friends/${userIdOne}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: "User was not on friend's requests list" })
+        .expect(404, done);
+    });
+
+    test('success', (done) => {
+      request(app)
+        .post(`/friends/${userIdTwo}`)
         .set('Authorization', `Bearer ${token}`)
         .expect('Content-Type', /json/)
         .expect((res) => {
           expect(res.body).toMatchObject({
             message: 'Friend added successfully',
             user: {
-              friends: [`${userIdOne}`],
+              friends: [`${userIdTwo}`],
+              friendRequests: [],
+            },
+          });
+        })
+        .expect(200, done);
+    });
+  });
+
+  describe('Delte friend', () => {
+    beforeAll(async () => {
+      try {
+        await User.insertMany([
+          {
+            _id: userIdOne,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [`${userIdTwo}`],
+            friendRequests: [],
+            birthday: new Date('1990-01-01'),
+          },
+          {
+            _id: userIdTwo,
+            firstName: 'John',
+            lastName: 'Doe',
+            password: 'password123',
+            email: 'john.doe@example.com',
+            friends: [`${userIdOne}`],
+            friendRequests: [],
+            birthday: new Date('1990-01-01'),
+          },
+        ]);
+        token = jwt.sign({ id: userIdOne }, process.env.SECRET!, {
+          expiresIn: '1h',
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(async () => {
+      try {
+        await User.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    test("delete friend returns 404 if the user doesn't exist", (done) => {
+      request(app)
+        .delete('/friends/000')
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'User not found' })
+        .expect(404, done);
+    });
+
+    test('delete friend returns 404 if users were not friends', (done) => {
+      request(app)
+        .delete(`/friends/${userIdOne}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: "User's were not friends" })
+        .expect(404, done);
+    });
+
+    test('delete friend from user', (done) => {
+      request(app)
+        .delete(`/friends/${userIdTwo}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            message: 'Friend deleted successfully',
+            user: {
+              friends: [],
             },
           });
         })
