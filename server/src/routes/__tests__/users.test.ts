@@ -5,8 +5,8 @@ import mongoose from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import { usersRouter } from '..';
 import { serverConfig } from '../../middleware';
-import initializeMongoServer from './mongoConfigTesting';
 import { User } from '../../models';
+import { deleteAllUsers, initializeMongoServer } from '../../__testUtils__';
 
 dotenv.config();
 const app = express();
@@ -80,6 +80,8 @@ const EXPECTED_USERS = [
   },
 ];
 
+
+
 describe('Users route tests', () => {
   let db: any;
   let token: string;
@@ -124,13 +126,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test('Get all users', (done) => {
       request(app)
@@ -177,13 +173,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test('should update user data when verified', (done) => {
       const requestBody = {
@@ -223,13 +213,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test('should delete user when verified', (done) => {
       request(app)
@@ -263,13 +247,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test('return empty array when user has no friends', (done) => {
       request(app)
@@ -331,13 +309,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test("returns 404 if the user doesn't exist", (done) => {
       request(app)
@@ -408,13 +380,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test("delete friend returns 404 if the user doesn't exist", (done) => {
       request(app)
@@ -491,13 +457,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test('returns empty list on success', (done) => {
       request(app)
@@ -575,13 +535,7 @@ describe('Users route tests', () => {
       }
     });
 
-    afterAll(async () => {
-      try {
-        await User.deleteMany({});
-      } catch (error) {
-        console.error(error);
-      }
-    });
+    afterAll(deleteAllUsers);
 
     test('returns status 404 on wrong userId provided', (done) => {
       request(app)

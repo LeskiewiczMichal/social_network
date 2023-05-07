@@ -9,7 +9,7 @@ import request from 'supertest';
 import verifyToken from '../verifyToken';
 import serverConfig from '../serverConfig';
 import { User, UserInterface } from '../../models';
-import initializeMongoServer from '../../routes/__tests__/mongoConfigTesting';
+import { initializeMongoServer } from '../../__testUtils__';
 
 /// CONFIG ///
 const app = express();

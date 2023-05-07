@@ -5,8 +5,8 @@ import mongoose from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import { authRouter } from '..';
 import { serverConfig } from '../../middleware';
-import initializeMongoServer from './mongoConfigTesting';
 import { User } from '../../models';
+import { initializeMongoServer } from '../../__testUtils__';
 
 dotenv.config();
 const app = express();
