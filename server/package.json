@@ -11,7 +11,7 @@
     "lint": "./node_modules/.bin/eslint src/app.ts",
     "test": "jest --detectOpenHandles --forceExit",
     "testClearCache": "jest --clearCache",
-    "singleTest": "jest --testPathPattern=users.test.ts --detectOpenHandles --forceExit"
+    "singleTest": "jest --testPathPattern=testUtils.test.ts --detectOpenHandles --forceExit"
   },
   "jest": {
     "transform": {
@@ -39,7 +39,8 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "mongodb-memory-server": "^8.12.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -67,7 +68,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.5.0",
-    "mongodb-memory-server": "^8.12.2",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "rimraf": "^5.0.0",

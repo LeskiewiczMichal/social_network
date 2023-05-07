@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import { UserInterface, User } from '../models';
 
+/// NOTE: Can't change user's birthday ///
+
 type CreateFakeUsersProps = {
   userOne: any;
   userTwo: any;
