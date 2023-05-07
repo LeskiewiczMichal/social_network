@@ -94,9 +94,7 @@ const deletePost = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const commentIds = post.comments;
-
-    await Comment.deleteMany({ _id: { $in: commentIds } });
+    await Comment.deleteMany({ post: req.params.postId });
     await Post.deleteOne({ _id: req.params.postId });
 
     return res.json({ message: 'Post deleted successfully' });

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { PostInterface, Post } from '../models';
+import { PostInterface, Post, Comment } from '../models';
 
 type CreateFakePostsProps = {
   postOne: any;
@@ -51,6 +51,23 @@ const createFakeUsers = async (props: CreateFakePostsProps) => {
   await postOne.save();
   await postTwo.save();
   await postThree.save();
+
+  const commentOne = new Comment({
+    author: props.authorId,
+    body: 'This is first test comment',
+    post: props.postIds.one,
+    likes: [],
+  });
+
+  const commentTwo = new Comment({
+    author: props.authorId,
+    body: 'This is the second test comment, heyo',
+    post: props.postIds.one,
+    likes: [],
+  });
+
+  await commentOne.save();
+  await commentTwo.save();
 
   const expectedPostOne = {
     ...defaultPostOne,

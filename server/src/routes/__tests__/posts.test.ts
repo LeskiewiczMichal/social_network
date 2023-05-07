@@ -7,6 +7,7 @@ import { serverConfig } from '../../middleware';
 import { Comment, Post } from '../../models';
 import {
   deleteAllPosts,
+  deleteAllComments,
   initializeMongoServer,
   createFakeUsers,
   createFakePosts,
@@ -20,6 +21,11 @@ dotenv.config();
 const app = express();
 serverConfig(app);
 app.use('/', postsRouter);
+
+const clearDB = async () => {
+  await deleteAllPosts();
+  await deleteAllComments();
+};
 
 describe('Posts route tests', () => {
   let posts: any;
@@ -53,7 +59,7 @@ describe('Posts route tests', () => {
       }
     });
 
-    afterAll(deleteAllPosts);
+    afterAll(clearDB);
 
     test('Get all posts', (done) => {
       request(app)
@@ -92,7 +98,7 @@ describe('Posts route tests', () => {
   });
 
   describe('Create post', () => {
-    afterAll(deleteAllPosts);
+    afterAll(clearDB);
 
     test('returns status 400 on body not provided', (done) => {
       request(app)
@@ -136,7 +142,7 @@ describe('Posts route tests', () => {
       }
     });
 
-    afterAll(deleteAllPosts);
+    afterAll(clearDB);
 
     test("returns status 401 if user is not post's creator", (done) => {
       request(app)
@@ -184,7 +190,7 @@ describe('Posts route tests', () => {
       }
     });
 
-    afterAll(deleteAllPosts);
+    afterAll(clearDB);
 
     test("returns status 401 if user is not post's creator", (done) => {
       request(app)
