@@ -146,10 +146,6 @@ describe('Users route tests', () => {
   });
 
   describe('Update user data', () => {
-    test('should return status 401 when JWT not provided', (done) => {
-      request(app).put('/').expect(401, done);
-    });
-
     test('should update user data when verified', (done) => {
       const requestBody = {
         email: 'john@example.com',
@@ -177,10 +173,6 @@ describe('Users route tests', () => {
   });
 
   describe('Delete user', () => {
-    test('should return status 401 when JWT not provided', (done) => {
-      request(app).delete('/').expect(401, done);
-    });
-
     test('should delete user when verified', (done) => {
       request(app)
         .delete('/')
@@ -202,10 +194,6 @@ describe('Users route tests', () => {
   });
 
   describe('Friends', () => {
-    test('should return status 401 when JWT not provided', (done) => {
-      request(app).get(`/${userIdOne}/friends`).expect(401, done);
-    });
-
     test('return empty array when user has no friends', (done) => {
       request(app)
         .get(`/${userIdThree}/friends`)
@@ -227,6 +215,31 @@ describe('Users route tests', () => {
         .expect((res) => {
           expect(res.body).toMatchObject({
             users: [EXPECTED_USERS[1], EXPECTED_USERS[2]],
+          });
+        })
+        .expect(200, done);
+    });
+
+    test("add friend returns 404 if the user doesn't exist", (done) => {
+      request(app)
+        .post(`/${userIdThree}/friends/000`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'User not found' })
+        .expect(404, done);
+    });
+
+    test('add friend to user', (done) => {
+      request(app)
+        .post(`/${userIdThree}/friends/${userIdOne}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            message: 'Friend added successfully',
+            user: {
+              friends: [`${userIdOne}`],
+            },
           });
         })
         .expect(200, done);

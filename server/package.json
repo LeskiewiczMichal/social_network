@@ -10,7 +10,7 @@
     "dev": "concurrently \"npx tsc -w\"  \"nodemon dist/app.js\" ",
     "lint": "./node_modules/.bin/eslint src/app.ts",
     "test": "jest --detectOpenHandles --forceExit",
-    "singleTest": "jest --testPathPattern=auth.test.ts --detectOpenHandles --forceExit"
+    "singleTest": "jest --testPathPattern=verifyToken.test.ts --detectOpenHandles --forceExit"
   },
   "jest": {
     "transform": {

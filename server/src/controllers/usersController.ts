@@ -79,4 +79,8 @@ const getFriends = async (req: Request, res: Response) => {
   }
 };
 
+const addFriend = async (req: Request, res: Response) => {
+  
+}
+
 export { updateUserData, deleteUser, getUser, getAllUsers, getFriends };
