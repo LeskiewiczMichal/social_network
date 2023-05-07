@@ -263,7 +263,7 @@ describe('Users route tests', () => {
     });
   });
 
-  describe('Delte friend', () => {
+  describe('Delete friend', () => {
     beforeAll(async () => {
       try {
         users = await createFakeUsers({
@@ -290,13 +290,13 @@ describe('Users route tests', () => {
         .expect(404, done);
     });
 
-    test('delete friend returns 404 if users were not friends', (done) => {
+    test('delete friend returns 400 if users were not friends', (done) => {
       request(app)
         .delete(`/friends/${users.one._id}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ error: "User's were not friends" })
-        .expect(404, done);
+        .expect(400, done);
     });
 
     test('delete friend from user', (done) => {
@@ -397,6 +397,55 @@ describe('Users route tests', () => {
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Friend request was sent successfully' })
+        .expect(200, done);
+    });
+  });
+
+  describe('Delete friend request', () => {
+    beforeAll(async () => {
+      try {
+        users = await createFakeUsers({
+          userOne: { friendRequests: [IDS.two] },
+          userTwo: {},
+          userThree: {},
+          ids: IDS,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(deleteAllUsers);
+
+    test('returns 404 if wrong userId provided', (done) => {
+      request(app)
+        .delete(`/friendRequests/000`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'User not found' })
+        .expect(404, done);
+    });
+
+    test('returns 404 if friend request not found', (done) => {
+      request(app)
+        .delete(`/friendRequests/${users.three._id}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Friend request not found' })
+        .expect(404, done);
+    });
+
+    test('returns message and friend requests on success', (done) => {
+      request(app)
+        .delete(`/friendRequests/${users.two._id}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect((req) => {
+          expect(req.body).toMatchObject({
+            message: 'Friend request deleted',
+            user: { friendRequests: [] },
+          });
+        })
         .expect(200, done);
     });
   });

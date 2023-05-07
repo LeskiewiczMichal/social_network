@@ -121,7 +121,7 @@ const deleteFriend = async (req: Request, res: Response) => {
     const friend = (await User.findById(req.params.friendId)) as UserInterface;
 
     if (!user.friends.includes(friend.id)) {
-      return res.status(404).json({ error: "User's were not friends" });
+      return res.status(400).json({ error: "User's were not friends" });
     }
 
     user.friends = user.friends.filter(
@@ -177,6 +177,32 @@ const getFriendRequests = async (req: Request, res: Response) => {
   }
 };
 
+const deleteFriendRequest = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const friendRequest = (await User.findById(
+      req.params.userId,
+    )) as UserInterface;
+
+    if (!user.friendRequests.includes(friendRequest.id)) {
+      return res.status(404).json({ error: 'Friend request not found' });
+    }
+
+    user.friendRequests = user.friendRequests.filter(
+      (id) => id.toString() !== friendRequest.id.toString(),
+    );
+
+    await user.save();
+
+    return res.json({ message: 'Friend request deleted', user });
+  } catch (error: any) {
+    if (error instanceof mongoose.Error.CastError) {
+      return handleError(res, 'User not found', 404);
+    }
+    return handleError(res, ERROR_MESSAGE, 500);
+  }
+};
+
 export {
   updateUserData,
   deleteUser,
@@ -187,4 +213,5 @@ export {
   deleteFriend,
   sendFriendRequest,
   getFriendRequests,
+  deleteFriendRequest,
 };
