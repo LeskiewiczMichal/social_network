@@ -237,4 +237,94 @@ describe('Posts route tests', () => {
         .expect(200, done);
     });
   });
+
+  describe('Like post', () => {
+    beforeAll(async () => {
+      try {
+        posts = await createFakePosts({
+          postOne: {},
+          postTwo: { likes: [USER_IDS.two, USER_IDS.three] },
+          postThree: {},
+          postIds: POST_IDS,
+          authorId: USER_IDS.one,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(clearDB);
+
+    test('returns status 404 if post is not found', (done) => {
+      request(app)
+        .post('/000/likes')
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Post not found' })
+        .expect(404, done);
+    });
+
+    test('retuns status 400 if post already liked', (done) => {
+      request(app)
+        .post(`/${POST_IDS.two}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Post is already liked' })
+        .expect(400, done);
+    });
+
+    test('retuns message on success', (done) => {
+      request(app)
+        .post(`/${POST_IDS.one}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Post liked successfully' })
+        .expect(200, done);
+    });
+  });
+
+  describe('Dislike post', () => {
+    beforeAll(async () => {
+      try {
+        posts = await createFakePosts({
+          postOne: {},
+          postTwo: { likes: [USER_IDS.two, USER_IDS.three] },
+          postThree: {},
+          postIds: POST_IDS,
+          authorId: USER_IDS.one,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    afterAll(clearDB);
+
+    test('returns status 404 if post is not found', (done) => {
+      request(app)
+        .delete('/000/likes')
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Post not found' })
+        .expect(404, done);
+    });
+
+    test('retuns status 400 if post is not liked', (done) => {
+      request(app)
+        .delete(`/${POST_IDS.two}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Post is not liked' })
+        .expect(400, done);
+    });
+
+    test('retuns message on success', (done) => {
+      request(app)
+        .delete(`/${POST_IDS.two}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Post unliked successfully' })
+        .expect(200, done);
+    });
+  });
 });

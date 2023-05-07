@@ -103,4 +103,50 @@ const deletePost = async (req: Request, res: Response) => {
   }
 };
 
-export { createPost, getPosts, getPostById, updatePost, deletePost };
+const likePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const post = (await Post.findById(req.params.postId)) as PostInterface;
+
+    if (post.likes.includes(user.id)) {
+      return res.status(400).json({ error: 'Post is already liked' });
+    }
+
+    post.likes.push(user.id);
+    await post.save();
+
+    return res.json({ message: 'Post liked successfully' });
+  } catch (error) {
+    return handlePostsError(res, error);
+  }
+};
+
+const unlikePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const post = (await Post.findById(req.params.postId)) as PostInterface;
+
+    if (!post.likes.includes(user.id)) {
+      return res.status(400).json({ error: 'Post is not liked' });
+    }
+
+    post.likes = post.likes.filter(
+      (id) => id.toString() !== user.id.toString(),
+    );
+    await post.save();
+
+    return res.json({ message: 'Post unliked successfully' });
+  } catch (error) {
+    return handlePostsError(res, error);
+  }
+};
+
+export {
+  createPost,
+  getPosts,
+  getPostById,
+  updatePost,
+  deletePost,
+  likePost,
+  unlikePost,
+};
