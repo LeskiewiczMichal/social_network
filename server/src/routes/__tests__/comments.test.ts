@@ -15,6 +15,7 @@ import {
   deleteAllUsers,
 } from '../../__testUtils__';
 import createFakeComments from '../../__testUtils__/createFakeComments';
+import { COMMENT_IDS } from '../../__testUtils__/constants';
 
 dotenv.config();
 const app = express();
@@ -182,6 +183,65 @@ describe('Comments route tests', () => {
           });
         })
         .expect(200, done);
+    });
+  });
+
+  describe('Delete comment', () => {
+    beforeAll(async () => {
+      comments = await createFakeComments(
+        TEST_CONSTANTS.DEFAULT_COMMENTS_PROPS,
+      );
+    });
+    afterAll(clearDB);
+
+    test('returns status 404 if comment is not found', (done) => {
+      request(app)
+        .delete(`/000`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Comment not found' })
+        .expect(404, done);
+    });
+
+    test("returns staus 401  if user is not comment's creator", (done) => {
+      request(app)
+        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Unauthorized' })
+        .expect(401, done);
+    });
+
+    test('returns message on success', (done) => {
+      request(app)
+        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Comment deleted successfully' })
+        .expect(200, done);
+    });
+
+    test("removes deleted comment's id from post that it was on", (done) => {
+      request(app)
+        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.two}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Comment deleted successfully' })
+        .expect(200, () => {
+          Post.findById(comments.post._id)
+            .then((docs) => {
+              if (docs) {
+                expect(docs.comments).not.toContainEqual(COMMENT_IDS.two);
+                done();
+              } else {
+                throw new Error('Post not found');
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              done(error);
+            });
+        });
     });
   });
 });

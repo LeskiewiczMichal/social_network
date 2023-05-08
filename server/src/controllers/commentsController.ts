@@ -80,4 +80,30 @@ const updateComment = async (req: Request, res: Response) => {
   }
 };
 
-export { addComment, getAllComments, updateComment };
+const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const comment = (await Comment.findById(
+      req.params.commentId,
+    )) as CommentInterface;
+
+    if (comment.author.toString() !== user.id.toString()) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    await Comment.deleteOne({ comment });
+    await Post.updateMany(
+      { comments: comment.id },
+      { $pull: { comments: comment.id } },
+    );
+
+    return res.json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return handleError(res, 'Comment not found', 404);
+    }
+    return handleError(res, ERROR_MESSAGE, 500);
+  }
+};
+
+export { addComment, getAllComments, updateComment, deleteComment };

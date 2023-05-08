@@ -85,7 +85,7 @@ const createFakeComments = async (props: CreateFakeCommentsProps) => {
       post: commentThree.post.toString(),
     },
     post: {
-      _id: props.commentIds.two,
+      _id: props.postId,
       body: 'Testing comments post',
       title: 'Testing',
       author: props.authorId,
