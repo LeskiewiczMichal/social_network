@@ -9,6 +9,7 @@ import {
   POST_IDS,
   DEFAULT_USERS_PROPS,
   DEFAULT_POSTS_PROPS,
+  COMMENT_IDS,
 } from './constants';
 
 export {
@@ -20,6 +21,7 @@ export {
   deleteAllComments,
   USER_IDS,
   POST_IDS,
+  COMMENT_IDS,
   DEFAULT_USERS_PROPS,
   DEFAULT_POSTS_PROPS,
 };

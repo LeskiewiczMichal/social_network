@@ -1,10 +1,9 @@
 import * as dotenv from 'dotenv';
 import request from 'supertest';
 import express from 'express';
-import mongoose from 'mongoose';
 import { postsRouter } from '..';
 import { serverConfig } from '../../middleware';
-import { Comment, Post } from '../../models';
+import { Comment } from '../../models';
 import {
   deleteAllPosts,
   deleteAllComments,

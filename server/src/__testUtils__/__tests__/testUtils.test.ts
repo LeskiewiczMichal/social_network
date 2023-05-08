@@ -2,13 +2,19 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { serverConfig } from '../../middleware';
-import { Post, User } from '../../models';
+import { Comment, Post, User } from '../../models';
 import {
   createFakeUsers,
   initializeMongoServer,
   deleteAllUsers,
   deleteAllPosts,
+  POST_IDS,
+  deleteAllComments,
+  createFakePosts,
+  USER_IDS,
+  COMMENT_IDS,
 } from '..';
+import createFakeComments from '../createFakeComments';
 
 dotenv.config();
 const app = express();
@@ -114,6 +120,47 @@ describe('Utility functions', () => {
       deleteAllPosts();
 
       Post.find()
+        .then((docs) => {
+          expect(docs).toHaveLength(0);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  });
+
+  describe('Delete all comments', () => {
+    beforeEach(async () => {
+      const commentOne = new Comment({
+        body: 'testing one',
+        author: IDS.one,
+        post: POST_IDS.one,
+        likes: [],
+      });
+
+      const commentTwo = new Comment({
+        body: 'testing two',
+        author: IDS.one,
+        post: POST_IDS.one,
+        likes: [],
+      });
+
+      const commentThree = new Comment({
+        body: 'testing three',
+        author: IDS.one,
+        post: POST_IDS.one,
+        likes: [],
+      });
+
+      await commentOne.save();
+      await commentTwo.save();
+      await commentThree.save();
+    });
+
+    test('deletes comments from database', () => {
+      deleteAllComments();
+
+      Comment.find()
         .then((docs) => {
           expect(docs).toHaveLength(0);
         })
@@ -235,6 +282,184 @@ describe('Utility functions', () => {
           friends: [IDS.three],
           friendRequests: [IDS.one],
           birthday: '2000-03-09T00:00:00.000Z',
+        },
+      });
+    });
+  });
+
+  describe('Create fake posts', () => {
+    afterEach(async () => {
+      try {
+        await User.deleteMany({});
+        await Post.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    test('returns proper basic post when empty props provided', async () => {
+      const posts = await createFakePosts({
+        postOne: {},
+        postTwo: {},
+        postThree: {},
+        postIds: POST_IDS,
+        authorId: USER_IDS.one,
+      });
+
+      expect(typeof posts.one._id).toBe('string');
+      expect(typeof posts.two._id).toBe('string');
+      expect(typeof posts.three._id).toBe('string');
+      expect(posts).toMatchObject({
+        one: {
+          title: 'Testing',
+          body: 'Testing post number one',
+          author: USER_IDS.one.toString(),
+          comments: [],
+          likes: [],
+        },
+        two: {
+          title: 'TesterPost',
+          body: 'Testing post number two',
+          author: USER_IDS.one.toString(),
+          comments: [],
+          likes: [],
+        },
+        three: {
+          title: 'TesterPost',
+          body: 'Testing post number three',
+          author: USER_IDS.one.toString(),
+          comments: [],
+          likes: [],
+        },
+      });
+    });
+
+    test('returns proper custom posts', async () => {
+      const posts = await createFakePosts({
+        postOne: {
+          title: 'test',
+          body: 'test',
+          author: USER_IDS.two,
+          likes: [USER_IDS.three],
+        },
+        postTwo: {
+          title: 'ok',
+          body: 'ok',
+        },
+        postThree: {
+          author: USER_IDS.three,
+          likes: [USER_IDS.one, USER_IDS.three],
+        },
+        postIds: POST_IDS,
+        authorId: USER_IDS.one,
+      });
+
+      expect(typeof posts.one._id).toBe('string');
+      expect(typeof posts.two._id).toBe('string');
+      expect(typeof posts.three._id).toBe('string');
+      expect(posts).toMatchObject({
+        one: {
+          title: 'test',
+          body: 'test',
+          author: USER_IDS.two.toString(),
+          likes: [USER_IDS.three],
+        },
+        two: {
+          title: 'ok',
+          body: 'ok',
+        },
+        three: {
+          author: USER_IDS.three.toString(),
+          likes: [USER_IDS.one, USER_IDS.three],
+        },
+      });
+    });
+  });
+
+  describe('Create fake comments', () => {
+    afterEach(async () => {
+      try {
+        await User.deleteMany({});
+        await Comment.deleteMany({});
+        await Post.deleteMany({});
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    test('returns proper basic comments when empty props provided', async () => {
+      const comments = await createFakeComments({
+        commentOne: {},
+        commentTwo: {},
+        commentThree: {},
+        commentIds: COMMENT_IDS,
+        postId: POST_IDS.one,
+        authorId: USER_IDS.one,
+      });
+
+      expect(typeof comments.one._id).toBe('string');
+      expect(typeof comments.two._id).toBe('string');
+      expect(typeof comments.three._id).toBe('string');
+      expect(comments).toMatchObject({
+        one: {
+          body: 'Testing comment number one',
+          author: USER_IDS.one.toString(),
+          post: POST_IDS.one.toString(),
+          likes: [],
+        },
+        two: {
+          body: 'Testing comment number two',
+          author: USER_IDS.one.toString(),
+          post: POST_IDS.one.toString(),
+          likes: [],
+        },
+        three: {
+          body: 'Testing comment number three',
+          author: USER_IDS.one.toString(),
+          post: POST_IDS.one.toString(),
+          likes: [],
+        },
+      });
+    });
+
+    test('returns proper custom comments', async () => {
+      const comments = await createFakeComments({
+        commentOne: {
+          body: 'test',
+          post: POST_IDS.two,
+          author: USER_IDS.two,
+          likes: [USER_IDS.two],
+        },
+        commentTwo: {
+          body: 'ok',
+        },
+        commentThree: {
+          author: USER_IDS.three,
+          post: POST_IDS.two,
+          likes: [USER_IDS.one, USER_IDS.three],
+        },
+        commentIds: COMMENT_IDS,
+        authorId: USER_IDS.one,
+        postId: POST_IDS.one,
+      });
+
+      expect(typeof comments.one._id).toBe('string');
+      expect(typeof comments.two._id).toBe('string');
+      expect(typeof comments.three._id).toBe('string');
+      expect(comments).toMatchObject({
+        one: {
+          body: 'test',
+          post: POST_IDS.two.toString(),
+          author: USER_IDS.two.toString(),
+          likes: [USER_IDS.two],
+        },
+        two: {
+          body: 'ok',
+        },
+        three: {
+          author: USER_IDS.three.toString(),
+          post: POST_IDS.two.toString(),
+          likes: [USER_IDS.one, USER_IDS.three],
         },
       });
     });

@@ -12,6 +12,12 @@ const POST_IDS = {
   three: new mongoose.Types.ObjectId(),
 };
 
+const COMMENT_IDS = {
+  one: new mongoose.Types.ObjectId(),
+  two: new mongoose.Types.ObjectId(),
+  three: new mongoose.Types.ObjectId(),
+};
+
 const DEFAULT_USERS_PROPS = {
   userOne: {},
   userTwo: {},
@@ -27,4 +33,10 @@ const DEFAULT_POSTS_PROPS = {
   authorId: USER_IDS.one,
 };
 
-export { USER_IDS, POST_IDS, DEFAULT_USERS_PROPS, DEFAULT_POSTS_PROPS };
+export {
+  USER_IDS,
+  POST_IDS,
+  DEFAULT_USERS_PROPS,
+  DEFAULT_POSTS_PROPS,
+  COMMENT_IDS,
+};
