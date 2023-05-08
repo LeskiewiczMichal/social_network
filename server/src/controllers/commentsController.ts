@@ -1,5 +1,3 @@
-import mongoose from 'mongoose';
-import { Response } from 'express';
 import {
   Comment,
   CommentInterface,
@@ -26,7 +24,7 @@ import {
   MissingBodyError,
   UnauthorizedError,
 } from '../types/errors';
-import { handleError, ERROR_MESSAGE } from '../utils';
+import { handleCommentsError } from './controllersUtils';
 
 const getAllComments = async (
   req: GetAllCommentsRequest,
@@ -39,10 +37,7 @@ const getAllComments = async (
 
     return res.json({ comments });
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'Post not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleCommentsError(error, res);
   }
 };
 
@@ -68,13 +63,7 @@ const addComment = async (
 
     return res.json({ message: 'Comment successfully created', comment });
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'Post not found', 404);
-    }
-    if (error instanceof MissingBodyError) {
-      return handleError(res, error.message, error.status);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleCommentsError(error, res);
   }
 };
 
@@ -99,13 +88,7 @@ const updateComment = async (
     await comment.save();
     return res.json({ message: 'Comment edited successfully', comment });
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'Comment not found', 404);
-    }
-    if (error instanceof UnauthorizedError) {
-      return handleError(res, error.message, error.status);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleCommentsError(error, res);
   }
 };
 
@@ -131,13 +114,7 @@ const deleteComment = async (
 
     return res.json({ message: 'Comment deleted successfully' });
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'Comment not found', 404);
-    }
-    if (error instanceof UnauthorizedError) {
-      return handleError(res, error.message, error.status);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleCommentsError(error, res);
   }
 };
 
@@ -160,13 +137,7 @@ const likeComment = async (
 
     return res.json({ message: 'Comment liked successfully' });
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'Comment not found', 404);
-    }
-    if (error instanceof BadRequestError) {
-      return handleError(res, error.message, error.status);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleCommentsError(error, res);
   }
 };
 
@@ -191,13 +162,7 @@ const dislikeComment = async (
 
     return res.json({ message: 'Comment unliked successfully' });
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'Comment not found', 404);
-    }
-    if (error instanceof BadRequestError) {
-      return handleError(res, error.message, error.status);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleCommentsError(error, res);
   }
 };
 
