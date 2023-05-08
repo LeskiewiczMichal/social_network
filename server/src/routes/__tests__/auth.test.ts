@@ -8,6 +8,7 @@ import { serverConfig } from '../../middleware';
 import { User } from '../../models';
 import { initializeMongoServer } from '../../__testUtils__';
 
+// Config test server
 dotenv.config();
 const app = express();
 serverConfig(app);
@@ -26,6 +27,7 @@ const mockUser = {
 describe('Auth route tests', () => {
   let db: any;
 
+  // Set up test database
   beforeAll(async () => {
     try {
       db = await initializeMongoServer();
@@ -36,6 +38,7 @@ describe('Auth route tests', () => {
     }
   });
 
+  // Stop server
   afterAll(async () => {
     await db.stop();
   });

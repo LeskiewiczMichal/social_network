@@ -1,10 +1,9 @@
 import * as dotenv from 'dotenv';
 import request from 'supertest';
 import express from 'express';
-import mongoose from 'mongoose';
 import { commentsRouter } from '..';
 import { serverConfig } from '../../middleware';
-import { Comment, Post } from '../../models';
+import { Post } from '../../models';
 import {
   deleteAllPosts,
   deleteAllComments,
@@ -12,11 +11,11 @@ import {
   createFakeUsers,
   createFakePosts,
   TEST_CONSTANTS,
-  deleteAllUsers,
 } from '../../__testUtils__';
 import createFakeComments from '../../__testUtils__/createFakeComments';
 import { COMMENT_IDS } from '../../__testUtils__/constants';
 
+// Config test server
 dotenv.config();
 const app = express();
 serverConfig(app);
@@ -25,11 +24,9 @@ app.use('/', commentsRouter);
 const clearDB = async () => {
   await deleteAllPosts();
   await deleteAllComments();
-  //   await deleteAllUsers();
 };
 
 describe('Comments route tests', () => {
-  //   let posts: any;
   let users: any;
   let comments: any;
   let db: any;
@@ -41,7 +38,6 @@ describe('Comments route tests', () => {
     try {
       db = await initializeMongoServer();
       users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
-      //   posts = await createFakePosts(TEST_CONSTANTS.DEFAULT_POSTS_PROPS);
     } catch (error) {
       console.error(error);
     }
@@ -96,7 +92,7 @@ describe('Comments route tests', () => {
         .post(`/${TEST_CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Not all neccessery fields were provided' })
+        .expect({ error: 'Missing required body field: body' })
         .expect(400, done);
     });
 

@@ -13,6 +13,7 @@ import {
   TEST_CONSTANTS,
 } from '../../__testUtils__';
 
+// Config test server
 dotenv.config();
 const app = express();
 serverConfig(app);

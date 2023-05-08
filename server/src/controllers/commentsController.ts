@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import {
   Comment,
   CommentInterface,
@@ -7,13 +7,33 @@ import {
   PostInterface,
   UserInterface,
 } from '../models';
+import {
+  GetAllCommentsRequest,
+  AddCommentRequest,
+  UpdateCommentRequest,
+  DeleteCommentRequest,
+  LikeCommentRequest,
+  DislikeCommentRequest,
+  GetAllCommentsResponse,
+  AddCommentResponse,
+  UpdateCommentResponse,
+  DeleteCommentResponse,
+  LikeCommentResponse,
+  DislikeCommentResponse,
+} from '../types/comments';
+import {
+  BadRequestError,
+  MissingBodyError,
+  UnauthorizedError,
+} from '../types/errors';
 import { handleError, ERROR_MESSAGE } from '../utils';
 
-// const handleCommentsError = (res: Response, error: any) => {};
-
-const getAllComments = async (req: Request, res: Response) => {
+const getAllComments = async (
+  req: GetAllCommentsRequest,
+  res: GetAllCommentsResponse,
+): Promise<GetAllCommentsResponse> => {
   try {
-    const comments = (await Comment.find({
+    const comments: CommentInterface[] = (await Comment.find({
       post: req.params.postId,
     })) as CommentInterface[];
 
@@ -26,14 +46,14 @@ const getAllComments = async (req: Request, res: Response) => {
   }
 };
 
-const addComment = async (req: Request, res: Response) => {
-  if (!req.body.body) {
-    return res
-      .status(400)
-      .json({ error: 'Not all neccessery fields were provided' });
-  }
-
+const addComment = async (
+  req: AddCommentRequest,
+  res: AddCommentResponse,
+): Promise<AddCommentResponse> => {
   try {
+    if (!req.body.body) {
+      throw new MissingBodyError('body');
+    }
     const user = req.user as UserInterface;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
@@ -51,11 +71,17 @@ const addComment = async (req: Request, res: Response) => {
     if (error instanceof mongoose.Error.CastError) {
       return handleError(res, 'Post not found', 404);
     }
+    if (error instanceof MissingBodyError) {
+      return handleError(res, error.message, error.status);
+    }
     return handleError(res, ERROR_MESSAGE, 500);
   }
 };
 
-const updateComment = async (req: Request, res: Response) => {
+const updateComment = async (
+  req: UpdateCommentRequest,
+  res: UpdateCommentResponse,
+): Promise<UpdateCommentResponse> => {
   try {
     const user = req.user as UserInterface;
     const comment = (await Comment.findById(
@@ -63,7 +89,7 @@ const updateComment = async (req: Request, res: Response) => {
     )) as CommentInterface;
 
     if (comment.author.toString() !== user.id.toString()) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      throw new UnauthorizedError();
     }
 
     if (req.body.body) {
@@ -76,11 +102,17 @@ const updateComment = async (req: Request, res: Response) => {
     if (error instanceof mongoose.Error.CastError) {
       return handleError(res, 'Comment not found', 404);
     }
+    if (error instanceof UnauthorizedError) {
+      return handleError(res, error.message, error.status);
+    }
     return handleError(res, ERROR_MESSAGE, 500);
   }
 };
 
-const deleteComment = async (req: Request, res: Response) => {
+const deleteComment = async (
+  req: DeleteCommentRequest,
+  res: DeleteCommentResponse,
+): Promise<DeleteCommentResponse> => {
   try {
     const user = req.user as UserInterface;
     const comment = (await Comment.findById(
@@ -88,7 +120,7 @@ const deleteComment = async (req: Request, res: Response) => {
     )) as CommentInterface;
 
     if (comment.author.toString() !== user.id.toString()) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      throw new UnauthorizedError();
     }
 
     await Comment.deleteOne({ comment });
@@ -102,11 +134,17 @@ const deleteComment = async (req: Request, res: Response) => {
     if (error instanceof mongoose.Error.CastError) {
       return handleError(res, 'Comment not found', 404);
     }
+    if (error instanceof UnauthorizedError) {
+      return handleError(res, error.message, error.status);
+    }
     return handleError(res, ERROR_MESSAGE, 500);
   }
 };
 
-const likeComment = async (req: Request, res: Response) => {
+const likeComment = async (
+  req: LikeCommentRequest,
+  res: LikeCommentResponse,
+): Promise<LikeCommentResponse> => {
   try {
     const user = req.user as UserInterface;
     const comment = (await Comment.findById(
@@ -114,7 +152,7 @@ const likeComment = async (req: Request, res: Response) => {
     )) as CommentInterface;
 
     if (comment.likes.includes(user.id)) {
-      return res.status(400).json({ error: 'Comment is already liked' });
+      throw new BadRequestError('Comment is already liked');
     }
 
     comment.likes.push(user.id);
@@ -125,11 +163,17 @@ const likeComment = async (req: Request, res: Response) => {
     if (error instanceof mongoose.Error.CastError) {
       return handleError(res, 'Comment not found', 404);
     }
+    if (error instanceof BadRequestError) {
+      return handleError(res, error.message, error.status);
+    }
     return handleError(res, ERROR_MESSAGE, 500);
   }
 };
 
-const dislikeComment = async (req: Request, res: Response) => {
+const dislikeComment = async (
+  req: DislikeCommentRequest,
+  res: DislikeCommentResponse,
+): Promise<DislikeCommentResponse> => {
   try {
     const user = req.user as UserInterface;
     const comment = (await Comment.findById(
@@ -137,7 +181,7 @@ const dislikeComment = async (req: Request, res: Response) => {
     )) as CommentInterface;
 
     if (!comment.likes.includes(user.id)) {
-      return res.status(400).json({ error: "Comment isn't liked" });
+      throw new BadRequestError("Comment isn't liked");
     }
 
     comment.likes = comment.likes.filter(
@@ -149,6 +193,9 @@ const dislikeComment = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       return handleError(res, 'Comment not found', 404);
+    }
+    if (error instanceof BadRequestError) {
+      return handleError(res, error.message, error.status);
     }
     return handleError(res, ERROR_MESSAGE, 500);
   }

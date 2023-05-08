@@ -47,8 +47,10 @@ passport.use(
     },
     async (jwtPayload, cb) => {
       try {
-        const user = await User.findById(jwtPayload.id);
-        return cb(null, user as UserInterface);
+        const user: UserInterface = (await User.findById(
+          jwtPayload.id,
+        )) as UserInterface;
+        return cb(null, user);
       } catch (error) {
         return cb(error);
       }

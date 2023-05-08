@@ -19,6 +19,7 @@
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
     "no-underscore-dangle": "off",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "max-classes-per-file": "off"
   }
 }

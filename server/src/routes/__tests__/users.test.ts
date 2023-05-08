@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv';
 import request from 'supertest';
 import express from 'express';
-import mongoose from 'mongoose';
 import { usersRouter } from '..';
 import { serverConfig } from '../../middleware';
 import { User } from '../../models';
@@ -12,6 +11,7 @@ import {
   TEST_CONSTANTS,
 } from '../../__testUtils__';
 
+// Config test server
 dotenv.config();
 const app = express();
 serverConfig(app);
