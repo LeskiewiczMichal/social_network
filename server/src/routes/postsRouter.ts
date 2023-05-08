@@ -8,7 +8,7 @@ import {
   likePost,
   unlikePost,
 } from '../controllers/postsController';
-import { addComment } from '../controllers/commentsController';
+import { addComment, getAllComments } from '../controllers/commentsController';
 import { verifyToken } from '../middleware';
 
 const router = express.Router();
@@ -17,6 +17,7 @@ router.use(verifyToken);
 
 // Comments
 router.post('/:postId/comments/', addComment);
+router.get('/:postId/comments/', getAllComments);
 
 // Posts
 router.post('/:postId/likes', likePost);

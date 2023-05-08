@@ -5,6 +5,21 @@ import { handleError, ERROR_MESSAGE } from '../utils';
 
 // const handleCommentsError = (res: Response, error: any) => {};
 
+const getAllComments = async (req: Request, res: Response) => {
+  try {
+    const post = (await Post.findById(req.params.postId).populate(
+      'comments',
+    )) as PostInterface;
+
+    return res.json({ comments: post.comments });
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return handleError(res, 'Posts not found', 404);
+    }
+    return handleError(res, ERROR_MESSAGE, 500);
+  }
+};
+
 const addComment = async (req: Request, res: Response) => {
   if (!req.body.body) {
     return res
@@ -34,4 +49,4 @@ const addComment = async (req: Request, res: Response) => {
   }
 };
 
-export { addComment };
+export { addComment, getAllComments };

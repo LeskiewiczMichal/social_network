@@ -9,8 +9,18 @@ import {
   POST_IDS,
   DEFAULT_USERS_PROPS,
   DEFAULT_POSTS_PROPS,
+  DEFAULT_COMMENTS_PROPS,
   COMMENT_IDS,
 } from './constants';
+
+const TEST_CONSTANTS = {
+  USER_IDS,
+  POST_IDS,
+  COMMENT_IDS,
+  DEFAULT_USERS_PROPS,
+  DEFAULT_POSTS_PROPS,
+  DEFAULT_COMMENTS_PROPS,
+};
 
 export {
   deleteAllUsers,
@@ -19,9 +29,5 @@ export {
   deleteAllPosts,
   createFakePosts,
   deleteAllComments,
-  USER_IDS,
-  POST_IDS,
-  COMMENT_IDS,
-  DEFAULT_USERS_PROPS,
-  DEFAULT_POSTS_PROPS,
+  TEST_CONSTANTS,
 };

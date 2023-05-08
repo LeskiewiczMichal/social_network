@@ -8,11 +8,9 @@ import {
   initializeMongoServer,
   deleteAllUsers,
   deleteAllPosts,
-  POST_IDS,
   deleteAllComments,
   createFakePosts,
-  USER_IDS,
-  COMMENT_IDS,
+  TEST_CONSTANTS,
 } from '..';
 import createFakeComments from '../createFakeComments';
 
@@ -134,21 +132,21 @@ describe('Utility functions', () => {
       const commentOne = new Comment({
         body: 'testing one',
         author: IDS.one,
-        post: POST_IDS.one,
+        post: TEST_CONSTANTS.POST_IDS.one,
         likes: [],
       });
 
       const commentTwo = new Comment({
         body: 'testing two',
         author: IDS.one,
-        post: POST_IDS.one,
+        post: TEST_CONSTANTS.POST_IDS.one,
         likes: [],
       });
 
       const commentThree = new Comment({
         body: 'testing three',
         author: IDS.one,
-        post: POST_IDS.one,
+        post: TEST_CONSTANTS.POST_IDS.one,
         likes: [],
       });
 
@@ -302,8 +300,8 @@ describe('Utility functions', () => {
         postOne: {},
         postTwo: {},
         postThree: {},
-        postIds: POST_IDS,
-        authorId: USER_IDS.one,
+        postIds: TEST_CONSTANTS.POST_IDS,
+        authorId: TEST_CONSTANTS.USER_IDS.one,
       });
 
       expect(typeof posts.one._id).toBe('string');
@@ -313,21 +311,21 @@ describe('Utility functions', () => {
         one: {
           title: 'Testing',
           body: 'Testing post number one',
-          author: USER_IDS.one.toString(),
+          author: TEST_CONSTANTS.USER_IDS.one.toString(),
           comments: [],
           likes: [],
         },
         two: {
           title: 'TesterPost',
           body: 'Testing post number two',
-          author: USER_IDS.one.toString(),
+          author: TEST_CONSTANTS.USER_IDS.one.toString(),
           comments: [],
           likes: [],
         },
         three: {
           title: 'TesterPost',
           body: 'Testing post number three',
-          author: USER_IDS.one.toString(),
+          author: TEST_CONSTANTS.USER_IDS.one.toString(),
           comments: [],
           likes: [],
         },
@@ -339,19 +337,19 @@ describe('Utility functions', () => {
         postOne: {
           title: 'test',
           body: 'test',
-          author: USER_IDS.two,
-          likes: [USER_IDS.three],
+          author: TEST_CONSTANTS.USER_IDS.two,
+          likes: [TEST_CONSTANTS.USER_IDS.three],
         },
         postTwo: {
           title: 'ok',
           body: 'ok',
         },
         postThree: {
-          author: USER_IDS.three,
-          likes: [USER_IDS.one, USER_IDS.three],
+          author: TEST_CONSTANTS.USER_IDS.three,
+          likes: [TEST_CONSTANTS.USER_IDS.one, TEST_CONSTANTS.USER_IDS.three],
         },
-        postIds: POST_IDS,
-        authorId: USER_IDS.one,
+        postIds: TEST_CONSTANTS.POST_IDS,
+        authorId: TEST_CONSTANTS.USER_IDS.one,
       });
 
       expect(typeof posts.one._id).toBe('string');
@@ -361,16 +359,16 @@ describe('Utility functions', () => {
         one: {
           title: 'test',
           body: 'test',
-          author: USER_IDS.two.toString(),
-          likes: [USER_IDS.three],
+          author: TEST_CONSTANTS.USER_IDS.two.toString(),
+          likes: [TEST_CONSTANTS.USER_IDS.three],
         },
         two: {
           title: 'ok',
           body: 'ok',
         },
         three: {
-          author: USER_IDS.three.toString(),
-          likes: [USER_IDS.one, USER_IDS.three],
+          author: TEST_CONSTANTS.USER_IDS.three.toString(),
+          likes: [TEST_CONSTANTS.USER_IDS.one, TEST_CONSTANTS.USER_IDS.three],
         },
       });
     });
@@ -392,9 +390,9 @@ describe('Utility functions', () => {
         commentOne: {},
         commentTwo: {},
         commentThree: {},
-        commentIds: COMMENT_IDS,
-        postId: POST_IDS.one,
-        authorId: USER_IDS.one,
+        commentIds: TEST_CONSTANTS.COMMENT_IDS,
+        postId: TEST_CONSTANTS.POST_IDS.one,
+        authorId: TEST_CONSTANTS.USER_IDS.one,
       });
 
       expect(typeof comments.one._id).toBe('string');
@@ -403,20 +401,20 @@ describe('Utility functions', () => {
       expect(comments).toMatchObject({
         one: {
           body: 'Testing comment number one',
-          author: USER_IDS.one.toString(),
-          post: POST_IDS.one.toString(),
+          author: TEST_CONSTANTS.USER_IDS.one.toString(),
+          post: TEST_CONSTANTS.POST_IDS.one.toString(),
           likes: [],
         },
         two: {
           body: 'Testing comment number two',
-          author: USER_IDS.one.toString(),
-          post: POST_IDS.one.toString(),
+          author: TEST_CONSTANTS.USER_IDS.one.toString(),
+          post: TEST_CONSTANTS.POST_IDS.one.toString(),
           likes: [],
         },
         three: {
           body: 'Testing comment number three',
-          author: USER_IDS.one.toString(),
-          post: POST_IDS.one.toString(),
+          author: TEST_CONSTANTS.USER_IDS.one.toString(),
+          post: TEST_CONSTANTS.POST_IDS.one.toString(),
           likes: [],
         },
       });
@@ -426,21 +424,21 @@ describe('Utility functions', () => {
       const comments = await createFakeComments({
         commentOne: {
           body: 'test',
-          post: POST_IDS.two,
-          author: USER_IDS.two,
-          likes: [USER_IDS.two],
+          post: TEST_CONSTANTS.POST_IDS.two,
+          author: TEST_CONSTANTS.USER_IDS.two,
+          likes: [TEST_CONSTANTS.USER_IDS.two],
         },
         commentTwo: {
           body: 'ok',
         },
         commentThree: {
-          author: USER_IDS.three,
-          post: POST_IDS.two,
-          likes: [USER_IDS.one, USER_IDS.three],
+          author: TEST_CONSTANTS.USER_IDS.three,
+          post: TEST_CONSTANTS.POST_IDS.two,
+          likes: [TEST_CONSTANTS.USER_IDS.one, TEST_CONSTANTS.USER_IDS.three],
         },
-        commentIds: COMMENT_IDS,
-        authorId: USER_IDS.one,
-        postId: POST_IDS.one,
+        commentIds: TEST_CONSTANTS.COMMENT_IDS,
+        authorId: TEST_CONSTANTS.USER_IDS.one,
+        postId: TEST_CONSTANTS.POST_IDS.one,
       });
 
       expect(typeof comments.one._id).toBe('string');
@@ -449,17 +447,17 @@ describe('Utility functions', () => {
       expect(comments).toMatchObject({
         one: {
           body: 'test',
-          post: POST_IDS.two.toString(),
-          author: USER_IDS.two.toString(),
-          likes: [USER_IDS.two],
+          post: TEST_CONSTANTS.POST_IDS.two.toString(),
+          author: TEST_CONSTANTS.USER_IDS.two.toString(),
+          likes: [TEST_CONSTANTS.USER_IDS.two],
         },
         two: {
           body: 'ok',
         },
         three: {
-          author: USER_IDS.three.toString(),
-          post: POST_IDS.two.toString(),
-          likes: [USER_IDS.one, USER_IDS.three],
+          author: TEST_CONSTANTS.USER_IDS.three.toString(),
+          post: TEST_CONSTANTS.POST_IDS.two.toString(),
+          likes: [TEST_CONSTANTS.USER_IDS.one, TEST_CONSTANTS.USER_IDS.three],
         },
       });
     });

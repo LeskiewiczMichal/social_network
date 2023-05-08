@@ -11,11 +11,9 @@ import {
   initializeMongoServer,
   createFakeUsers,
   createFakePosts,
-  USER_IDS,
-  POST_IDS,
-  DEFAULT_USERS_PROPS,
-  DEFAULT_POSTS_PROPS,
+  TEST_CONSTANTS,
 } from '../../__testUtils__';
+import createFakeComments from '../../__testUtils__/createFakeComments';
 
 dotenv.config();
 const app = express();
@@ -25,6 +23,7 @@ app.use('/', postsRouter);
 describe('Comments route tests', () => {
   let posts: any;
   let users: any;
+  let comments: any;
   let db: any;
   let errorSpy: jest.SpyInstance; // This disables console error
 
@@ -33,8 +32,8 @@ describe('Comments route tests', () => {
     errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     try {
       db = await initializeMongoServer();
-      users = await createFakeUsers(DEFAULT_USERS_PROPS);
-      posts = await createFakePosts(DEFAULT_POSTS_PROPS);
+      users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+      posts = await createFakePosts(TEST_CONSTANTS.DEFAULT_POSTS_PROPS);
     } catch (error) {
       console.error(error);
     }
@@ -46,12 +45,20 @@ describe('Comments route tests', () => {
     errorSpy.mockRestore();
   });
 
+//   describe('Querying comments', () => {
+//     beforeAll(async () => {
+//       comments = await createFakeComments();
+//     });
+
+//     afterAll(deleteAllComments);
+//   });
+
   describe('Create comment', () => {
     afterAll(deleteAllComments);
 
     test('returns status 400 on body not provided', (done) => {
       request(app)
-        .post(`/${POST_IDS.one}/comments`)
+        .post(`/${TEST_CONSTANTS.POST_IDS.one}/comments`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Not all neccessery fields were provided' })
@@ -72,7 +79,7 @@ describe('Comments route tests', () => {
     test('return comment on success', (done) => {
       const requestBody = { body: 'This is test comment' };
       request(app)
-        .post(`/${POST_IDS.one}/comments`)
+        .post(`/${TEST_CONSTANTS.POST_IDS.one}/comments`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .send(requestBody)
         .expect('Content-Type', /json/)
@@ -81,9 +88,9 @@ describe('Comments route tests', () => {
             message: 'Comment successfully created',
             comment: {
               body: requestBody.body,
-              author: USER_IDS.one.toString(),
+              author: TEST_CONSTANTS.USER_IDS.one.toString(),
               likes: [],
-              post: POST_IDS.one.toString(),
+              post: TEST_CONSTANTS.POST_IDS.one.toString(),
             },
           });
         })

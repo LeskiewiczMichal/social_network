@@ -33,10 +33,20 @@ const DEFAULT_POSTS_PROPS = {
   authorId: USER_IDS.one,
 };
 
+const DEFAULT_COMMENTS_PROPS = {
+  commentOne: {},
+  commentTwo: {},
+  commentThree: {},
+  commentIds: COMMENT_IDS,
+  authorId: USER_IDS.one,
+  postId: POST_IDS.one,
+};
+
 export {
   USER_IDS,
   POST_IDS,
   DEFAULT_USERS_PROPS,
   DEFAULT_POSTS_PROPS,
   COMMENT_IDS,
+  DEFAULT_COMMENTS_PROPS,
 };
