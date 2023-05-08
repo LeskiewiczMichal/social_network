@@ -4,6 +4,8 @@ import {
   deleteComment,
   getAllComments,
   updateComment,
+  likeComment,
+  dislikeComment,
 } from '../controllers/commentsController';
 import { verifyToken } from '../middleware';
 
@@ -13,6 +15,8 @@ router.use(verifyToken);
 
 router.post('/:postId', addComment);
 router.get('/:postId', getAllComments);
+router.post('/:commentId/likes', likeComment);
+router.delete('/:commentId/likes', dislikeComment);
 router.put('/:commentId', updateComment);
 router.delete('/:commentId', deleteComment);
 

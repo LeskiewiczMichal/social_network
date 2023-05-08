@@ -106,4 +106,59 @@ const deleteComment = async (req: Request, res: Response) => {
   }
 };
 
-export { addComment, getAllComments, updateComment, deleteComment };
+const likeComment = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const comment = (await Comment.findById(
+      req.params.commentId,
+    )) as CommentInterface;
+
+    if (comment.likes.includes(user.id)) {
+      return res.status(400).json({ error: 'Comment is already liked' });
+    }
+
+    comment.likes.push(user.id);
+    await comment.save();
+
+    return res.json({ message: 'Comment liked successfully' });
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return handleError(res, 'Comment not found', 404);
+    }
+    return handleError(res, ERROR_MESSAGE, 500);
+  }
+};
+
+const dislikeComment = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const comment = (await Comment.findById(
+      req.params.commentId,
+    )) as CommentInterface;
+
+    if (!comment.likes.includes(user.id)) {
+      return res.status(400).json({ error: "Comment isn't liked" });
+    }
+
+    comment.likes = comment.likes.filter(
+      (id) => id.toString() !== user.id.toString(),
+    );
+    await comment.save();
+
+    return res.json({ message: 'Comment unliked successfully' });
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return handleError(res, 'Comment not found', 404);
+    }
+    return handleError(res, ERROR_MESSAGE, 500);
+  }
+};
+
+export {
+  addComment,
+  getAllComments,
+  updateComment,
+  deleteComment,
+  likeComment,
+  dislikeComment,
+};

@@ -244,4 +244,86 @@ describe('Comments route tests', () => {
         });
     });
   });
+
+  describe('Liking comments', () => {
+    beforeAll(async () => {
+      comments = await createFakeComments({
+        commentOne: {},
+        commentTwo: {},
+        commentThree: { likes: [TEST_CONSTANTS.USER_IDS.one] },
+        commentIds: TEST_CONSTANTS.COMMENT_IDS,
+        authorId: TEST_CONSTANTS.USER_IDS.one,
+        postId: TEST_CONSTANTS.POST_IDS.one,
+      });
+    });
+    afterAll(clearDB);
+
+    test('returns status 404 if comment is not found', (done) => {
+      request(app)
+        .post(`/000/likes`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Comment not found' })
+        .expect(404, done);
+    });
+
+    test('returns status 400 if comment is already liked', (done) => {
+      request(app)
+        .post(`/${TEST_CONSTANTS.COMMENT_IDS.three}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Comment is already liked' })
+        .expect(400, done);
+    });
+
+    test('returns message on success', (done) => {
+      request(app)
+        .post(`/${TEST_CONSTANTS.COMMENT_IDS.one}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Comment liked successfully' })
+        .expect(200, done);
+    });
+  });
+
+  describe('Disliking comments', () => {
+    beforeAll(async () => {
+      comments = await createFakeComments({
+        commentOne: { likes: [TEST_CONSTANTS.USER_IDS.one] },
+        commentTwo: {},
+        commentThree: {},
+        commentIds: TEST_CONSTANTS.COMMENT_IDS,
+        authorId: TEST_CONSTANTS.USER_IDS.one,
+        postId: TEST_CONSTANTS.POST_IDS.one,
+      });
+    });
+    afterAll(clearDB);
+
+    test('returns status 404 if comment is not found', (done) => {
+      request(app)
+        .delete(`/000/likes`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: 'Comment not found' })
+        .expect(404, done);
+    });
+
+    test('returns status 400 if comment is already liked', (done) => {
+      request(app)
+        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.three}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ error: "Comment isn't liked" })
+        .expect(400, done);
+    });
+
+    test('returns message on success', (done) => {
+      request(app)
+        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.one}/likes`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Comment unliked successfully' })
+        .expect(200, done);
+    });
+  });
 });
