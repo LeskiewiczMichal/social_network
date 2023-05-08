@@ -5,9 +5,9 @@ import { handleError, ERROR_MESSAGE } from '../utils';
 
 const handlePostsError = (res: Response, error: any) => {
   if (error instanceof mongoose.Error.CastError) {
-    return handleError(res, 'Post not found', 404);
+    return handleError(error, res);
   }
-  return handleError(res, ERROR_MESSAGE, 500);
+  return handleError(error, res);
 };
 
 const getPosts = async (req: Request, res: Response) => {
@@ -16,10 +16,7 @@ const getPosts = async (req: Request, res: Response) => {
 
     return res.json({ posts });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -54,10 +51,7 @@ const createPost = async (req: Request, res: Response) => {
     await post.save();
     return res.json({ message: 'Post successfully created', post });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 

@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import { User, UserInterface } from '../models';
-import { handleError, ERROR_MESSAGE } from '../utils';
+import { handleError } from '../utils';
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -9,10 +8,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 
     return res.json({ users });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'Users not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -22,10 +18,7 @@ const getUser = async (req: Request, res: Response) => {
 
     res.json({ user });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -52,10 +45,7 @@ const updateUserData = async (req: Request, res: Response) => {
     await user.save();
     return res.json({ message: 'Update successfull', user });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -65,10 +55,7 @@ const deleteUser = async (req: Request, res: Response) => {
     await User.deleteOne({ _id: user.id });
     return res.json({ message: 'User deleted succesfully' });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -79,10 +66,7 @@ const getFriends = async (req: Request, res: Response) => {
 
     return res.json({ users: user.friends });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -108,10 +92,7 @@ const addFriend = async (req: Request, res: Response) => {
 
     return res.json({ message: 'Friend added successfully', user });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -135,10 +116,7 @@ const deleteFriend = async (req: Request, res: Response) => {
 
     return res.json({ message: 'Friend deleted successfully', user });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -156,10 +134,7 @@ const sendFriendRequest = async (req: Request, res: Response) => {
 
     return res.json({ message: 'Friend request was sent successfully' });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -170,10 +145,7 @@ const getFriendRequests = async (req: Request, res: Response) => {
 
     return res.json({ friendRequests: user.friendRequests });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 
@@ -196,10 +168,7 @@ const deleteFriendRequest = async (req: Request, res: Response) => {
 
     return res.json({ message: 'Friend request deleted', user });
   } catch (error: any) {
-    if (error instanceof mongoose.Error.CastError) {
-      return handleError(res, 'User not found', 404);
-    }
-    return handleError(res, ERROR_MESSAGE, 500);
+    return handleError(error, res);
   }
 };
 

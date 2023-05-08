@@ -22,7 +22,7 @@ const login = (req: Request, res: Response) => {
         const token = jwt.sign({ id: user.id }, process.env.SECRET);
         return res.json({ user, token });
       } catch (error: any) {
-        return handleError(res, 'Something went wrong on the server', 500);
+        return handleError(error, res);
       }
     },
   )(req, res);
@@ -47,7 +47,7 @@ const loginGoogle = (req: Request, res: Response) => {
         const token = jwt.sign({ id: user.id }, process.env.SECRET);
         return res.json({ user, token });
       } catch (error: any) {
-        return handleError(res, 'Something went wrong on the server', 500);
+        return handleError(error, res);
       }
     },
   )(req, res);
@@ -82,7 +82,7 @@ const createAccount = async (req: Request, res: Response) => {
     await user.save();
     return res.json({ user });
   } catch (error: any) {
-    return handleError(res, 'Something went wrong on the server', 500);
+    return handleError(error, res);
   }
 };
 

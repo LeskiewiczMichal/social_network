@@ -24,7 +24,8 @@ import {
   MissingBodyError,
   UnauthorizedError,
 } from '../types/errors';
-import { handleCommentsError } from './controllersUtils';
+// import { handleCommentsError } from './controllersUtils';
+import { handleError } from '../utils';
 
 const getAllComments = async (
   req: GetAllCommentsRequest,
@@ -37,7 +38,7 @@ const getAllComments = async (
 
     return res.json({ comments });
   } catch (error) {
-    return handleCommentsError(error, res);
+    return handleError(error, res);
   }
 };
 
@@ -63,7 +64,7 @@ const addComment = async (
 
     return res.json({ message: 'Comment successfully created', comment });
   } catch (error) {
-    return handleCommentsError(error, res);
+    return handleError(error, res);
   }
 };
 
@@ -88,7 +89,7 @@ const updateComment = async (
     await comment.save();
     return res.json({ message: 'Comment edited successfully', comment });
   } catch (error) {
-    return handleCommentsError(error, res);
+    return handleError(error, res);
   }
 };
 
@@ -114,7 +115,7 @@ const deleteComment = async (
 
     return res.json({ message: 'Comment deleted successfully' });
   } catch (error) {
-    return handleCommentsError(error, res);
+    return handleError(error, res);
   }
 };
 
@@ -137,7 +138,7 @@ const likeComment = async (
 
     return res.json({ message: 'Comment liked successfully' });
   } catch (error) {
-    return handleCommentsError(error, res);
+    return handleError(error, res);
   }
 };
 
@@ -162,7 +163,7 @@ const dislikeComment = async (
 
     return res.json({ message: 'Comment unliked successfully' });
   } catch (error) {
-    return handleCommentsError(error, res);
+    return handleError(error, res);
   }
 };
 
