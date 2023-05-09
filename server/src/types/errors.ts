@@ -28,4 +28,14 @@ class BadRequestError extends Error {
   }
 }
 
-export { MissingBodyError, UnauthorizedError, BadRequestError };
+class NotFoundError extends Error {
+  public status: number;
+
+  constructor() {
+    super('Not found');
+    this.name = 'NotFoundError';
+    this.status = 404;
+  }
+}
+
+export { MissingBodyError, UnauthorizedError, BadRequestError, NotFoundError };

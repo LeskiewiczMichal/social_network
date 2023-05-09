@@ -27,6 +27,25 @@ import {
   LikePostResponse,
   UnlikePostResponse,
 } from './posts';
+import {
+  GetUserByIdRequest,
+  UpdateUserDataRequest,
+  GetFriendsRequest,
+  AddFriendRequest,
+  DeleteFriendRequest,
+  RequestSendFriendRequest,
+  RequestDeleteFriendRequest,
+  GetAllUsersResponse,
+  GetUserByIdResponse,
+  UpdateUserDataResponse,
+  DeleteUserResponse,
+  GetFriendsResponse,
+  AddFriendResponse,
+  DeleteFriendResponse,
+  SendFriendRequestResponse,
+  GetFriendRequestsResponse,
+  DeleteFriendRequestResponse,
+} from './users';
 import { MissingBodyError, UnauthorizedError, BadRequestError } from './errors';
 
 export {
@@ -58,4 +77,21 @@ export {
   DeletePostResponse,
   LikePostResponse,
   UnlikePostResponse,
+  GetUserByIdRequest,
+  UpdateUserDataRequest,
+  GetFriendsRequest,
+  AddFriendRequest,
+  DeleteFriendRequest,
+  RequestSendFriendRequest,
+  RequestDeleteFriendRequest,
+  GetUserByIdResponse,
+  GetAllUsersResponse,
+  UpdateUserDataResponse,
+  DeleteUserResponse,
+  GetFriendsResponse,
+  AddFriendResponse,
+  DeleteFriendResponse,
+  SendFriendRequestResponse,
+  GetFriendRequestsResponse,
+  DeleteFriendRequestResponse,
 };

@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import {
   CreatePostRequest,
   DeletePostRequest,

@@ -221,13 +221,13 @@ describe('Users route tests', () => {
         .expect(404, done);
     });
 
-    test("returns 404 if the user isn't on friendRequests list", (done) => {
+    test("returns 400 if the user isn't on friendRequests list", (done) => {
       request(app)
         .post(`/friends/${users.one._id}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ error: "User was not on friend's requests list" })
-        .expect(404, done);
+        .expect(400, done);
     });
 
     test('success', (done) => {
@@ -311,7 +311,7 @@ describe('Users route tests', () => {
               TEST_CONSTANTS.USER_IDS.three,
             ],
           },
-          userTwo: {},
+          userTwo: { friendRequests: [] },
           userThree: {},
           ids: TEST_CONSTANTS.USER_IDS,
         });

@@ -4,6 +4,7 @@ import {
   BadRequestError,
   UnauthorizedError,
   MissingBodyError,
+  NotFoundError,
 } from '../types/errors';
 
 export const ERROR_MESSAGE = 'Something went wrong on the server';
@@ -16,7 +17,8 @@ function handleError(error: any, res: Response) {
   if (
     error instanceof BadRequestError ||
     error instanceof UnauthorizedError ||
-    error instanceof MissingBodyError
+    error instanceof MissingBodyError ||
+    error instanceof NotFoundError
   ) {
     // return handleError(res, error.message, error.status);
     return res.status(error.status).json({ error: error.message });

@@ -2,7 +2,7 @@ import express from 'express';
 import {
   updateUserData,
   deleteUser,
-  getUser,
+  getUserById,
   getAllUsers,
   getFriends,
   addFriend,
@@ -17,8 +17,8 @@ const router = express.Router();
 
 // Friend requests
 router.get('/friendRequests', verifyToken, getFriendRequests);
-router.post('/friendRequests/:userId', verifyToken, sendFriendRequest);
-router.delete('/friendRequests/:userId', verifyToken, deleteFriendRequest);
+router.post('/friendRequests/:friendId', verifyToken, sendFriendRequest);
+router.delete('/friendRequests/:friendId', verifyToken, deleteFriendRequest);
 
 // Friends
 router.post('/friends/:friendId', verifyToken, addFriend);
@@ -28,7 +28,7 @@ router.get('/:userId/friends', verifyToken, getFriends);
 // User
 router.put('/', verifyToken, updateUserData);
 router.delete('/', verifyToken, deleteUser);
-router.get('/:userId', getUser);
+router.get('/:userId', getUserById);
 router.get('/', getAllUsers);
 
 export default router;
