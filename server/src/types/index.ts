@@ -55,8 +55,10 @@ import {
   AuthenticateUserResponse,
 } from './auth';
 import { MissingBodyError, UnauthorizedError, BadRequestError } from './errors';
+import { MySocket } from './sockets';
 
 export {
+  MySocket,
   GetAllCommentsRequest,
   AddCommentRequest,
   UpdateCommentRequest,
