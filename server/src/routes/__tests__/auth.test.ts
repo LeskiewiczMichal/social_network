@@ -49,7 +49,7 @@ describe('Auth route tests', () => {
         .post('/')
         .expect('Content-Type', /json/)
         .expect({
-          error: 'Not all neccessery fields were provided',
+          error: 'Missing required body field: email',
         })
         .expect(400, done);
     });
@@ -90,7 +90,7 @@ describe('Auth route tests', () => {
         .send(body)
         .expect('Content-Type', /json/)
         .expect({ error: 'Incorrect email or password' })
-        .expect(401, done);
+        .expect(400, done);
     });
 
     test('returns token and user on success', (done) => {

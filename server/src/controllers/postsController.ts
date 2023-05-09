@@ -38,7 +38,8 @@ const getPostById = async (
   res: GetPostByIdResponse,
 ): Promise<GetPostByIdResponse> => {
   try {
-    const post = (await Post.findById(req.params.postId)) as PostInterface;
+    const { postId } = req.params;
+    const post = (await Post.findById(postId)) as PostInterface;
 
     return res.json({ post });
   } catch (error: any) {
@@ -51,18 +52,19 @@ const createPost = async (
   res: CreatePostResponse,
 ): Promise<CreatePostResponse> => {
   try {
-    const user = req.user as UserInterface;
+    const { id: userId } = req.user as UserInterface;
+    const { body, title } = req.body;
 
-    if (!req.body.title) {
+    if (!title) {
       throw new MissingBodyError('title');
-    } else if (!req.body.body) {
+    } else if (!body) {
       throw new MissingBodyError('body');
     }
 
     const post = new Post({
-      title: req.body.title,
-      body: req.body.body,
-      author: user.id,
+      title,
+      body,
+      author: userId,
       comments: [],
       likes: [],
     });
@@ -79,19 +81,19 @@ const updatePost = async (
   res: UpdatePostResponse,
 ): Promise<UpdatePostResponse> => {
   try {
-    const user = req.user as UserInterface;
+    const { id: userId } = req.user as UserInterface;
+    const { title, body } = req.body;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
-    if (post.author.toString() !== user.id.toString()) {
+    if (post.author.toString() !== userId.toString()) {
       throw new UnauthorizedError();
     }
 
-    if (req.body.title) {
-      post.title = req.body.title;
+    if (title) {
+      post.title = title;
     }
-
-    if (req.body.body) {
-      post.body = req.body.body;
+    if (body) {
+      post.body = body;
     }
 
     await post.save();
@@ -106,15 +108,16 @@ const deletePost = async (
   res: DeletePostResponse,
 ): Promise<DeletePostResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const post = (await Post.findById(req.params.postId)) as PostInterface;
+    const { id: userId } = req.user as UserInterface;
+    const { postId } = req.params;
+    const post = (await Post.findById(postId)) as PostInterface;
 
-    if (post.author.toString() !== user.id.toString()) {
+    if (post.author.toString() !== userId.toString()) {
       throw new UnauthorizedError();
     }
 
-    await Comment.deleteMany({ post: req.params.postId });
-    await Post.deleteOne({ _id: req.params.postId });
+    await Comment.deleteMany({ post: postId });
+    await Post.deleteOne({ _id: postId });
 
     return res.json({ message: 'Post deleted successfully' });
   } catch (error) {
@@ -127,14 +130,15 @@ const likePost = async (
   res: LikePostResponse,
 ): Promise<LikePostResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const post = (await Post.findById(req.params.postId)) as PostInterface;
+    const { id: userId } = req.user as UserInterface;
+    const { postId } = req.params;
+    const post = (await Post.findById(postId)) as PostInterface;
 
-    if (post.likes.includes(user.id)) {
+    if (post.likes.includes(userId)) {
       throw new BadRequestError('Post is already liked');
     }
 
-    post.likes.push(user.id);
+    post.likes.push(userId);
     await post.save();
 
     return res.json({ message: 'Post liked successfully' });
@@ -148,16 +152,15 @@ const unlikePost = async (
   res: UnlikePostResponse,
 ): Promise<UnlikePostResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const post = (await Post.findById(req.params.postId)) as PostInterface;
+    const { id: userId } = req.user as UserInterface;
+    const { postId } = req.params;
+    const post = (await Post.findById(postId)) as PostInterface;
 
-    if (!post.likes.includes(user.id)) {
+    if (!post.likes.includes(userId)) {
       throw new BadRequestError('Post is not liked');
     }
 
-    post.likes = post.likes.filter(
-      (id) => id.toString() !== user.id.toString(),
-    );
+    post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
     await post.save();
 
     return res.json({ message: 'Post unliked successfully' });

@@ -57,21 +57,19 @@ const updateUserData = async (
 ): Promise<UpdateUserDataResponse> => {
   try {
     const user = req.user as UserInterface;
+    const { email, firstName, lastName, birthday } = req.body;
 
-    if (req.body.email) {
-      user.email = req.body.email;
+    if (email) {
+      user.email = email;
     }
-
-    if (req.body.firstName) {
-      user.firstName = req.body.firstName;
+    if (firstName) {
+      user.firstName = firstName;
     }
-
-    if (req.body.lastName) {
-      user.lastName = req.body.lastName;
+    if (lastName) {
+      user.lastName = lastName;
     }
-
-    if (req.body.birthday) {
-      user.birthday = req.body.birthday;
+    if (birthday) {
+      user.birthday = birthday;
     }
 
     await user.save();
@@ -86,8 +84,8 @@ const deleteUser = async (
   res: DeleteUserResponse,
 ): Promise<DeleteUserResponse> => {
   try {
-    const user = req.user as UserInterface;
-    await User.deleteOne({ _id: user.id });
+    const { id: userId } = req.user as UserInterface;
+    await User.deleteOne({ _id: userId });
     return res.json({ message: 'User deleted succesfully' });
   } catch (error: any) {
     return handleError(error, res);
@@ -99,7 +97,8 @@ const getFriends = async (
   res: GetFriendsResponse,
 ): Promise<GetFriendsResponse> => {
   try {
-    const user = (await User.findById(req.params.userId)) as UserInterface;
+    const { userId } = req.params;
+    const user = (await User.findById(userId)) as UserInterface;
     await user.populate('friends');
 
     return res.json({ users: user.friends });
@@ -113,12 +112,13 @@ const addFriend = async (
   res: AddFriendResponse,
 ): Promise<AddFriendResponse> => {
   try {
+    const { friendId } = req.params;
     const user = req.user as UserInterface;
-    const newFriend = (await User.findById(
-      req.params.friendId,
+    const { id: newFriendId } = (await User.findById(
+      friendId,
     )) as UserInterface;
 
-    const friendIdIndex = user.friendRequests.indexOf(newFriend.id);
+    const friendIdIndex = user.friendRequests.indexOf(newFriendId);
     if (friendIdIndex !== -1) {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       user.friendRequests.splice(friendIdIndex, 1)[0];
@@ -126,7 +126,7 @@ const addFriend = async (
       throw new BadRequestError("User was not on friend's requests list");
     }
 
-    user.friends.push(newFriend.id);
+    user.friends.push(newFriendId);
     await user.save();
 
     return res.json({ message: 'Friend added successfully', user });
@@ -141,7 +141,8 @@ const deleteFriend = async (
 ): Promise<DeleteFriendResponse> => {
   try {
     const user = req.user as UserInterface;
-    const friend = (await User.findById(req.params.friendId)) as UserInterface;
+    const { friendId } = req.params;
+    const friend = (await User.findById(friendId)) as UserInterface;
 
     if (!user.friends.includes(friend.id)) {
       throw new BadRequestError("User's were not friends");
@@ -167,14 +168,15 @@ const sendFriendRequest = async (
   res: SendFriendRequestResponse,
 ): Promise<SendFriendRequestResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const friend = (await User.findById(req.params.friendId)) as UserInterface;
+    const { id: userId } = req.user as UserInterface;
+    const { friendId } = req.params;
+    const friend = (await User.findById(friendId)) as UserInterface;
 
-    if (friend.friendRequests.includes(user.id)) {
+    if (friend.friendRequests.includes(userId)) {
       throw new BadRequestError('Friend request was already sent');
     }
 
-    friend.friendRequests.push(user.id);
+    friend.friendRequests.push(userId);
     await friend.save();
 
     return res.json({ message: 'Friend request was sent successfully' });
@@ -203,16 +205,17 @@ const deleteFriendRequest = async (
 ): Promise<DeleteFriendRequestResponse> => {
   try {
     const user = req.user as UserInterface;
-    const friendRequest = (await User.findById(
-      req.params.friendId,
+    const { friendId } = req.params;
+    const { id: friendRequestId } = (await User.findById(
+      friendId,
     )) as UserInterface;
 
-    if (!user.friendRequests.includes(friendRequest.id)) {
+    if (!user.friendRequests.includes(friendRequestId)) {
       throw new NotFoundError();
     }
 
     user.friendRequests = user.friendRequests.filter(
-      (id) => id.toString() !== friendRequest.id.toString(),
+      (id) => id.toString() !== friendRequestId.toString(),
     );
 
     await user.save();

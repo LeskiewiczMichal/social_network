@@ -29,8 +29,9 @@ const getAllComments = async (
   res: GetAllCommentsResponse,
 ): Promise<GetAllCommentsResponse> => {
   try {
+    const { postId } = req.params;
     const comments: CommentInterface[] = (await Comment.find({
-      post: req.params.postId,
+      post: postId,
     })) as CommentInterface[];
 
     return res.json({ comments });
@@ -44,17 +45,19 @@ const addComment = async (
   res: AddCommentResponse,
 ): Promise<AddCommentResponse> => {
   try {
-    if (!req.body.body) {
+    const { body } = req.body;
+    const { postId: postParamId } = req.params;
+    if (!body) {
       throw new MissingBodyError('body');
     }
-    const user = req.user as UserInterface;
-    const post = (await Post.findById(req.params.postId)) as PostInterface;
+    const { id: userId } = req.user as UserInterface;
+    const { id: postId } = (await Post.findById(postParamId)) as PostInterface;
 
     const comment = new Comment({
-      body: req.body.body,
-      author: user.id,
+      body,
+      author: userId,
       likes: [],
-      post: post.id,
+      post: postId,
     });
 
     await comment.save();
@@ -70,17 +73,17 @@ const updateComment = async (
   res: UpdateCommentResponse,
 ): Promise<UpdateCommentResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const comment = (await Comment.findById(
-      req.params.commentId,
-    )) as CommentInterface;
+    const { commentId } = req.params;
+    const { body } = req.body;
+    const { id: userId } = req.user as UserInterface;
+    const comment = (await Comment.findById(commentId)) as CommentInterface;
 
-    if (comment.author.toString() !== user.id.toString()) {
+    if (comment.author.toString() !== userId.toString()) {
       throw new UnauthorizedError();
     }
 
-    if (req.body.body) {
-      comment.body = req.body.body;
+    if (body) {
+      comment.body = body;
     }
 
     await comment.save();
@@ -95,12 +98,11 @@ const deleteComment = async (
   res: DeleteCommentResponse,
 ): Promise<DeleteCommentResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const comment = (await Comment.findById(
-      req.params.commentId,
-    )) as CommentInterface;
+    const { commentId } = req.params;
+    const { id: userId } = req.user as UserInterface;
+    const comment = (await Comment.findById(commentId)) as CommentInterface;
 
-    if (comment.author.toString() !== user.id.toString()) {
+    if (comment.author.toString() !== userId.toString()) {
       throw new UnauthorizedError();
     }
 
@@ -121,16 +123,15 @@ const likeComment = async (
   res: LikeCommentResponse,
 ): Promise<LikeCommentResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const comment = (await Comment.findById(
-      req.params.commentId,
-    )) as CommentInterface;
+    const { commentId } = req.params;
+    const { id: userId } = req.user as UserInterface;
+    const comment = (await Comment.findById(commentId)) as CommentInterface;
 
-    if (comment.likes.includes(user.id)) {
+    if (comment.likes.includes(userId)) {
       throw new BadRequestError('Comment is already liked');
     }
 
-    comment.likes.push(user.id);
+    comment.likes.push(userId);
     await comment.save();
 
     return res.json({ message: 'Comment liked successfully' });
@@ -144,17 +145,16 @@ const dislikeComment = async (
   res: DislikeCommentResponse,
 ): Promise<DislikeCommentResponse> => {
   try {
-    const user = req.user as UserInterface;
-    const comment = (await Comment.findById(
-      req.params.commentId,
-    )) as CommentInterface;
+    const { commentId } = req.params;
+    const { id: userId } = req.user as UserInterface;
+    const comment = (await Comment.findById(commentId)) as CommentInterface;
 
-    if (!comment.likes.includes(user.id)) {
+    if (!comment.likes.includes(userId)) {
       throw new BadRequestError("Comment isn't liked");
     }
 
     comment.likes = comment.likes.filter(
-      (id) => id.toString() !== user.id.toString(),
+      (id) => id.toString() !== userId.toString(),
     );
     await comment.save();
 

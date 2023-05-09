@@ -46,6 +46,14 @@ import {
   GetFriendRequestsResponse,
   DeleteFriendRequestResponse,
 } from './users';
+import {
+  LoginRequest,
+  LoginResponse,
+  LoginGoogleResponse,
+  CreateAccountRequest,
+  CreateAccountResponse,
+  AuthenticateUserResponse,
+} from './auth';
 import { MissingBodyError, UnauthorizedError, BadRequestError } from './errors';
 
 export {
@@ -94,4 +102,10 @@ export {
   SendFriendRequestResponse,
   GetFriendRequestsResponse,
   DeleteFriendRequestResponse,
+  LoginRequest,
+  LoginResponse,
+  LoginGoogleResponse,
+  CreateAccountRequest,
+  CreateAccountResponse,
+  AuthenticateUserResponse,
 };
