@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 dotenv.config();
 
-const mongoConfig = async () => {
+const mongoConfig = async (): Promise<void> => {
   if (!process.env.MONGO_DB) {
     throw new Error('MONGO_DB environment variable not set');
   }
