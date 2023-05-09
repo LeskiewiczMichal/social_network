@@ -102,7 +102,7 @@ describe('Posts route tests', () => {
         .post('/')
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Not all neccessery fields were provided' })
+        .expect({ error: 'Missing required body field: title' })
         .expect(400, done);
     });
 

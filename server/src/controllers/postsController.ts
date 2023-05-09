@@ -1,16 +1,30 @@
 import mongoose from 'mongoose';
 import { Request, Response } from 'express';
+import {
+  CreatePostRequest,
+  DeletePostRequest,
+  GetPostByIdRequest,
+  LikePostRequest,
+  UnlikePostRequest,
+  UpdatePostRequest,
+  GetPostsResponse,
+  GetPostByIdResponse,
+  CreatePostResponse,
+  UpdatePostResponse,
+  DeletePostResponse,
+  LikePostResponse,
+  UnlikePostResponse,
+  MissingBodyError,
+  UnauthorizedError,
+  BadRequestError,
+} from '../types';
 import { Comment, Post, PostInterface, UserInterface } from '../models';
 import { handleError } from '../utils';
 
-const handlePostsError = (res: Response, error: any) => {
-  if (error instanceof mongoose.Error.CastError) {
-    return handleError(error, res);
-  }
-  return handleError(error, res);
-};
-
-const getPosts = async (req: Request, res: Response) => {
+const getPosts = async (
+  req: Request,
+  res: GetPostsResponse,
+): Promise<GetPostsResponse> => {
   try {
     const posts = (await Post.find()) as PostInterface[];
 
@@ -20,7 +34,10 @@ const getPosts = async (req: Request, res: Response) => {
   }
 };
 
-const getPostById = async (req: Request, res: Response) => {
+const getPostById = async (
+  req: GetPostByIdRequest,
+  res: GetPostByIdResponse,
+): Promise<GetPostByIdResponse> => {
   try {
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
@@ -30,16 +47,19 @@ const getPostById = async (req: Request, res: Response) => {
   }
 };
 
-const createPost = async (req: Request, res: Response) => {
-  const user = req.user as UserInterface;
-
-  if (!req.body.title || !req.body.body) {
-    return res
-      .status(400)
-      .json({ error: 'Not all neccessery fields were provided' });
-  }
-
+const createPost = async (
+  req: CreatePostRequest,
+  res: CreatePostResponse,
+): Promise<CreatePostResponse> => {
   try {
+    const user = req.user as UserInterface;
+
+    if (!req.body.title) {
+      throw new MissingBodyError('title');
+    } else if (!req.body.body) {
+      throw new MissingBodyError('body');
+    }
+
     const post = new Post({
       title: req.body.title,
       body: req.body.body,
@@ -55,13 +75,16 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-const updatePost = async (req: Request, res: Response) => {
+const updatePost = async (
+  req: UpdatePostRequest,
+  res: UpdatePostResponse,
+): Promise<UpdatePostResponse> => {
   try {
     const user = req.user as UserInterface;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
     if (post.author.toString() !== user.id.toString()) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      throw new UnauthorizedError();
     }
 
     if (req.body.title) {
@@ -79,13 +102,16 @@ const updatePost = async (req: Request, res: Response) => {
   }
 };
 
-const deletePost = async (req: Request, res: Response) => {
+const deletePost = async (
+  req: DeletePostRequest,
+  res: DeletePostResponse,
+): Promise<DeletePostResponse> => {
   try {
     const user = req.user as UserInterface;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
     if (post.author.toString() !== user.id.toString()) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      throw new UnauthorizedError();
     }
 
     await Comment.deleteMany({ post: req.params.postId });
@@ -97,13 +123,16 @@ const deletePost = async (req: Request, res: Response) => {
   }
 };
 
-const likePost = async (req: Request, res: Response) => {
+const likePost = async (
+  req: LikePostRequest,
+  res: LikePostResponse,
+): Promise<LikePostResponse> => {
   try {
     const user = req.user as UserInterface;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
     if (post.likes.includes(user.id)) {
-      return res.status(400).json({ error: 'Post is already liked' });
+      throw new BadRequestError('Post is already liked');
     }
 
     post.likes.push(user.id);
@@ -115,13 +144,16 @@ const likePost = async (req: Request, res: Response) => {
   }
 };
 
-const unlikePost = async (req: Request, res: Response) => {
+const unlikePost = async (
+  req: UnlikePostRequest,
+  res: UnlikePostResponse,
+): Promise<UnlikePostResponse> => {
   try {
     const user = req.user as UserInterface;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
     if (!post.likes.includes(user.id)) {
-      return res.status(400).json({ error: 'Post is not liked' });
+      throw new BadRequestError('Post is not liked');
     }
 
     post.likes = post.likes.filter(

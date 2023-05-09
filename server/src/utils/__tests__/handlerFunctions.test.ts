@@ -13,8 +13,11 @@ describe('handleError function', () => {
       json: jest.fn(),
     };
     const error = new Error();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     handleError(error, res);
+
+    errorSpy.mockRestore();
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({

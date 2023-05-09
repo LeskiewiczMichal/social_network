@@ -12,6 +12,21 @@ import {
   LikeCommentResponse,
   DislikeCommentResponse,
 } from './comments';
+import {
+  GetPostByIdRequest,
+  CreatePostRequest,
+  UpdatePostRequest,
+  DeletePostRequest,
+  LikePostRequest,
+  UnlikePostRequest,
+  GetPostsResponse,
+  GetPostByIdResponse,
+  CreatePostResponse,
+  UpdatePostResponse,
+  DeletePostResponse,
+  LikePostResponse,
+  UnlikePostResponse,
+} from './posts';
 import { MissingBodyError, UnauthorizedError, BadRequestError } from './errors';
 
 export {
@@ -30,4 +45,17 @@ export {
   MissingBodyError,
   UnauthorizedError,
   BadRequestError,
+  GetPostByIdRequest,
+  CreatePostRequest,
+  UpdatePostRequest,
+  DeletePostRequest,
+  LikePostRequest,
+  UnlikePostRequest,
+  GetPostsResponse,
+  GetPostByIdResponse,
+  CreatePostResponse,
+  UpdatePostResponse,
+  DeletePostResponse,
+  LikePostResponse,
+  UnlikePostResponse,
 };
