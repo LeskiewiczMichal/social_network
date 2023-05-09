@@ -18,13 +18,10 @@ import {
   DeleteCommentResponse,
   LikeCommentResponse,
   DislikeCommentResponse,
-} from '../types/comments';
-import {
   BadRequestError,
   MissingBodyError,
   UnauthorizedError,
-} from '../types/errors';
-// import { handleCommentsError } from './controllersUtils';
+} from '../types';
 import { handleError } from '../utils';
 
 const getAllComments = async (

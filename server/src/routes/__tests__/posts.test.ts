@@ -89,7 +89,7 @@ describe('Posts route tests', () => {
         .get('/000')
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Post not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
   });
@@ -155,7 +155,7 @@ describe('Posts route tests', () => {
         .put('/000')
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Post not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
@@ -203,7 +203,7 @@ describe('Posts route tests', () => {
         .delete('/000')
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Post not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
@@ -259,7 +259,7 @@ describe('Posts route tests', () => {
         .post('/000/likes')
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Post not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
@@ -306,7 +306,7 @@ describe('Posts route tests', () => {
         .delete('/000/likes')
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Post not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 

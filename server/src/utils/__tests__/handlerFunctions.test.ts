@@ -1,61 +1,84 @@
 import mongoose from 'mongoose';
-import { handleError, ERROR_MESSAGE, handleNotFound } from '..';
-import { User, UserInterface } from '../../models';
-
-const userId = new mongoose.Types.ObjectId();
-const mockUser = {
-  _id: userId,
-  email: 'test.user@example.com',
-  firstName: 'Test',
-  lastName: 'Surname',
-  birthday: '1000-05-05T00:00:00.000Z',
-  password: 'password123',
-};
+import { handleError } from '..';
+import {
+  MissingBodyError,
+  UnauthorizedError,
+  BadRequestError,
+} from '../../types';
 
 describe('handleError function', () => {
-  test('should return the correct error response', () => {
-    const statusCode = 500;
+  test('returns the correct basic error response with status 500 on server error', () => {
     const res: any = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const error = new Error();
 
-    handleError(res, ERROR_MESSAGE, statusCode);
-
-    errorSpy.mockRestore();
+    handleError(error, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: ERROR_MESSAGE });
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Something went wrong on the server',
+    });
   });
-});
 
-describe('handleNotFound function', () => {
-  test('should do nothing if resource was found', () => {
-    const data = new User(mockUser) as UserInterface;
-    const message = 'User not found';
+  test('returns 404 not found on mongoose cast error', () => {
     const res: any = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
+    const error = new mongoose.Error.CastError('ObjectId', '1234', 'Field');
 
-    handleNotFound({ res, data, message });
-
-    expect(res.status).not.toHaveBeenCalled();
-    expect(res.json).not.toHaveBeenCalled();
-  });
-
-  test('should return the correct error response', () => {
-    const data = null;
-    const message = 'User not found';
-    const res: any = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
-
-    handleNotFound({ res, data, message });
+    handleError(error, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: message });
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Not found',
+    });
+  });
+
+  test('returns status 400 and message on BadRequestError', () => {
+    const res: any = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    const error = new BadRequestError('Post is already liked');
+
+    handleError(error, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Post is already liked',
+    });
+  });
+
+  test('returns status 401 and message on UnauthorizedError', () => {
+    const res: any = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    const error = new UnauthorizedError();
+
+    handleError(error, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Unauthorized',
+    });
+  });
+
+  test('returns status 400 and message on MissingBodyError', () => {
+    const res: any = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    const error = new MissingBodyError('text');
+
+    handleError(error, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Missing required body field: text',
+    });
   });
 });

@@ -23,6 +23,7 @@ function handleError(error: any, res: Response) {
   }
 
   // return handleError(res, ERROR_MESSAGE, 500);
+  console.error(error);
   return res.status(500).json({ error: 'Something went wrong on the server' });
 }
 

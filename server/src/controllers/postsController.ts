@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import { Comment, Post, PostInterface, UserInterface } from '../models';
-import { handleError, ERROR_MESSAGE } from '../utils';
+import { handleError } from '../utils';
 
 const handlePostsError = (res: Response, error: any) => {
   if (error instanceof mongoose.Error.CastError) {
@@ -26,7 +26,7 @@ const getPostById = async (req: Request, res: Response) => {
 
     return res.json({ post });
   } catch (error: any) {
-    return handlePostsError(res, error);
+    return handleError(error, res);
   }
 };
 
@@ -75,7 +75,7 @@ const updatePost = async (req: Request, res: Response) => {
     await post.save();
     return res.json({ post });
   } catch (error) {
-    return handlePostsError(res, error);
+    return handleError(error, res);
   }
 };
 
@@ -93,7 +93,7 @@ const deletePost = async (req: Request, res: Response) => {
 
     return res.json({ message: 'Post deleted successfully' });
   } catch (error) {
-    return handlePostsError(res, error);
+    return handleError(error, res);
   }
 };
 
@@ -111,7 +111,7 @@ const likePost = async (req: Request, res: Response) => {
 
     return res.json({ message: 'Post liked successfully' });
   } catch (error) {
-    return handlePostsError(res, error);
+    return handleError(error, res);
   }
 };
 
@@ -131,7 +131,7 @@ const unlikePost = async (req: Request, res: Response) => {
 
     return res.json({ message: 'Post unliked successfully' });
   } catch (error) {
-    return handlePostsError(res, error);
+    return handleError(error, res);
   }
 };
 

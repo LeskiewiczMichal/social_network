@@ -73,7 +73,7 @@ describe('Users route tests', () => {
       request(app)
         .get('/000')
         .expect('Content-Type', /json/)
-        .expect({ error: 'User not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
   });
@@ -217,7 +217,7 @@ describe('Users route tests', () => {
         .post(`/friends/000`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'User not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
@@ -271,7 +271,7 @@ describe('Users route tests', () => {
         .delete('/friends/000')
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'User not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
@@ -366,7 +366,7 @@ describe('Users route tests', () => {
         .post('/friendRequests/000')
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'User not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
@@ -410,7 +410,7 @@ describe('Users route tests', () => {
         .delete(`/friendRequests/000`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'User not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
@@ -419,7 +419,7 @@ describe('Users route tests', () => {
         .delete(`/friendRequests/${users.three._id}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
-        .expect({ error: 'Friend request not found' })
+        .expect({ error: 'Not found' })
         .expect(404, done);
     });
 
