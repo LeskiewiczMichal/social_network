@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { Server } from 'socket.io';
-import { User } from '../models';
+import { User, UserInterface } from '../models';
 import { MySocket } from '../types';
 
 const authenticationHandler = async (socket: MySocket, next: any) => {
@@ -19,7 +19,11 @@ const authenticationHandler = async (socket: MySocket, next: any) => {
       token,
       process.env.SECRET,
     ) as jwt.JwtPayload;
-    const user = await User.findById(decodedToken.id);
+    const user = (await User.findByIdAndUpdate(
+      decodedToken.id,
+      { socketId: socket.id },
+      { new: true },
+    )) as UserInterface;
 
     if (!user) {
       socket.disconnect();

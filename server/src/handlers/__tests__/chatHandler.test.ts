@@ -41,6 +41,7 @@ describe('Chat handlers', () => {
 
       io.on('connection', (socket: MySocket) => {
         registerChatHandlers(io, socket);
+        // notificationHandlers(io, socket);
       });
 
       await new Promise<void>((resolve, reject) => {
@@ -66,25 +67,26 @@ describe('Chat handlers', () => {
     clientSocket.close();
   });
 
-  test('should work', (done) => {
-    clientSocket.on('hello', (arg) => {
-      expect(arg).toBe('world');
-      done();
+  test('Sending and receiving messages', (done) => {
+    clientSocket.on('message-received', (arg) => {
+      try {
+        console.log(arg);
+        expect(arg).toMatchObject({
+          body: 'test',
+          sender: users.one,
+          receiver: users.one,
+        });
+        done();
+      } catch (err) {
+        console.error(err);
+        done(err);
+      }
     });
-    serverSocket.emit('hello', 'world');
-  });
 
-  test('console log', async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {});
-
-    clientSocket.emit('message');
-
-    // Wait for a short delay before checking the console output
-    // eslint-disable-next-line no-promise-executor-return
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    expect(console.log).toHaveBeenCalledWith('OK');
-
-    jest.restoreAllMocks();
+    clientSocket.emit('send-message', {
+      body: 'test',
+      receiver: TEST_CONSTANTS.USER_IDS.one,
+      sender: TEST_CONSTANTS.USER_IDS.one,
+    });
   });
 });
