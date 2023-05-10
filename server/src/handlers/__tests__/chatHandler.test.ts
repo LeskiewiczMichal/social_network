@@ -16,6 +16,7 @@ import {
   authenticationHandler,
   registerDisconnectHandlers,
 } from '..';
+import { Message, MessageInterface } from '../../models';
 
 describe('Chat handlers', () => {
   let io: Server;
@@ -70,15 +71,42 @@ describe('Chat handlers', () => {
   });
 
   test('Sending and receiving messages', (done) => {
-    clientSocket.on('message-received', (arg) => {
+    clientSocket.on('message-received', (msg) => {
       try {
-        console.log(arg);
-        expect(arg).toMatchObject({
+        expect(msg).toMatchObject({
           body: 'test',
           sender: users.one,
           receiver: users.one,
         });
         done();
+      } catch (err) {
+        console.error(err);
+        done(err);
+      }
+    });
+
+    clientSocket.emit('send-message', {
+      body: 'test',
+      receiver: TEST_CONSTANTS.USER_IDS.one,
+      sender: TEST_CONSTANTS.USER_IDS.one,
+    });
+  });
+
+  test('creates new message in database', (done) => {
+    clientSocket.on('message-received', (msg) => {
+      try {
+        Message.findById(msg._id).then((message) => {
+          if (message) {
+            expect(message).toMatchObject({
+              body: 'test',
+              sender: TEST_CONSTANTS.USER_IDS.one,
+              receiver: TEST_CONSTANTS.USER_IDS.one,
+            });
+            done();
+          } else {
+            throw new Error('Message not found in database');
+          }
+        });
       } catch (err) {
         console.error(err);
         done(err);
