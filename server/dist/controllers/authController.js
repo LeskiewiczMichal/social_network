@@ -39,22 +39,23 @@ exports.loginGoogle = exports.authenticateUser = exports.login = exports.createA
 const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt = __importStar(require("bcryptjs"));
+const types_1 = require("../types");
 const models_1 = require("../models");
 const utils_1 = require("../utils");
 const login = (req, res) => {
     passport_1.default.authenticate('local', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             if (err || !user) {
-                return res.status(401).json({ error: 'Incorrect email or password' });
+                throw new types_1.BadRequestError('Incorrect email or password');
             }
             if (!process.env.SECRET) {
-                throw new Error('Secret environment variable not defined');
+                throw new types_1.BadRequestError('Secret environment variable not defined');
             }
             const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.SECRET);
             return res.json({ user, token });
         }
         catch (error) {
-            return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
+            return (0, utils_1.handleError)(error, res);
         }
     }))(req, res);
 };
@@ -63,9 +64,7 @@ const loginGoogle = (req, res) => {
     passport_1.default.authenticate('google', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             if (err || !user) {
-                return res
-                    .status(404)
-                    .json({ error: "Couldn't find google account" });
+                throw new types_1.BadRequestError("Couldn't find google account");
             }
             if (!process.env.SECRET) {
                 throw new Error('Secret environment variable not defined');
@@ -74,42 +73,49 @@ const loginGoogle = (req, res) => {
             return res.json({ user, token });
         }
         catch (error) {
-            return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
+            return (0, utils_1.handleError)(error, res);
         }
     }))(req, res);
 };
 exports.loginGoogle = loginGoogle;
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.body.email ||
-        !req.body.password ||
-        !req.body.birthday ||
-        !req.body.firstName ||
-        !req.body.lastName) {
-        return res
-            .status(400)
-            .json({ error: 'Not all neccessery fields were provided' });
-    }
     try {
-        const hash = yield bcrypt.hash(req.body.password, 10);
+        const { email, password, birthday, firstName, lastName } = req.body;
+        if (!email) {
+            throw new types_1.MissingBodyError('email');
+        }
+        if (!password) {
+            throw new types_1.MissingBodyError('password');
+        }
+        if (!birthday) {
+            throw new types_1.MissingBodyError('birthday');
+        }
+        if (!firstName) {
+            throw new types_1.MissingBodyError('firstName');
+        }
+        if (!lastName) {
+            throw new types_1.MissingBodyError('lastName');
+        }
+        const hash = yield bcrypt.hash(password, 10);
         const user = new models_1.User({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
+            firstName,
+            lastName,
             password: hash,
-            email: req.body.email,
+            email,
             firends: [],
             friendRequests: [],
-            birthday: req.body.birthday,
+            birthday,
         });
         yield user.save();
         return res.json({ user });
     }
     catch (error) {
-        return (0, utils_1.handleError)(res, 'Something went wrong on the server', 500);
+        return (0, utils_1.handleError)(error, res);
     }
 });
 exports.createAccount = createAccount;
 const authenticateUser = (req, res) => {
     const user = req.user;
-    res.json({ user });
+    return res.json({ user });
 };
 exports.authenticateUser = authenticateUser;

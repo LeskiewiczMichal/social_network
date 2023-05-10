@@ -1,8 +1,23 @@
 import { Socket } from 'socket.io';
-import { UserInterface } from '../models';
+import { MessageInterface, UserInterface } from '../models';
 
 interface MySocket extends Socket {
   user?: UserInterface;
 }
 
-export { MySocket };
+interface ServerToClientEvents {
+  'message-received': (message: MessageInterface) => void;
+}
+
+interface ClientToServerEvents {
+  'send-message': (message: MessageInterface) => void;
+}
+
+interface InterServerEvents {}
+
+export {
+  MySocket,
+  ServerToClientEvents,
+  ClientToServerEvents,
+  InterServerEvents,
+};

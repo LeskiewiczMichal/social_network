@@ -10,13 +10,18 @@ import {
   TEST_CONSTANTS,
 } from '../../__testUtils__';
 import { serverConfig } from '../../middleware';
-import { MySocket } from '../../types';
+import {
+  MySocket,
+  ServerToClientEvents,
+  ClientToServerEvents,
+  InterServerEvents,
+} from '../../types';
 import {
   registerChatHandlers,
   authenticationHandler,
   registerDisconnectHandlers,
 } from '..';
-import { Message, MessageInterface } from '../../models';
+import { Message } from '../../models';
 
 describe('Chat handlers', () => {
   let io: Server;
@@ -33,7 +38,12 @@ describe('Chat handlers', () => {
       users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
       const app = express();
       const httpServer = createServer(app);
-      io = new Server(httpServer, {
+      io = new Server<
+        ClientToServerEvents,
+        ServerToClientEvents,
+        InterServerEvents,
+        MySocket
+      >(httpServer, {
         cors: {
           origin: '*',
         },

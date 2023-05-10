@@ -3,21 +3,21 @@ import { MySocket } from '../types';
 import { Message, MessageInterface, User, UserInterface } from '../models';
 
 const registerChatHandlers = (io: Server, socket: MySocket) => {
-  const newMessage = async (msg: MessageInterface) => {
+  const newMessage = async (message: MessageInterface) => {
     try {
-      const receiver = (await User.findById(msg.receiver)) as UserInterface;
+      const receiver = (await User.findById(message.receiver)) as UserInterface;
 
-      const message = new Message({
-        body: msg.body,
-        sender: msg.sender,
-        receiver: msg.receiver,
+      const messageObject: MessageInterface = new Message({
+        body: message.body,
+        sender: message.sender,
+        receiver: message.receiver,
       });
 
-      await message.save();
+      await messageObject.save();
 
       if (receiver.socketId) {
-        await (await message.populate('receiver')).populate('sender');
-        io.to(receiver.socketId).emit('message-received', message);
+        await (await messageObject.populate('receiver')).populate('sender');
+        io.to(receiver.socketId).emit('message-received', messageObject);
       }
     } catch (error) {
       console.error(error);

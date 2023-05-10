@@ -45,7 +45,7 @@ const supertest_1 = __importDefault(require("supertest"));
 const verifyToken_1 = __importDefault(require("../verifyToken"));
 const serverConfig_1 = __importDefault(require("../serverConfig"));
 const models_1 = require("../../models");
-const mongoConfigTesting_1 = __importDefault(require("../../routes/__tests__/mongoConfigTesting"));
+const __testUtils__1 = require("../../__testUtils__");
 /// CONFIG ///
 const app = (0, express_1.default)();
 (0, serverConfig_1.default)(app);
@@ -73,7 +73,7 @@ describe('Auth route tests', () => {
     let db;
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            db = yield (0, mongoConfigTesting_1.default)();
+            db = yield (0, __testUtils__1.initializeMongoServer)();
             const user = new models_1.User(mockUser);
             yield user.save();
         }

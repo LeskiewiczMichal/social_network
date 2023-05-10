@@ -7,13 +7,17 @@ const express_1 = __importDefault(require("express"));
 const usersController_1 = require("../controllers/usersController");
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
+// Friend requests
 router.get('/friendRequests', middleware_1.verifyToken, usersController_1.getFriendRequests);
-router.get('/', usersController_1.getAllUsers);
-router.get('/:userId', usersController_1.getUser);
-router.put('/', middleware_1.verifyToken, usersController_1.updateUserData);
-router.delete('/', middleware_1.verifyToken, usersController_1.deleteUser);
-router.get('/:userId/friends', middleware_1.verifyToken, usersController_1.getFriends);
+router.post('/friendRequests/:friendId', middleware_1.verifyToken, usersController_1.sendFriendRequest);
+router.delete('/friendRequests/:friendId', middleware_1.verifyToken, usersController_1.deleteFriendRequest);
+// Friends
 router.post('/friends/:friendId', middleware_1.verifyToken, usersController_1.addFriend);
 router.delete('/friends/:friendId', middleware_1.verifyToken, usersController_1.deleteFriend);
-router.post('/friendRequests/:userId', middleware_1.verifyToken, usersController_1.sendFriendRequest);
+router.get('/:userId/friends', middleware_1.verifyToken, usersController_1.getFriends);
+// User
+router.put('/', middleware_1.verifyToken, usersController_1.updateUserData);
+router.delete('/', middleware_1.verifyToken, usersController_1.deleteUser);
+router.get('/:userId', usersController_1.getUserById);
+router.get('/', usersController_1.getAllUsers);
 exports.default = router;

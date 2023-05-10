@@ -42,8 +42,9 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const jwt = __importStar(require("jsonwebtoken"));
 const __1 = require("..");
 const middleware_1 = require("../../middleware");
-const mongoConfigTesting_1 = __importDefault(require("./mongoConfigTesting"));
 const models_1 = require("../../models");
+const __testUtils__1 = require("../../__testUtils__");
+// Config test server
 dotenv.config();
 const app = (0, express_1.default)();
 (0, middleware_1.serverConfig)(app);
@@ -59,9 +60,10 @@ const mockUser = {
 };
 describe('Auth route tests', () => {
     let db;
+    // Set up test database
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            db = yield (0, mongoConfigTesting_1.default)();
+            db = yield (0, __testUtils__1.initializeMongoServer)();
             const user = new models_1.User(mockUser);
             yield user.save();
         }
@@ -69,6 +71,7 @@ describe('Auth route tests', () => {
             console.error(error);
         }
     }));
+    // Stop server
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield db.stop();
     }));
@@ -78,7 +81,7 @@ describe('Auth route tests', () => {
                 .post('/')
                 .expect('Content-Type', /json/)
                 .expect({
-                error: 'Not all neccessery fields were provided',
+                error: 'Missing required body field: email',
             })
                 .expect(400, done);
         });
@@ -117,7 +120,7 @@ describe('Auth route tests', () => {
                 .send(body)
                 .expect('Content-Type', /json/)
                 .expect({ error: 'Incorrect email or password' })
-                .expect(401, done);
+                .expect(400, done);
         });
         test('returns token and user on success', (done) => {
             const body = { email: 'john.doe@example.com', password: 'example123' };

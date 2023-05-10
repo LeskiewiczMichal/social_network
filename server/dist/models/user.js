@@ -10,6 +10,7 @@ const userSchema = new mongoose_1.Schema({
     friendRequests: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     birthday: { type: Date, required: false },
     googleId: { type: String, requried: false },
+    socketId: { type: String, required: false, default: null },
 });
 const User = (0, mongoose_1.model)('User', userSchema);
 exports.default = User;

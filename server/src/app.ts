@@ -4,14 +4,28 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { mongoConfig, serverConfig } from './middleware';
 import { usersRouter, authRouter, postsRouter, commentsRouter } from './routes';
-import { authenticationHandler, registerChatHandlers } from './handlers';
-import { MySocket } from './types';
+import {
+  authenticationHandler,
+  registerChatHandlers,
+  registerDisconnectHandlers,
+} from './handlers';
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  MySocket,
+} from './types';
 
 dotenv.config();
 mongoConfig();
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
+const io = new Server<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  MySocket
+>(httpServer, {
   cors: {
     origin: '*',
   },
@@ -22,6 +36,7 @@ serverConfig(app);
 io.use(authenticationHandler);
 io.on('connection', (socket: MySocket) => {
   registerChatHandlers(io, socket);
+  registerDisconnectHandlers(io, socket);
 });
 
 app.get('/', (req, res) => {

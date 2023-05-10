@@ -28,17 +28,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 const express_1 = __importDefault(require("express"));
+const http_1 = require("http");
+const socket_io_1 = require("socket.io");
 const middleware_1 = require("./middleware");
 const routes_1 = require("./routes");
+const handlers_1 = require("./handlers");
 dotenv.config();
 (0, middleware_1.mongoConfig)();
 const app = (0, express_1.default)();
+const httpServer = (0, http_1.createServer)(app);
+const io = new socket_io_1.Server(httpServer, {
+    cors: {
+        origin: '*',
+    },
+});
 (0, middleware_1.serverConfig)(app);
+io.use(handlers_1.authenticationHandler);
+io.on('connection', (socket) => {
+    (0, handlers_1.registerChatHandlers)(io, socket);
+    (0, handlers_1.registerDisconnectHandlers)(io, socket);
+});
 app.get('/', (req, res) => {
     res.send('Welcome');
 });
-app.use('/api/users', routes_1.usersRouter);
 app.use('/api/users/auth', routes_1.authRouter);
-app.listen(process.env.PORT, () => {
+app.use('/api/users', routes_1.usersRouter);
+app.use('/api/posts', routes_1.postsRouter);
+app.use('/api/comments', routes_1.commentsRouter);
+httpServer.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}`);
 });
