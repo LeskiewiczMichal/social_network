@@ -11,7 +11,7 @@
     "lint": "./node_modules/.bin/eslint src/app.ts",
     "test": "jest --detectOpenHandles --forceExit",
     "testClearCache": "jest --clearCache",
-    "singleTest": "jest --testPathPattern=chatHandler.test.ts --detectOpenHandles --forceExit"
+    "singleTest": "jest --testPathPattern=userAuthenticationSockets.test.ts --detectOpenHandles --forceExit"
   },
   "jest": {
     "transform": {

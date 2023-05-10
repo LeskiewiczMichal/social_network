@@ -1,5 +1,4 @@
 import * as jwt from 'jsonwebtoken';
-import { Server } from 'socket.io';
 import { User, UserInterface } from '../models';
 import { MySocket } from '../types';
 

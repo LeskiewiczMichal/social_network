@@ -9,7 +9,7 @@ export interface UserInterface extends Document {
   friendRequests: Schema.Types.ObjectId[];
   birthday: Date;
   googleId: string;
-  socketId?: string;
+  socketId?: string | null;
 }
 
 const userSchema: Schema = new Schema({
@@ -21,7 +21,7 @@ const userSchema: Schema = new Schema({
   friendRequests: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   birthday: { type: Date, required: false },
   googleId: { type: String, requried: false },
-  socketId: { type: String, required: false },
+  socketId: { type: String, required: false, default: null },
 });
 
 const User: Model<UserInterface> = model<UserInterface>('User', userSchema);

@@ -19,6 +19,11 @@ const io = new Server(httpServer, {
 
 serverConfig(app);
 
+io.use(authenticationHandler);
+io.on('connection', (socket: MySocket) => {
+  registerChatHandlers(io, socket);
+});
+
 app.get('/', (req, res) => {
   res.send('Welcome');
 });
@@ -26,14 +31,6 @@ app.use('/api/users/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/comments', commentsRouter);
-
-authenticationHandler(io);
-
-const chatNamespace = io.of('/chat');
-
-chatNamespace.on('connection', (socket: MySocket) => {
-  registerChatHandlers(io, socket);
-});
 
 httpServer.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}`);

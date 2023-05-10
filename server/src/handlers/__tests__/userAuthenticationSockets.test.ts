@@ -16,8 +16,9 @@ import {
   authenticationHandler,
   registerDisconnectHandlers,
 } from '..';
+import { User } from '../../models';
 
-describe('Chat handlers', () => {
+describe('User authentication handlers', () => {
   let io: Server;
   let serverSocket: MySocket;
   let clientSocket: ClientSocket;
@@ -69,26 +70,39 @@ describe('Chat handlers', () => {
     clientSocket.close();
   });
 
-  test('Sending and receiving messages', (done) => {
-    clientSocket.on('message-received', (arg) => {
-      try {
-        console.log(arg);
-        expect(arg).toMatchObject({
-          body: 'test',
-          sender: users.one,
-          receiver: users.one,
-        });
-        done();
-      } catch (err) {
+  test('User in database has updated socketId when connected', (done) => {
+    User.findById(TEST_CONSTANTS.USER_IDS.one)
+      .then((user) => {
+        if (user) {
+          expect(user.socketId).not.toBeNull();
+          done();
+        } else {
+          throw new Error('User not found');
+        }
+      })
+      .catch((err) => {
         console.error(err);
         done(err);
-      }
-    });
+      });
+  });
 
-    clientSocket.emit('send-message', {
-      body: 'test',
-      receiver: TEST_CONSTANTS.USER_IDS.one,
-      sender: TEST_CONSTANTS.USER_IDS.one,
-    });
+  test('User in database socketId is null when disconnected', (done) => {
+    clientSocket.close();
+
+    setTimeout(() => {
+      User.findById(TEST_CONSTANTS.USER_IDS.one)
+        .then((user) => {
+          if (user) {
+            expect(user.socketId).toBeNull();
+            done();
+          } else {
+            throw new Error('User not found');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          done(err);
+        });
+    }, 500);
   });
 });
