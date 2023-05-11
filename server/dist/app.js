@@ -32,8 +32,8 @@ const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const path_1 = __importDefault(require("path"));
 const middleware_1 = require("./middleware");
-const routes_1 = require("./routes");
-const handlers_1 = require("./handlers");
+const Routes = __importStar(require("./routes"));
+const EventHandlers = __importStar(require("./handlers"));
 dotenv.config();
 (0, middleware_1.mongoConfig)();
 const app = (0, express_1.default)();
@@ -44,19 +44,19 @@ const io = new socket_io_1.Server(httpServer, {
     },
 });
 (0, middleware_1.serverConfig)(app);
-io.use(handlers_1.authenticationHandler);
+io.use(EventHandlers.authenticationHandler);
 io.on('connection', (socket) => {
-    (0, handlers_1.registerChatHandlers)(io, socket);
-    (0, handlers_1.registerDisconnectHandlers)(io, socket);
+    EventHandlers.registerChatHandlers(io, socket);
+    EventHandlers.registerDisconnectHandlers(io, socket);
 });
 app.use('/profile-pictures', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
     res.send('Welcome');
 });
-app.use('/api/users/auth', routes_1.authRouter);
-app.use('/api/users', routes_1.usersRouter);
-app.use('/api/posts', routes_1.postsRouter);
-app.use('/api/comments', routes_1.commentsRouter);
+app.use('/api/users/auth', Routes.authRouter);
+app.use('/api/users', Routes.usersRouter);
+app.use('/api/posts', Routes.postsRouter);
+app.use('/api/comments', Routes.commentsRouter);
 httpServer.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}`);
 });

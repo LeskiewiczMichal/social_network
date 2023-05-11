@@ -4,28 +4,19 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { mongoConfig, serverConfig } from './middleware';
-import { usersRouter, authRouter, postsRouter, commentsRouter } from './routes';
-import {
-  authenticationHandler,
-  registerChatHandlers,
-  registerDisconnectHandlers,
-} from './handlers';
-import {
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  MySocket,
-} from './types';
+import * as Routes from './routes';
+import * as EventHandlers from './handlers';
+import { SocketTypes } from './types';
 
 dotenv.config();
 mongoConfig();
 const app = express();
 const httpServer = createServer(app);
 const io = new Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  MySocket
+  SocketTypes.ClientToServerEvents,
+  SocketTypes.ServerToClientEvents,
+  SocketTypes.InterServerEvents,
+  SocketTypes.MySocket
 >(httpServer, {
   cors: {
     origin: '*',
@@ -34,10 +25,10 @@ const io = new Server<
 
 serverConfig(app);
 
-io.use(authenticationHandler);
-io.on('connection', (socket: MySocket) => {
-  registerChatHandlers(io, socket);
-  registerDisconnectHandlers(io, socket);
+io.use(EventHandlers.authenticationHandler);
+io.on('connection', (socket: SocketTypes.MySocket) => {
+  EventHandlers.registerChatHandlers(io, socket);
+  EventHandlers.registerDisconnectHandlers(io, socket);
 });
 
 app.use(
@@ -47,10 +38,10 @@ app.use(
 app.get('/', (req, res) => {
   res.send('Welcome');
 });
-app.use('/api/users/auth', authRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/posts', postsRouter);
-app.use('/api/comments', commentsRouter);
+app.use('/api/users/auth', Routes.authRouter);
+app.use('/api/users', Routes.usersRouter);
+app.use('/api/posts', Routes.postsRouter);
+app.use('/api/comments', Routes.commentsRouter);
 
 httpServer.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}`);

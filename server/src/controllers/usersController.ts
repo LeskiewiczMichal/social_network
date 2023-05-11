@@ -1,34 +1,13 @@
 import { Request, Response } from 'express';
 import { User, UserInterface } from '../models';
-import {
-  BadRequestError,
-  GetFriendsRequest,
-  GetUserByIdRequest,
-  UpdateUserDataRequest,
-} from '../types';
+import { ErrorTypes, UserTypes } from '../types';
 import { handleError } from '../utils';
-import {
-  AddFriendRequest,
-  DeleteFriendRequest,
-  RequestDeleteFriendRequest,
-  RequestSendFriendRequest,
-  GetAllUsersResponse,
-  GetUserByIdResponse,
-  UpdateUserDataResponse,
-  DeleteUserResponse,
-  GetFriendsResponse,
-  AddFriendResponse,
-  DeleteFriendResponse,
-  SendFriendRequestResponse,
-  GetFriendRequestsResponse,
-  DeleteFriendRequestResponse,
-} from '../types/users';
 import { NotFoundError } from '../types/errors';
 
 const getAllUsers = async (
   req: Request,
-  res: GetAllUsersResponse,
-): Promise<GetAllUsersResponse> => {
+  res: UserTypes.GetAllUsersResponse,
+): Promise<UserTypes.GetAllUsersResponse> => {
   try {
     const users = (await User.find()) as UserInterface[];
 
@@ -39,9 +18,9 @@ const getAllUsers = async (
 };
 
 const getUserById = async (
-  req: GetUserByIdRequest,
-  res: GetUserByIdResponse,
-): Promise<GetUserByIdResponse> => {
+  req: UserTypes.GetUserByIdRequest,
+  res: UserTypes.GetUserByIdResponse,
+): Promise<UserTypes.GetUserByIdResponse> => {
   try {
     const user = (await User.findById(req.params.userId)) as UserInterface;
 
@@ -52,9 +31,9 @@ const getUserById = async (
 };
 
 const updateUserData = async (
-  req: UpdateUserDataRequest,
-  res: UpdateUserDataResponse,
-): Promise<UpdateUserDataResponse> => {
+  req: UserTypes.UpdateUserDataRequest,
+  res: UserTypes.UpdateUserDataResponse,
+): Promise<UserTypes.UpdateUserDataResponse> => {
   try {
     const user = req.user as UserInterface;
     const { email, firstName, lastName, birthday } = req.body;
@@ -81,8 +60,8 @@ const updateUserData = async (
 
 const deleteUser = async (
   req: Request,
-  res: DeleteUserResponse,
-): Promise<DeleteUserResponse> => {
+  res: UserTypes.DeleteUserResponse,
+): Promise<UserTypes.DeleteUserResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
     await User.deleteOne({ _id: userId });
@@ -93,9 +72,9 @@ const deleteUser = async (
 };
 
 const getFriends = async (
-  req: GetFriendsRequest,
-  res: GetFriendsResponse,
-): Promise<GetFriendsResponse> => {
+  req: UserTypes.GetFriendsRequest,
+  res: UserTypes.GetFriendsResponse,
+): Promise<UserTypes.GetFriendsResponse> => {
   try {
     const { userId } = req.params;
     const user = (await User.findById(userId)) as UserInterface;
@@ -108,9 +87,9 @@ const getFriends = async (
 };
 
 const addFriend = async (
-  req: AddFriendRequest,
-  res: AddFriendResponse,
-): Promise<AddFriendResponse> => {
+  req: UserTypes.AddFriendRequest,
+  res: UserTypes.AddFriendResponse,
+): Promise<UserTypes.AddFriendResponse> => {
   try {
     const { friendId } = req.params;
     const user = req.user as UserInterface;
@@ -123,7 +102,9 @@ const addFriend = async (
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       user.friendRequests.splice(friendIdIndex, 1)[0];
     } else {
-      throw new BadRequestError("User was not on friend's requests list");
+      throw new ErrorTypes.BadRequestError(
+        "User was not on friend's requests list",
+      );
     }
 
     user.friends.push(newFriendId);
@@ -136,16 +117,16 @@ const addFriend = async (
 };
 
 const deleteFriend = async (
-  req: DeleteFriendRequest,
-  res: DeleteFriendResponse,
-): Promise<DeleteFriendResponse> => {
+  req: UserTypes.DeleteFriendRequest,
+  res: UserTypes.DeleteFriendResponse,
+): Promise<UserTypes.DeleteFriendResponse> => {
   try {
     const user = req.user as UserInterface;
     const { friendId } = req.params;
     const friend = (await User.findById(friendId)) as UserInterface;
 
     if (!user.friends.includes(friend.id)) {
-      throw new BadRequestError("User's were not friends");
+      throw new ErrorTypes.BadRequestError("User's were not friends");
     }
 
     user.friends = user.friends.filter(
@@ -164,16 +145,16 @@ const deleteFriend = async (
 };
 
 const sendFriendRequest = async (
-  req: RequestSendFriendRequest,
-  res: SendFriendRequestResponse,
-): Promise<SendFriendRequestResponse> => {
+  req: UserTypes.RequestSendFriendRequest,
+  res: UserTypes.SendFriendRequestResponse,
+): Promise<UserTypes.SendFriendRequestResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
     const { friendId } = req.params;
     const friend = (await User.findById(friendId)) as UserInterface;
 
     if (friend.friendRequests.includes(userId)) {
-      throw new BadRequestError('Friend request was already sent');
+      throw new ErrorTypes.BadRequestError('Friend request was already sent');
     }
 
     friend.friendRequests.push(userId);
@@ -187,8 +168,8 @@ const sendFriendRequest = async (
 
 const getFriendRequests = async (
   req: Request,
-  res: GetFriendRequestsResponse,
-): Promise<GetFriendRequestsResponse> => {
+  res: UserTypes.GetFriendRequestsResponse,
+): Promise<UserTypes.GetFriendRequestsResponse> => {
   try {
     const user = req.user as UserInterface;
     await user.populate('friendRequests');
@@ -200,9 +181,9 @@ const getFriendRequests = async (
 };
 
 const deleteFriendRequest = async (
-  req: RequestDeleteFriendRequest,
-  res: DeleteFriendRequestResponse,
-): Promise<DeleteFriendRequestResponse> => {
+  req: UserTypes.RequestDeleteFriendRequest,
+  res: UserTypes.DeleteFriendRequestResponse,
+): Promise<UserTypes.DeleteFriendRequestResponse> => {
   try {
     const user = req.user as UserInterface;
     const { friendId } = req.params;

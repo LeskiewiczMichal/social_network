@@ -2,31 +2,27 @@ import { Request } from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
-import {
-  BadRequestError,
-  CreateAccountRequest,
-  LoginGoogleResponse,
-  LoginRequest,
-  LoginResponse,
-  CreateAccountResponse,
-  MissingBodyError,
-  AuthenticateUserResponse,
-} from '../types';
+import { AuthTypes, ErrorTypes } from '../types';
 import { User, UserInterface } from '../models';
 import { handleError } from '../utils';
 
-const login = (req: LoginRequest, res: LoginResponse): void => {
+const login = (
+  req: AuthTypes.LoginRequest,
+  res: AuthTypes.LoginResponse,
+): void => {
   passport.authenticate(
     'local',
     { session: false },
-    async (err: any, user: UserInterface): Promise<LoginResponse> => {
+    async (err: any, user: UserInterface): Promise<AuthTypes.LoginResponse> => {
       try {
         if (err || !user) {
-          throw new BadRequestError('Incorrect email or password');
+          throw new ErrorTypes.BadRequestError('Incorrect email or password');
         }
 
         if (!process.env.SECRET) {
-          throw new BadRequestError('Secret environment variable not defined');
+          throw new ErrorTypes.BadRequestError(
+            'Secret environment variable not defined',
+          );
         }
 
         const token = jwt.sign({ id: user.id }, process.env.SECRET);
@@ -38,14 +34,20 @@ const login = (req: LoginRequest, res: LoginResponse): void => {
   )(req, res);
 };
 
-const loginGoogle = (req: Request, res: LoginGoogleResponse): void => {
+const loginGoogle = (
+  req: Request,
+  res: AuthTypes.LoginGoogleResponse,
+): void => {
   passport.authenticate(
     'google',
     { session: false },
-    async (err: any, user: UserInterface): Promise<LoginGoogleResponse> => {
+    async (
+      err: any,
+      user: UserInterface,
+    ): Promise<AuthTypes.LoginGoogleResponse> => {
       try {
         if (err || !user) {
-          throw new BadRequestError("Couldn't find google account");
+          throw new ErrorTypes.BadRequestError("Couldn't find google account");
         }
 
         if (!process.env.SECRET) {
@@ -62,26 +64,26 @@ const loginGoogle = (req: Request, res: LoginGoogleResponse): void => {
 };
 
 const createAccount = async (
-  req: CreateAccountRequest,
-  res: CreateAccountResponse,
-): Promise<CreateAccountResponse> => {
+  req: AuthTypes.CreateAccountRequest,
+  res: AuthTypes.CreateAccountResponse,
+): Promise<AuthTypes.CreateAccountResponse> => {
   try {
     const { email, password, birthday, firstName, lastName } = req.body;
 
     if (!email) {
-      throw new MissingBodyError('email');
+      throw new ErrorTypes.MissingBodyError('email');
     }
     if (!password) {
-      throw new MissingBodyError('password');
+      throw new ErrorTypes.MissingBodyError('password');
     }
     if (!birthday) {
-      throw new MissingBodyError('birthday');
+      throw new ErrorTypes.MissingBodyError('birthday');
     }
     if (!firstName) {
-      throw new MissingBodyError('firstName');
+      throw new ErrorTypes.MissingBodyError('firstName');
     }
     if (!lastName) {
-      throw new MissingBodyError('lastName');
+      throw new ErrorTypes.MissingBodyError('lastName');
     }
     const hash = await bcrypt.hash(password, 10);
 
@@ -104,8 +106,8 @@ const createAccount = async (
 
 const authenticateUser = (
   req: Request,
-  res: AuthenticateUserResponse,
-): AuthenticateUserResponse => {
+  res: AuthTypes.AuthenticateUserResponse,
+): AuthTypes.AuthenticateUserResponse => {
   const user = req.user as UserInterface;
 
   return res.json({ user });

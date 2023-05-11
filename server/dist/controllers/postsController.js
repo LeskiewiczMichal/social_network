@@ -39,10 +39,10 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { id: userId } = req.user;
         const { body, title } = req.body;
         if (!title) {
-            throw new types_1.MissingBodyError('title');
+            throw new types_1.ErrorTypes.MissingBodyError('title');
         }
         else if (!body) {
-            throw new types_1.MissingBodyError('body');
+            throw new types_1.ErrorTypes.MissingBodyError('body');
         }
         const post = new models_1.Post({
             title,
@@ -65,7 +65,7 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { title, body } = req.body;
         const post = (yield models_1.Post.findById(req.params.postId));
         if (post.author.toString() !== userId.toString()) {
-            throw new types_1.UnauthorizedError();
+            throw new types_1.ErrorTypes.UnauthorizedError();
         }
         if (title) {
             post.title = title;
@@ -87,7 +87,7 @@ const deletePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { postId } = req.params;
         const post = (yield models_1.Post.findById(postId));
         if (post.author.toString() !== userId.toString()) {
-            throw new types_1.UnauthorizedError();
+            throw new types_1.ErrorTypes.UnauthorizedError();
         }
         yield models_1.Comment.deleteMany({ post: postId });
         yield models_1.Post.deleteOne({ _id: postId });
@@ -104,7 +104,7 @@ const likePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { postId } = req.params;
         const post = (yield models_1.Post.findById(postId));
         if (post.likes.includes(userId)) {
-            throw new types_1.BadRequestError('Post is already liked');
+            throw new types_1.ErrorTypes.BadRequestError('Post is already liked');
         }
         post.likes.push(userId);
         yield post.save();
@@ -121,7 +121,7 @@ const unlikePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { postId } = req.params;
         const post = (yield models_1.Post.findById(postId));
         if (!post.likes.includes(userId)) {
-            throw new types_1.BadRequestError('Post is not liked');
+            throw new types_1.ErrorTypes.BadRequestError('Post is not liked');
         }
         post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
         yield post.save();

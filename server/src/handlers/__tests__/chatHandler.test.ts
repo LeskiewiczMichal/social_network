@@ -4,28 +4,15 @@ import { AddressInfo } from 'net';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { Socket as ClientSocket, Manager } from 'socket.io-client';
-import {
-  initializeMongoServer,
-  createFakeUsers,
-  TEST_CONSTANTS,
-} from '../../__testUtils__';
+import * as TestUtils from '../../__testUtils__';
 import { serverConfig } from '../../middleware';
-import {
-  MySocket,
-  ServerToClientEvents,
-  ClientToServerEvents,
-  InterServerEvents,
-} from '../../types';
-import {
-  registerChatHandlers,
-  authenticationHandler,
-  registerDisconnectHandlers,
-} from '..';
+import { SocketTypes } from '../../types';
+import * as EventHanlers from '..';
 import { Message } from '../../models';
 
 describe('Chat handlers', () => {
   let io: Server;
-  let serverSocket: MySocket;
+  let serverSocket: SocketTypes.MySocket;
   let clientSocket: ClientSocket;
   let db: any;
   let users: any;
@@ -34,15 +21,17 @@ describe('Chat handlers', () => {
   beforeAll(async () => {
     try {
       dotenv.config();
-      db = await initializeMongoServer();
-      users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+      db = await TestUtils.initializeMongoServer();
+      users = await TestUtils.createFakeUsers(
+        TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
+      );
       const app = express();
       const httpServer = createServer(app);
       io = new Server<
-        ClientToServerEvents,
-        ServerToClientEvents,
-        InterServerEvents,
-        MySocket
+        SocketTypes.ClientToServerEvents,
+        SocketTypes.ServerToClientEvents,
+        SocketTypes.InterServerEvents,
+        SocketTypes.MySocket
       >(httpServer, {
         cors: {
           origin: '*',
@@ -50,17 +39,17 @@ describe('Chat handlers', () => {
       });
       serverConfig(app);
 
-      io.use(authenticationHandler);
+      io.use(EventHanlers.authenticationHandler);
 
-      io.on('connection', (socket: MySocket) => {
-        registerChatHandlers(io, socket);
-        registerDisconnectHandlers(io, socket);
+      io.on('connection', (socket: SocketTypes.MySocket) => {
+        EventHanlers.registerChatHandlers(io, socket);
+        EventHanlers.registerDisconnectHandlers(io, socket);
       });
 
       await new Promise<void>((resolve, reject) => {
         httpServer.listen(() => {
           const { port } = httpServer.address() as AddressInfo;
-          io.on('connection', (socket: MySocket) => {
+          io.on('connection', (socket: SocketTypes.MySocket) => {
             serverSocket = socket;
           });
           clientSocket = new Manager(`http://localhost:${port}`).socket('/', {
@@ -97,8 +86,8 @@ describe('Chat handlers', () => {
 
     clientSocket.emit('send-message', {
       body: 'test',
-      receiver: TEST_CONSTANTS.USER_IDS.one,
-      sender: TEST_CONSTANTS.USER_IDS.one,
+      receiver: TestUtils.CONSTANTS.USER_IDS.one,
+      sender: TestUtils.CONSTANTS.USER_IDS.one,
     });
   });
 
@@ -109,8 +98,8 @@ describe('Chat handlers', () => {
           if (message) {
             expect(message).toMatchObject({
               body: 'test',
-              sender: TEST_CONSTANTS.USER_IDS.one,
-              receiver: TEST_CONSTANTS.USER_IDS.one,
+              sender: TestUtils.CONSTANTS.USER_IDS.one,
+              receiver: TestUtils.CONSTANTS.USER_IDS.one,
             });
             done();
           } else {
@@ -125,8 +114,8 @@ describe('Chat handlers', () => {
 
     clientSocket.emit('send-message', {
       body: 'test',
-      receiver: TEST_CONSTANTS.USER_IDS.one,
-      sender: TEST_CONSTANTS.USER_IDS.one,
+      receiver: TestUtils.CONSTANTS.USER_IDS.one,
+      sender: TestUtils.CONSTANTS.USER_IDS.one,
     });
   });
 });

@@ -4,28 +4,15 @@ import { AddressInfo } from 'net';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { Socket as ClientSocket, Manager } from 'socket.io-client';
-import {
-  initializeMongoServer,
-  createFakeUsers,
-  TEST_CONSTANTS,
-} from '../../__testUtils__';
+import * as TestUtils from '../../__testUtils__';
 import { serverConfig } from '../../middleware';
-import {
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  MySocket,
-} from '../../types';
-import {
-  registerChatHandlers,
-  authenticationHandler,
-  registerDisconnectHandlers,
-} from '..';
+import { SocketTypes } from '../../types';
+import * as EventHandlers from '..';
 import { User } from '../../models';
 
 describe('User authentication handlers', () => {
   let io: Server;
-  let serverSocket: MySocket;
+  let serverSocket: SocketTypes.MySocket;
   let clientSocket: ClientSocket;
   let db: any;
   let users: any;
@@ -34,15 +21,17 @@ describe('User authentication handlers', () => {
   beforeAll(async () => {
     try {
       dotenv.config();
-      db = await initializeMongoServer();
-      users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+      db = await TestUtils.initializeMongoServer();
+      users = await TestUtils.createFakeUsers(
+        TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
+      );
       const app = express();
       const httpServer = createServer(app);
       io = new Server<
-        ClientToServerEvents,
-        ServerToClientEvents,
-        InterServerEvents,
-        MySocket
+        SocketTypes.ClientToServerEvents,
+        SocketTypes.ServerToClientEvents,
+        SocketTypes.InterServerEvents,
+        SocketTypes.MySocket
       >(httpServer, {
         cors: {
           origin: '*',
@@ -50,17 +39,17 @@ describe('User authentication handlers', () => {
       });
       serverConfig(app);
 
-      io.use(authenticationHandler);
+      io.use(EventHandlers.authenticationHandler);
 
-      io.on('connection', (socket: MySocket) => {
-        registerChatHandlers(io, socket);
-        registerDisconnectHandlers(io, socket);
+      io.on('connection', (socket: SocketTypes.MySocket) => {
+        EventHandlers.registerChatHandlers(io, socket);
+        EventHandlers.registerDisconnectHandlers(io, socket);
       });
 
       await new Promise<void>((resolve, reject) => {
         httpServer.listen(() => {
           const { port } = httpServer.address() as AddressInfo;
-          io.on('connection', (socket: MySocket) => {
+          io.on('connection', (socket: SocketTypes.MySocket) => {
             serverSocket = socket;
           });
           clientSocket = new Manager(`http://localhost:${port}`).socket('/', {
@@ -81,7 +70,7 @@ describe('User authentication handlers', () => {
   });
 
   test('User in database has updated socketId when connected', (done) => {
-    User.findById(TEST_CONSTANTS.USER_IDS.one)
+    User.findById(TestUtils.CONSTANTS.USER_IDS.one)
       .then((user) => {
         if (user) {
           expect(user.socketId).not.toBeNull();
@@ -100,7 +89,7 @@ describe('User authentication handlers', () => {
     clientSocket.close();
 
     setTimeout(() => {
-      User.findById(TEST_CONSTANTS.USER_IDS.one)
+      User.findById(TestUtils.CONSTANTS.USER_IDS.one)
         .then((user) => {
           if (user) {
             expect(user.socketId).toBeNull();

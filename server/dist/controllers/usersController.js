@@ -92,7 +92,7 @@ const addFriend = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             user.friendRequests.splice(friendIdIndex, 1)[0];
         }
         else {
-            throw new types_1.BadRequestError("User was not on friend's requests list");
+            throw new types_1.ErrorTypes.BadRequestError("User was not on friend's requests list");
         }
         user.friends.push(newFriendId);
         yield user.save();
@@ -109,7 +109,7 @@ const deleteFriend = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { friendId } = req.params;
         const friend = (yield models_1.User.findById(friendId));
         if (!user.friends.includes(friend.id)) {
-            throw new types_1.BadRequestError("User's were not friends");
+            throw new types_1.ErrorTypes.BadRequestError("User's were not friends");
         }
         user.friends = user.friends.filter((id) => id.toString() !== friend.id.toString());
         friend.friends = friend.friends.filter((id) => id.toString() !== user.id.toString());
@@ -128,7 +128,7 @@ const sendFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const { friendId } = req.params;
         const friend = (yield models_1.User.findById(friendId));
         if (friend.friendRequests.includes(userId)) {
-            throw new types_1.BadRequestError('Friend request was already sent');
+            throw new types_1.ErrorTypes.BadRequestError('Friend request was already sent');
         }
         friend.friendRequests.push(userId);
         yield friend.save();

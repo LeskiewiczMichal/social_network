@@ -4,14 +4,7 @@ import express from 'express';
 import { postsRouter } from '..';
 import { serverConfig } from '../../middleware';
 import { Comment } from '../../models';
-import {
-  deleteAllPosts,
-  deleteAllComments,
-  initializeMongoServer,
-  createFakeUsers,
-  createFakePosts,
-  TEST_CONSTANTS,
-} from '../../__testUtils__';
+import * as TestUtils from '../../__testUtils__';
 
 // Config test server
 dotenv.config();
@@ -20,8 +13,8 @@ serverConfig(app);
 app.use('/', postsRouter);
 
 const clearDB = async () => {
-  await deleteAllPosts();
-  await deleteAllComments();
+  await TestUtils.deleteAllPosts();
+  await TestUtils.deleteAllComments();
 };
 
 describe('Posts route tests', () => {
@@ -34,8 +27,10 @@ describe('Posts route tests', () => {
   beforeAll(async () => {
     errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     try {
-      db = await initializeMongoServer();
-      users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+      db = await TestUtils.initializeMongoServer();
+      users = await TestUtils.createFakeUsers(
+        TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
+      );
     } catch (error) {
       console.error(error);
     }
@@ -50,7 +45,9 @@ describe('Posts route tests', () => {
   describe('Querying posts', () => {
     beforeAll(async () => {
       try {
-        posts = await createFakePosts(TEST_CONSTANTS.DEFAULT_POSTS_PROPS);
+        posts = await TestUtils.createFakePosts(
+          TestUtils.CONSTANTS.DEFAULT_POSTS_PROPS,
+        );
       } catch (error) {
         console.error(error);
       }
@@ -73,7 +70,7 @@ describe('Posts route tests', () => {
 
     test('Get single post by id', (done) => {
       request(app)
-        .get(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .get(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect((res) => {
@@ -110,7 +107,7 @@ describe('Posts route tests', () => {
       const requestBody = {
         title: 'Testing',
         body: 'This post is for testing',
-        author: TEST_CONSTANTS.USER_IDS.one,
+        author: TestUtils.CONSTANTS.USER_IDS.one,
       };
       request(app)
         .post('/')
@@ -122,7 +119,7 @@ describe('Posts route tests', () => {
             post: {
               title: 'Testing',
               body: 'This post is for testing',
-              author: TEST_CONSTANTS.USER_IDS.one.toString(),
+              author: TestUtils.CONSTANTS.USER_IDS.one.toString(),
             },
           });
         })
@@ -133,7 +130,9 @@ describe('Posts route tests', () => {
   describe('Update post', () => {
     beforeAll(async () => {
       try {
-        posts = await createFakePosts(TEST_CONSTANTS.DEFAULT_POSTS_PROPS);
+        posts = await TestUtils.createFakePosts(
+          TestUtils.CONSTANTS.DEFAULT_POSTS_PROPS,
+        );
       } catch (error) {
         console.error(error);
       }
@@ -143,7 +142,7 @@ describe('Posts route tests', () => {
 
     test("returns status 401 if user is not post's creator", (done) => {
       request(app)
-        .put(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .put(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Unauthorized' })
@@ -162,7 +161,7 @@ describe('Posts route tests', () => {
     test('returns modified post on success', (done) => {
       const requestBody = { title: 'Modified', body: 'modified' };
       request(app)
-        .put(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .put(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .send(requestBody)
         .expect('Content-Type', /json/)
@@ -181,7 +180,9 @@ describe('Posts route tests', () => {
   describe('Delete posts', () => {
     beforeAll(async () => {
       try {
-        posts = await createFakePosts(TEST_CONSTANTS.DEFAULT_POSTS_PROPS);
+        posts = await TestUtils.createFakePosts(
+          TestUtils.CONSTANTS.DEFAULT_POSTS_PROPS,
+        );
       } catch (error) {
         console.error(error);
       }
@@ -191,7 +192,7 @@ describe('Posts route tests', () => {
 
     test("returns status 401 if user is not post's creator", (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .delete(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Unauthorized' })
@@ -209,11 +210,11 @@ describe('Posts route tests', () => {
 
     test("deletes all post's comments", (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .delete(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect(200, () => {
-          Comment.find({ post: TEST_CONSTANTS.POST_IDS.one })
+          Comment.find({ post: TestUtils.CONSTANTS.POST_IDS.one })
             .then((docs) => {
               expect(docs).toHaveLength(0);
               done();
@@ -227,7 +228,7 @@ describe('Posts route tests', () => {
 
     test('returns message on success', (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.POST_IDS.two}`)
+        .delete(`/${TestUtils.CONSTANTS.POST_IDS.two}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Post deleted successfully' })
@@ -238,14 +239,17 @@ describe('Posts route tests', () => {
   describe('Like post', () => {
     beforeAll(async () => {
       try {
-        posts = await createFakePosts({
+        posts = await TestUtils.createFakePosts({
           postOne: {},
           postTwo: {
-            likes: [TEST_CONSTANTS.USER_IDS.two, TEST_CONSTANTS.USER_IDS.three],
+            likes: [
+              TestUtils.CONSTANTS.USER_IDS.two,
+              TestUtils.CONSTANTS.USER_IDS.three,
+            ],
           },
           postThree: {},
-          postIds: TEST_CONSTANTS.POST_IDS,
-          authorId: TEST_CONSTANTS.USER_IDS.one,
+          postIds: TestUtils.CONSTANTS.POST_IDS,
+          authorId: TestUtils.CONSTANTS.USER_IDS.one,
         });
       } catch (error) {
         console.error(error);
@@ -265,7 +269,7 @@ describe('Posts route tests', () => {
 
     test('retuns status 400 if post already liked', (done) => {
       request(app)
-        .post(`/${TEST_CONSTANTS.POST_IDS.two}/likes`)
+        .post(`/${TestUtils.CONSTANTS.POST_IDS.two}/likes`)
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Post is already liked' })
@@ -274,7 +278,7 @@ describe('Posts route tests', () => {
 
     test('retuns message on success', (done) => {
       request(app)
-        .post(`/${TEST_CONSTANTS.POST_IDS.one}/likes`)
+        .post(`/${TestUtils.CONSTANTS.POST_IDS.one}/likes`)
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Post liked successfully' })
@@ -285,14 +289,17 @@ describe('Posts route tests', () => {
   describe('Dislike post', () => {
     beforeAll(async () => {
       try {
-        posts = await createFakePosts({
+        posts = await TestUtils.createFakePosts({
           postOne: {},
           postTwo: {
-            likes: [TEST_CONSTANTS.USER_IDS.two, TEST_CONSTANTS.USER_IDS.three],
+            likes: [
+              TestUtils.CONSTANTS.USER_IDS.two,
+              TestUtils.CONSTANTS.USER_IDS.three,
+            ],
           },
           postThree: {},
-          postIds: TEST_CONSTANTS.POST_IDS,
-          authorId: TEST_CONSTANTS.USER_IDS.one,
+          postIds: TestUtils.CONSTANTS.POST_IDS,
+          authorId: TestUtils.CONSTANTS.USER_IDS.one,
         });
       } catch (error) {
         console.error(error);
@@ -312,7 +319,7 @@ describe('Posts route tests', () => {
 
     test('retuns status 400 if post is not liked', (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.POST_IDS.two}/likes`)
+        .delete(`/${TestUtils.CONSTANTS.POST_IDS.two}/likes`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Post is not liked' })
@@ -321,7 +328,7 @@ describe('Posts route tests', () => {
 
     test('retuns message on success', (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.POST_IDS.two}/likes`)
+        .delete(`/${TestUtils.CONSTANTS.POST_IDS.two}/likes`)
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Post unliked successfully' })

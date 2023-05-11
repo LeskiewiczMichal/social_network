@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
-import { MySocket } from '../types';
+import { SocketTypes } from '../types';
 import { Message, MessageInterface, User, UserInterface } from '../models';
 
-const registerChatHandlers = (io: Server, socket: MySocket) => {
+const registerChatHandlers = (io: Server, socket: SocketTypes.MySocket) => {
   const newMessage = async (message: MessageInterface) => {
     try {
       const receiver = (await User.findById(message.receiver)) as UserInterface;

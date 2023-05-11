@@ -4,12 +4,7 @@ import express from 'express';
 import { usersRouter } from '..';
 import { serverConfig } from '../../middleware';
 import { User } from '../../models';
-import {
-  deleteAllUsers,
-  initializeMongoServer,
-  createFakeUsers,
-  TEST_CONSTANTS,
-} from '../../__testUtils__';
+import * as TestUtils from '../../__testUtils__';
 
 // Config test server
 dotenv.config();
@@ -26,7 +21,7 @@ describe('Users route tests', () => {
   beforeAll(async () => {
     errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     try {
-      db = await initializeMongoServer();
+      db = await TestUtils.initializeMongoServer();
     } catch (error) {
       console.error(error);
     }
@@ -40,10 +35,12 @@ describe('Users route tests', () => {
 
   describe('Querying users', () => {
     beforeAll(async () => {
-      users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+      users = await TestUtils.createFakeUsers(
+        TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
+      );
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test('Get all users', (done) => {
       request(app)
@@ -59,7 +56,7 @@ describe('Users route tests', () => {
 
     test('Get single user by id', (done) => {
       request(app)
-        .get(`/${TEST_CONSTANTS.USER_IDS.one}`)
+        .get(`/${TestUtils.CONSTANTS.USER_IDS.one}`)
         .expect('Content-Type', /json/)
         .expect((res) => {
           expect(res.body).toMatchObject({
@@ -81,13 +78,15 @@ describe('Users route tests', () => {
   describe('Update user data', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+        users = await TestUtils.createFakeUsers(
+          TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
+        );
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test('should update user data when verified', (done) => {
       const requestBody = {
@@ -118,13 +117,15 @@ describe('Users route tests', () => {
   describe('Delete user', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+        users = await TestUtils.createFakeUsers(
+          TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
+        );
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test('should delete user when verified', (done) => {
       request(app)
@@ -149,23 +150,23 @@ describe('Users route tests', () => {
   describe('Get friends', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
+        users = await TestUtils.createFakeUsers({
           userOne: {
             friends: [
-              TEST_CONSTANTS.USER_IDS.two,
-              TEST_CONSTANTS.USER_IDS.three,
+              TestUtils.CONSTANTS.USER_IDS.two,
+              TestUtils.CONSTANTS.USER_IDS.three,
             ],
           },
           userTwo: {},
           userThree: {},
-          ids: TEST_CONSTANTS.USER_IDS,
+          ids: TestUtils.CONSTANTS.USER_IDS,
         });
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test('return empty array when user has no friends', (done) => {
       request(app)
@@ -197,20 +198,20 @@ describe('Users route tests', () => {
   describe('Add friend', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
+        users = await TestUtils.createFakeUsers({
           userOne: {
-            friendRequests: [TEST_CONSTANTS.USER_IDS.two],
+            friendRequests: [TestUtils.CONSTANTS.USER_IDS.two],
           },
           userTwo: {},
           userThree: {},
-          ids: TEST_CONSTANTS.USER_IDS,
+          ids: TestUtils.CONSTANTS.USER_IDS,
         });
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test("returns 404 if the user doesn't exist", (done) => {
       request(app)
@@ -251,20 +252,20 @@ describe('Users route tests', () => {
   describe('Delete friend', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
+        users = await TestUtils.createFakeUsers({
           userOne: {
-            friends: [TEST_CONSTANTS.USER_IDS.two],
+            friends: [TestUtils.CONSTANTS.USER_IDS.two],
           },
           userTwo: {},
           userThree: {},
-          ids: TEST_CONSTANTS.USER_IDS,
+          ids: TestUtils.CONSTANTS.USER_IDS,
         });
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test("delete friend returns 404 if the user doesn't exist", (done) => {
       request(app)
@@ -304,23 +305,23 @@ describe('Users route tests', () => {
   describe('Get friend requests', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
+        users = await TestUtils.createFakeUsers({
           userOne: {
             friendRequests: [
-              TEST_CONSTANTS.USER_IDS.two,
-              TEST_CONSTANTS.USER_IDS.three,
+              TestUtils.CONSTANTS.USER_IDS.two,
+              TestUtils.CONSTANTS.USER_IDS.three,
             ],
           },
           userTwo: { friendRequests: [] },
           userThree: {},
-          ids: TEST_CONSTANTS.USER_IDS,
+          ids: TestUtils.CONSTANTS.USER_IDS,
         });
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test('returns empty list on success', (done) => {
       request(app)
@@ -348,18 +349,18 @@ describe('Users route tests', () => {
   describe('Send friend requests', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
+        users = await TestUtils.createFakeUsers({
           userOne: {},
-          userTwo: { friendRequests: [TEST_CONSTANTS.USER_IDS.one] },
+          userTwo: { friendRequests: [TestUtils.CONSTANTS.USER_IDS.one] },
           userThree: {},
-          ids: TEST_CONSTANTS.USER_IDS,
+          ids: TestUtils.CONSTANTS.USER_IDS,
         });
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test('returns status 404 on wrong userId provided', (done) => {
       request(app)
@@ -392,18 +393,18 @@ describe('Users route tests', () => {
   describe('Delete friend request', () => {
     beforeAll(async () => {
       try {
-        users = await createFakeUsers({
-          userOne: { friendRequests: [TEST_CONSTANTS.USER_IDS.two] },
+        users = await TestUtils.createFakeUsers({
+          userOne: { friendRequests: [TestUtils.CONSTANTS.USER_IDS.two] },
           userTwo: {},
           userThree: {},
-          ids: TEST_CONSTANTS.USER_IDS,
+          ids: TestUtils.CONSTANTS.USER_IDS,
         });
       } catch (error) {
         console.error(error);
       }
     });
 
-    afterAll(deleteAllUsers);
+    afterAll(TestUtils.deleteAllUsers);
 
     test('returns 404 if wrong userId provided', (done) => {
       request(app)

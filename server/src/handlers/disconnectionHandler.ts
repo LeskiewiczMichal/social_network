@@ -1,8 +1,11 @@
 import { Server } from 'socket.io';
-import { MySocket } from '../types';
+import { SocketTypes } from '../types';
 import { User, UserInterface } from '../models';
 
-const registerDisconnectHandlers = (io: Server, socket: MySocket) => {
+const registerDisconnectHandlers = (
+  io: Server,
+  socket: SocketTypes.MySocket,
+) => {
   socket.on('disconnect', async () => {
     try {
       const { id: userId } = socket.user as UserInterface;

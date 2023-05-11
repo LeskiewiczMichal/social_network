@@ -5,12 +5,7 @@ import {
   PostInterface,
   UserInterface,
 } from '../models';
-import {
-  CommentTypes,
-  BadRequestError,
-  MissingBodyError,
-  UnauthorizedError,
-} from '../types';
+import { CommentTypes, ErrorTypes } from '../types';
 import { handleError } from '../utils';
 
 const getAllComments = async (
@@ -37,7 +32,7 @@ const addComment = async (
     const { body } = req.body;
     const { postId: postParamId } = req.params;
     if (!body) {
-      throw new MissingBodyError('body');
+      throw new ErrorTypes.MissingBodyError('body');
     }
     const { id: userId } = req.user as UserInterface;
     const { id: postId } = (await Post.findById(postParamId)) as PostInterface;
@@ -68,7 +63,7 @@ const updateComment = async (
     const comment = (await Comment.findById(commentId)) as CommentInterface;
 
     if (comment.author.toString() !== userId.toString()) {
-      throw new UnauthorizedError();
+      throw new ErrorTypes.UnauthorizedError();
     }
 
     if (body) {
@@ -92,7 +87,7 @@ const deleteComment = async (
     const comment = (await Comment.findById(commentId)) as CommentInterface;
 
     if (comment.author.toString() !== userId.toString()) {
-      throw new UnauthorizedError();
+      throw new ErrorTypes.UnauthorizedError();
     }
 
     await Comment.deleteOne({ comment });
@@ -117,7 +112,7 @@ const likeComment = async (
     const comment = (await Comment.findById(commentId)) as CommentInterface;
 
     if (comment.likes.includes(userId)) {
-      throw new BadRequestError('Comment is already liked');
+      throw new ErrorTypes.BadRequestError('Comment is already liked');
     }
 
     comment.likes.push(userId);
@@ -139,7 +134,7 @@ const dislikeComment = async (
     const comment = (await Comment.findById(commentId)) as CommentInterface;
 
     if (!comment.likes.includes(userId)) {
-      throw new BadRequestError("Comment isn't liked");
+      throw new ErrorTypes.BadRequestError("Comment isn't liked");
     }
 
     comment.likes = comment.likes.filter(

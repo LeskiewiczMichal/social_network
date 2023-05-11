@@ -23,24 +23,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BadRequestError = exports.UnauthorizedError = exports.MissingBodyError = exports.CommentTypes = void 0;
-// import {
-//   GetAllCommentsRequest,
-//   AddCommentRequest,
-//   UpdateCommentRequest,
-//   DeleteCommentRequest,
-//   LikeCommentRequest,
-//   DislikeCommentRequest,
-//   GetAllCommentsResponse,
-//   AddCommentResponse,
-//   UpdateCommentResponse,
-//   DeleteCommentResponse,
-//   LikeCommentResponse,
-//   DislikeCommentResponse,
-// } from './comments';
+exports.AuthTypes = exports.UserTypes = exports.ErrorTypes = exports.PostTypes = exports.CommentTypes = exports.SocketTypes = void 0;
 const CommentTypes = __importStar(require("./comments"));
 exports.CommentTypes = CommentTypes;
-const errors_1 = require("./errors");
-Object.defineProperty(exports, "MissingBodyError", { enumerable: true, get: function () { return errors_1.MissingBodyError; } });
-Object.defineProperty(exports, "UnauthorizedError", { enumerable: true, get: function () { return errors_1.UnauthorizedError; } });
-Object.defineProperty(exports, "BadRequestError", { enumerable: true, get: function () { return errors_1.BadRequestError; } });
+const PostTypes = __importStar(require("./posts"));
+exports.PostTypes = PostTypes;
+const UserTypes = __importStar(require("./users"));
+exports.UserTypes = UserTypes;
+const AuthTypes = __importStar(require("./auth"));
+exports.AuthTypes = AuthTypes;
+const ErrorTypes = __importStar(require("./errors"));
+exports.ErrorTypes = ErrorTypes;
+const SocketTypes = __importStar(require("./sockets"));
+exports.SocketTypes = SocketTypes;

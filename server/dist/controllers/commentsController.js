@@ -31,7 +31,7 @@ const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { body } = req.body;
         const { postId: postParamId } = req.params;
         if (!body) {
-            throw new types_1.MissingBodyError('body');
+            throw new types_1.ErrorTypes.MissingBodyError('body');
         }
         const { id: userId } = req.user;
         const { id: postId } = (yield models_1.Post.findById(postParamId));
@@ -56,7 +56,7 @@ const updateComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const { id: userId } = req.user;
         const comment = (yield models_1.Comment.findById(commentId));
         if (comment.author.toString() !== userId.toString()) {
-            throw new types_1.UnauthorizedError();
+            throw new types_1.ErrorTypes.UnauthorizedError();
         }
         if (body) {
             comment.body = body;
@@ -75,7 +75,7 @@ const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const { id: userId } = req.user;
         const comment = (yield models_1.Comment.findById(commentId));
         if (comment.author.toString() !== userId.toString()) {
-            throw new types_1.UnauthorizedError();
+            throw new types_1.ErrorTypes.UnauthorizedError();
         }
         yield models_1.Comment.deleteOne({ comment });
         yield models_1.Post.updateMany({ comments: comment.id }, { $pull: { comments: comment.id } });
@@ -92,7 +92,7 @@ const likeComment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const { id: userId } = req.user;
         const comment = (yield models_1.Comment.findById(commentId));
         if (comment.likes.includes(userId)) {
-            throw new types_1.BadRequestError('Comment is already liked');
+            throw new types_1.ErrorTypes.BadRequestError('Comment is already liked');
         }
         comment.likes.push(userId);
         yield comment.save();
@@ -109,7 +109,7 @@ const dislikeComment = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const { id: userId } = req.user;
         const comment = (yield models_1.Comment.findById(commentId));
         if (!comment.likes.includes(userId)) {
-            throw new types_1.BadRequestError("Comment isn't liked");
+            throw new types_1.ErrorTypes.BadRequestError("Comment isn't liked");
         }
         comment.likes = comment.likes.filter((id) => id.toString() !== userId.toString());
         yield comment.save();

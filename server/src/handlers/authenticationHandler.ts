@@ -1,8 +1,11 @@
 import * as jwt from 'jsonwebtoken';
 import { User, UserInterface } from '../models';
-import { MySocket } from '../types';
+import { SocketTypes } from '../types';
 
-const authenticationHandler = async (socket: MySocket, next: any) => {
+const authenticationHandler = async (
+  socket: SocketTypes.MySocket,
+  next: any,
+) => {
   const { token } = socket.handshake.auth;
   if (!token) {
     socket.disconnect();

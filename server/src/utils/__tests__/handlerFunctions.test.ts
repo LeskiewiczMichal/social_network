@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 import { handleError } from '..';
-import {
-  MissingBodyError,
-  UnauthorizedError,
-  BadRequestError,
-} from '../../types';
+import { ErrorTypes } from '../../types';
 
 describe('handleError function', () => {
   test('returns the correct basic error response with status 500 on server error', () => {
@@ -45,7 +41,7 @@ describe('handleError function', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const error = new BadRequestError('Post is already liked');
+    const error = new ErrorTypes.BadRequestError('Post is already liked');
 
     handleError(error, res);
 
@@ -60,7 +56,7 @@ describe('handleError function', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const error = new UnauthorizedError();
+    const error = new ErrorTypes.UnauthorizedError();
 
     handleError(error, res);
 
@@ -75,7 +71,7 @@ describe('handleError function', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    const error = new MissingBodyError('text');
+    const error = new ErrorTypes.MissingBodyError('text');
 
     handleError(error, res);
 

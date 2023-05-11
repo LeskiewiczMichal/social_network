@@ -1,29 +1,12 @@
 import { Request } from 'express';
-import {
-  CreatePostRequest,
-  DeletePostRequest,
-  GetPostByIdRequest,
-  LikePostRequest,
-  UnlikePostRequest,
-  UpdatePostRequest,
-  GetPostsResponse,
-  GetPostByIdResponse,
-  CreatePostResponse,
-  UpdatePostResponse,
-  DeletePostResponse,
-  LikePostResponse,
-  UnlikePostResponse,
-  MissingBodyError,
-  UnauthorizedError,
-  BadRequestError,
-} from '../types';
+import { PostTypes, ErrorTypes } from '../types';
 import { Comment, Post, PostInterface, UserInterface } from '../models';
 import { handleError } from '../utils';
 
 const getPosts = async (
   req: Request,
-  res: GetPostsResponse,
-): Promise<GetPostsResponse> => {
+  res: PostTypes.GetPostsResponse,
+): Promise<PostTypes.GetPostsResponse> => {
   try {
     const posts = (await Post.find()) as PostInterface[];
 
@@ -34,9 +17,9 @@ const getPosts = async (
 };
 
 const getPostById = async (
-  req: GetPostByIdRequest,
-  res: GetPostByIdResponse,
-): Promise<GetPostByIdResponse> => {
+  req: PostTypes.GetPostByIdRequest,
+  res: PostTypes.GetPostByIdResponse,
+): Promise<PostTypes.GetPostByIdResponse> => {
   try {
     const { postId } = req.params;
     const post = (await Post.findById(postId)) as PostInterface;
@@ -48,17 +31,17 @@ const getPostById = async (
 };
 
 const createPost = async (
-  req: CreatePostRequest,
-  res: CreatePostResponse,
-): Promise<CreatePostResponse> => {
+  req: PostTypes.CreatePostRequest,
+  res: PostTypes.CreatePostResponse,
+): Promise<PostTypes.CreatePostResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
     const { body, title } = req.body;
 
     if (!title) {
-      throw new MissingBodyError('title');
+      throw new ErrorTypes.MissingBodyError('title');
     } else if (!body) {
-      throw new MissingBodyError('body');
+      throw new ErrorTypes.MissingBodyError('body');
     }
 
     const post = new Post({
@@ -77,16 +60,16 @@ const createPost = async (
 };
 
 const updatePost = async (
-  req: UpdatePostRequest,
-  res: UpdatePostResponse,
-): Promise<UpdatePostResponse> => {
+  req: PostTypes.UpdatePostRequest,
+  res: PostTypes.UpdatePostResponse,
+): Promise<PostTypes.UpdatePostResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
     const { title, body } = req.body;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
     if (post.author.toString() !== userId.toString()) {
-      throw new UnauthorizedError();
+      throw new ErrorTypes.UnauthorizedError();
     }
 
     if (title) {
@@ -104,16 +87,16 @@ const updatePost = async (
 };
 
 const deletePost = async (
-  req: DeletePostRequest,
-  res: DeletePostResponse,
-): Promise<DeletePostResponse> => {
+  req: PostTypes.DeletePostRequest,
+  res: PostTypes.DeletePostResponse,
+): Promise<PostTypes.DeletePostResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
     const { postId } = req.params;
     const post = (await Post.findById(postId)) as PostInterface;
 
     if (post.author.toString() !== userId.toString()) {
-      throw new UnauthorizedError();
+      throw new ErrorTypes.UnauthorizedError();
     }
 
     await Comment.deleteMany({ post: postId });
@@ -126,16 +109,16 @@ const deletePost = async (
 };
 
 const likePost = async (
-  req: LikePostRequest,
-  res: LikePostResponse,
-): Promise<LikePostResponse> => {
+  req: PostTypes.LikePostRequest,
+  res: PostTypes.LikePostResponse,
+): Promise<PostTypes.LikePostResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
     const { postId } = req.params;
     const post = (await Post.findById(postId)) as PostInterface;
 
     if (post.likes.includes(userId)) {
-      throw new BadRequestError('Post is already liked');
+      throw new ErrorTypes.BadRequestError('Post is already liked');
     }
 
     post.likes.push(userId);
@@ -148,16 +131,16 @@ const likePost = async (
 };
 
 const unlikePost = async (
-  req: UnlikePostRequest,
-  res: UnlikePostResponse,
-): Promise<UnlikePostResponse> => {
+  req: PostTypes.UnlikePostRequest,
+  res: PostTypes.UnlikePostResponse,
+): Promise<PostTypes.UnlikePostResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
     const { postId } = req.params;
     const post = (await Post.findById(postId)) as PostInterface;
 
     if (!post.likes.includes(userId)) {
-      throw new BadRequestError('Post is not liked');
+      throw new ErrorTypes.BadRequestError('Post is not liked');
     }
 
     post.likes = post.likes.filter((id) => id.toString() !== userId.toString());

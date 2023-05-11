@@ -4,16 +4,7 @@ import express from 'express';
 import { commentsRouter } from '..';
 import { serverConfig } from '../../middleware';
 import { Post } from '../../models';
-import {
-  deleteAllPosts,
-  deleteAllComments,
-  initializeMongoServer,
-  createFakeUsers,
-  createFakePosts,
-  TEST_CONSTANTS,
-} from '../../__testUtils__';
-import createFakeComments from '../../__testUtils__/createFakeComments';
-import { COMMENT_IDS } from '../../__testUtils__/constants';
+import * as TestUtils from '../../__testUtils__';
 
 // Config test server
 dotenv.config();
@@ -22,8 +13,8 @@ serverConfig(app);
 app.use('/', commentsRouter);
 
 const clearDB = async () => {
-  await deleteAllPosts();
-  await deleteAllComments();
+  await TestUtils.deleteAllPosts();
+  await TestUtils.deleteAllComments();
 };
 
 describe('Comments route tests', () => {
@@ -36,8 +27,10 @@ describe('Comments route tests', () => {
   beforeAll(async () => {
     errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     try {
-      db = await initializeMongoServer();
-      users = await createFakeUsers(TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+      db = await TestUtils.initializeMongoServer();
+      users = await TestUtils.createFakeUsers(
+        TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
+      );
     } catch (error) {
       console.error(error);
     }
@@ -51,8 +44,8 @@ describe('Comments route tests', () => {
 
   describe('Querying comments', () => {
     beforeAll(async () => {
-      comments = await createFakeComments(
-        TEST_CONSTANTS.DEFAULT_COMMENTS_PROPS,
+      comments = await TestUtils.createFakeComments(
+        TestUtils.CONSTANTS.DEFAULT_COMMENTS_PROPS,
       );
     });
 
@@ -69,7 +62,7 @@ describe('Comments route tests', () => {
 
     test('get all comments from post', (done) => {
       request(app)
-        .get(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .get(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect((res) => {
@@ -83,13 +76,13 @@ describe('Comments route tests', () => {
 
   describe('Create comment', () => {
     beforeAll(async () => {
-      await createFakePosts(TEST_CONSTANTS.DEFAULT_POSTS_PROPS);
+      await TestUtils.createFakePosts(TestUtils.CONSTANTS.DEFAULT_POSTS_PROPS);
     });
     afterAll(clearDB);
 
     test('returns status 400 on body not provided', (done) => {
       request(app)
-        .post(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .post(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Missing required body field: body' })
@@ -110,7 +103,7 @@ describe('Comments route tests', () => {
     test('return comment on success', (done) => {
       const requestBody = { body: 'This is test comment' };
       request(app)
-        .post(`/${TEST_CONSTANTS.POST_IDS.one}`)
+        .post(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .send(requestBody)
         .expect('Content-Type', /json/)
@@ -119,9 +112,9 @@ describe('Comments route tests', () => {
             message: 'Comment successfully created',
             comment: {
               body: requestBody.body,
-              author: TEST_CONSTANTS.USER_IDS.one.toString(),
+              author: TestUtils.CONSTANTS.USER_IDS.one.toString(),
               likes: [],
-              post: TEST_CONSTANTS.POST_IDS.one.toString(),
+              post: TestUtils.CONSTANTS.POST_IDS.one.toString(),
             },
           });
         })
@@ -131,13 +124,13 @@ describe('Comments route tests', () => {
 
   describe('Update comment', () => {
     beforeAll(async () => {
-      comments = await createFakeComments({
-        commentOne: { author: TEST_CONSTANTS.USER_IDS.one },
+      comments = await TestUtils.createFakeComments({
+        commentOne: { author: TestUtils.CONSTANTS.USER_IDS.one },
         commentTwo: {},
         commentThree: {},
-        commentIds: TEST_CONSTANTS.COMMENT_IDS,
-        authorId: TEST_CONSTANTS.USER_IDS.one,
-        postId: TEST_CONSTANTS.POST_IDS.one,
+        commentIds: TestUtils.CONSTANTS.COMMENT_IDS,
+        authorId: TestUtils.CONSTANTS.USER_IDS.one,
+        postId: TestUtils.CONSTANTS.POST_IDS.one,
       });
     });
 
@@ -157,7 +150,7 @@ describe('Comments route tests', () => {
     test("returns staus 401  if user is not comment's creator", (done) => {
       const requestBody = { body: 'This is test' };
       request(app)
-        .put(`/${TEST_CONSTANTS.COMMENT_IDS.one}`)
+        .put(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .send(requestBody)
         .expect('Content-Type', /json/)
@@ -168,7 +161,7 @@ describe('Comments route tests', () => {
     test('returns modified comment on success', (done) => {
       const requestBody = { body: 'test' };
       request(app)
-        .put(`/${TEST_CONSTANTS.COMMENT_IDS.one}`)
+        .put(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .send(requestBody)
         .expect('Content-Type', /json/)
@@ -184,8 +177,8 @@ describe('Comments route tests', () => {
 
   describe('Delete comment', () => {
     beforeAll(async () => {
-      comments = await createFakeComments(
-        TEST_CONSTANTS.DEFAULT_COMMENTS_PROPS,
+      comments = await TestUtils.createFakeComments(
+        TestUtils.CONSTANTS.DEFAULT_COMMENTS_PROPS,
       );
     });
     afterAll(clearDB);
@@ -201,7 +194,7 @@ describe('Comments route tests', () => {
 
     test("returns staus 401  if user is not comment's creator", (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.one}`)
+        .delete(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.two}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Unauthorized' })
@@ -210,7 +203,7 @@ describe('Comments route tests', () => {
 
     test('returns message on success', (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.one}`)
+        .delete(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Comment deleted successfully' })
@@ -219,7 +212,7 @@ describe('Comments route tests', () => {
 
     test("removes deleted comment's id from post that it was on", (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.two}`)
+        .delete(`/${TestUtils.CONSTANTS.COMMENT_IDS.two}`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Comment deleted successfully' })
@@ -227,7 +220,9 @@ describe('Comments route tests', () => {
           Post.findById(comments.post._id)
             .then((docs) => {
               if (docs) {
-                expect(docs.comments).not.toContainEqual(COMMENT_IDS.two);
+                expect(docs.comments).not.toContainEqual(
+                  TestUtils.CONSTANTS.COMMENT_IDS.two,
+                );
                 done();
               } else {
                 throw new Error('Not found');
@@ -243,13 +238,13 @@ describe('Comments route tests', () => {
 
   describe('Liking comments', () => {
     beforeAll(async () => {
-      comments = await createFakeComments({
+      comments = await TestUtils.createFakeComments({
         commentOne: {},
         commentTwo: {},
-        commentThree: { likes: [TEST_CONSTANTS.USER_IDS.one] },
-        commentIds: TEST_CONSTANTS.COMMENT_IDS,
-        authorId: TEST_CONSTANTS.USER_IDS.one,
-        postId: TEST_CONSTANTS.POST_IDS.one,
+        commentThree: { likes: [TestUtils.CONSTANTS.USER_IDS.one] },
+        commentIds: TestUtils.CONSTANTS.COMMENT_IDS,
+        authorId: TestUtils.CONSTANTS.USER_IDS.one,
+        postId: TestUtils.CONSTANTS.POST_IDS.one,
       });
     });
     afterAll(clearDB);
@@ -265,7 +260,7 @@ describe('Comments route tests', () => {
 
     test('returns status 400 if comment is already liked', (done) => {
       request(app)
-        .post(`/${TEST_CONSTANTS.COMMENT_IDS.three}/likes`)
+        .post(`/${TestUtils.CONSTANTS.COMMENT_IDS.three}/likes`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ error: 'Comment is already liked' })
@@ -274,7 +269,7 @@ describe('Comments route tests', () => {
 
     test('returns message on success', (done) => {
       request(app)
-        .post(`/${TEST_CONSTANTS.COMMENT_IDS.one}/likes`)
+        .post(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}/likes`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Comment liked successfully' })
@@ -284,13 +279,13 @@ describe('Comments route tests', () => {
 
   describe('Disliking comments', () => {
     beforeAll(async () => {
-      comments = await createFakeComments({
-        commentOne: { likes: [TEST_CONSTANTS.USER_IDS.one] },
+      comments = await TestUtils.createFakeComments({
+        commentOne: { likes: [TestUtils.CONSTANTS.USER_IDS.one] },
         commentTwo: {},
         commentThree: {},
-        commentIds: TEST_CONSTANTS.COMMENT_IDS,
-        authorId: TEST_CONSTANTS.USER_IDS.one,
-        postId: TEST_CONSTANTS.POST_IDS.one,
+        commentIds: TestUtils.CONSTANTS.COMMENT_IDS,
+        authorId: TestUtils.CONSTANTS.USER_IDS.one,
+        postId: TestUtils.CONSTANTS.POST_IDS.one,
       });
     });
     afterAll(clearDB);
@@ -306,7 +301,7 @@ describe('Comments route tests', () => {
 
     test('returns status 400 if comment is already liked', (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.three}/likes`)
+        .delete(`/${TestUtils.CONSTANTS.COMMENT_IDS.three}/likes`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ error: "Comment isn't liked" })
@@ -315,7 +310,7 @@ describe('Comments route tests', () => {
 
     test('returns message on success', (done) => {
       request(app)
-        .delete(`/${TEST_CONSTANTS.COMMENT_IDS.one}/likes`)
+        .delete(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}/likes`)
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Comment unliked successfully' })

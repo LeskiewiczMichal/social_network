@@ -46,10 +46,10 @@ const login = (req, res) => {
     passport_1.default.authenticate('local', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             if (err || !user) {
-                throw new types_1.BadRequestError('Incorrect email or password');
+                throw new types_1.ErrorTypes.BadRequestError('Incorrect email or password');
             }
             if (!process.env.SECRET) {
-                throw new types_1.BadRequestError('Secret environment variable not defined');
+                throw new types_1.ErrorTypes.BadRequestError('Secret environment variable not defined');
             }
             const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.SECRET);
             return res.json({ user, token });
@@ -64,7 +64,7 @@ const loginGoogle = (req, res) => {
     passport_1.default.authenticate('google', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             if (err || !user) {
-                throw new types_1.BadRequestError("Couldn't find google account");
+                throw new types_1.ErrorTypes.BadRequestError("Couldn't find google account");
             }
             if (!process.env.SECRET) {
                 throw new Error('Secret environment variable not defined');
@@ -82,19 +82,19 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const { email, password, birthday, firstName, lastName } = req.body;
         if (!email) {
-            throw new types_1.MissingBodyError('email');
+            throw new types_1.ErrorTypes.MissingBodyError('email');
         }
         if (!password) {
-            throw new types_1.MissingBodyError('password');
+            throw new types_1.ErrorTypes.MissingBodyError('password');
         }
         if (!birthday) {
-            throw new types_1.MissingBodyError('birthday');
+            throw new types_1.ErrorTypes.MissingBodyError('birthday');
         }
         if (!firstName) {
-            throw new types_1.MissingBodyError('firstName');
+            throw new types_1.ErrorTypes.MissingBodyError('firstName');
         }
         if (!lastName) {
-            throw new types_1.MissingBodyError('lastName');
+            throw new types_1.ErrorTypes.MissingBodyError('lastName');
         }
         const hash = yield bcrypt.hash(password, 10);
         const user = new models_1.User({

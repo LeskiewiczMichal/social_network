@@ -2,25 +2,10 @@ import deleteAllUsers from './deleteAllUsers';
 import initializeMongoServer from './mongoConfigTesting';
 import createFakeUsers from './createFakeUsers';
 import createFakePosts from './createFakePosts';
+import createFakeComments from './createFakeComments';
 import deleteAllPosts from './deleteAllPosts';
 import deleteAllComments from './deleteAllComments';
-import {
-  USER_IDS,
-  POST_IDS,
-  DEFAULT_USERS_PROPS,
-  DEFAULT_POSTS_PROPS,
-  DEFAULT_COMMENTS_PROPS,
-  COMMENT_IDS,
-} from './constants';
-
-const TEST_CONSTANTS = {
-  USER_IDS,
-  POST_IDS,
-  COMMENT_IDS,
-  DEFAULT_USERS_PROPS,
-  DEFAULT_POSTS_PROPS,
-  DEFAULT_COMMENTS_PROPS,
-};
+import * as CONSTANTS from './constants';
 
 export {
   deleteAllUsers,
@@ -29,5 +14,6 @@ export {
   deleteAllPosts,
   createFakePosts,
   deleteAllComments,
-  TEST_CONSTANTS,
+  createFakeComments,
+  CONSTANTS,
 };
