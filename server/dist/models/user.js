@@ -9,7 +9,10 @@ const userSchema = new mongoose_1.Schema({
     friends: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     friendRequests: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     birthday: { type: Date, required: false },
-    profilePicture: { type: String, default: '' },
+    profilePicture: {
+        type: String,
+        default: '/photos/profilePictures/default.png',
+    },
     googleId: { type: String, requried: false },
     socketId: { type: String, required: false, default: null },
 });

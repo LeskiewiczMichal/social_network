@@ -31,7 +31,7 @@ const PostsController = __importStar(require("../controllers/postsController"));
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 router.use(middleware_1.verifyToken);
-router.post('/upload-picture', middleware_1.verifyToken, middleware_1.FileUploads.profilePicture.single('photo'), PostsController.uploadPhoto);
+router.post('/upload-picture', middleware_1.FileUploads.profilePicture.single('photo'), PostsController.uploadPhoto);
 router.post('/:postId/likes', PostsController.likePost);
 router.delete('/:postId/likes', PostsController.unlikePost);
 router.get('/:postId', PostsController.getPostById);

@@ -1,17 +1,40 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const commentsController_1 = require("../controllers/commentsController");
+const CommentsController = __importStar(require("../controllers/commentsController"));
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 router.use(middleware_1.verifyToken);
-router.post('/:postId', commentsController_1.addComment);
-router.get('/:postId', commentsController_1.getAllComments);
-router.post('/:commentId/likes', commentsController_1.likeComment);
-router.delete('/:commentId/likes', commentsController_1.dislikeComment);
-router.put('/:commentId', commentsController_1.updateComment);
-router.delete('/:commentId', commentsController_1.deleteComment);
+router.post('/:postId', CommentsController.addComment);
+router.get('/:postId', CommentsController.getAllComments);
+router.post('/:commentId/likes', CommentsController.likeComment);
+router.delete('/:commentId/likes', CommentsController.dislikeComment);
+router.put('/:commentId', CommentsController.updateComment);
+router.delete('/:commentId', CommentsController.deleteComment);
 exports.default = router;
