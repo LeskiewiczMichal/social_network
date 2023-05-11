@@ -8,15 +8,15 @@ if (!url) {
   throw new Error('Environment variables not set');
 }
 
-const uploadDir = path.join(__dirname, '../../uploads');
 const generateFilename = (filename: string) => {
   const ext = path.extname(filename);
   return `${uuidv4()}${ext}`;
 };
 
-const storage = multer.diskStorage({
+const profilePicsDir = path.join(__dirname, '../../uploads/profilePictures');
+const profilePicsStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+    cb(null, profilePicsDir);
   },
   filename: (req, file, cb) => {
     const filename = generateFilename(file.originalname);
@@ -24,6 +24,18 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const postPhotoDir = path.join(__dirname, '../../uploads/photos');
+const postPhotoStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, postPhotoDir);
+  },
+  filename: (req, file, cb) => {
+    const filename = generateFilename(file.originalname);
+    cb(null, filename);
+  },
+});
 
-export default upload;
+const profilePicture = multer({ storage: profilePicsStorage });
+const postPhoto = multer({ storage: postPhotoStorage });
+
+export { profilePicture, postPhoto };

@@ -1,6 +1,6 @@
 import express from 'express';
 import * as UsersController from '../controllers/usersController';
-import { verifyToken, upload } from '../middleware';
+import { verifyToken, FileUploads } from '../middleware';
 
 const router = express.Router();
 
@@ -26,7 +26,7 @@ router.get('/:userId/friends', verifyToken, UsersController.getFriends);
 router.post(
   '/profile-picture',
   verifyToken,
-  upload.single('picture'),
+  FileUploads.profilePicture.single('picture'),
   UsersController.uploadProfilePic,
 );
 router.put('/', verifyToken, UsersController.updateUserData);

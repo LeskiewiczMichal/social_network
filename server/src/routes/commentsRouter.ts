@@ -1,23 +1,16 @@
 import express from 'express';
-import {
-  addComment,
-  deleteComment,
-  getAllComments,
-  updateComment,
-  likeComment,
-  dislikeComment,
-} from '../controllers/commentsController';
+import * as CommentsController from '../controllers/commentsController';
 import { verifyToken } from '../middleware';
 
 const router = express.Router();
 
 router.use(verifyToken);
 
-router.post('/:postId', addComment);
-router.get('/:postId', getAllComments);
-router.post('/:commentId/likes', likeComment);
-router.delete('/:commentId/likes', dislikeComment);
-router.put('/:commentId', updateComment);
-router.delete('/:commentId', deleteComment);
+router.post('/:postId', CommentsController.addComment);
+router.get('/:postId', CommentsController.getAllComments);
+router.post('/:commentId/likes', CommentsController.likeComment);
+router.delete('/:commentId/likes', CommentsController.dislikeComment);
+router.put('/:commentId', CommentsController.updateComment);
+router.delete('/:commentId', CommentsController.deleteComment);
 
 export default router;

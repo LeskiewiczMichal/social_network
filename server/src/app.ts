@@ -31,10 +31,7 @@ io.on('connection', (socket: SocketTypes.MySocket) => {
   EventHandlers.registerDisconnectHandlers(io, socket);
 });
 
-app.use(
-  '/profile-pictures',
-  express.static(path.join(__dirname, '../uploads')),
-);
+app.use('/photos', express.static(path.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
   res.send('Welcome');
 });

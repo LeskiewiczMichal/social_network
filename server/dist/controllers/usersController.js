@@ -13,7 +13,6 @@ exports.uploadProfilePic = exports.deleteFriendRequest = exports.getFriendReques
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
-const errors_1 = require("../types/errors");
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = (yield models_1.User.find());
@@ -156,7 +155,7 @@ const deleteFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, func
         const { friendId } = req.params;
         const { id: friendRequestId } = (yield models_1.User.findById(friendId));
         if (!user.friendRequests.includes(friendRequestId)) {
-            throw new errors_1.NotFoundError();
+            throw new types_1.ErrorTypes.NotFoundError();
         }
         user.friendRequests = user.friendRequests.filter((id) => id.toString() !== friendRequestId.toString());
         yield user.save();
@@ -172,12 +171,12 @@ const uploadProfilePic = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const user = req.user;
         const { file } = req;
         if (!file) {
-            throw new errors_1.NotFoundError();
+            throw new types_1.ErrorTypes.NotFoundError();
         }
-        const pictureUrl = `/profile-pictures/${file.filename}`;
+        const pictureUrl = `/photos/profilePictures/${file.filename}`;
         user.profilePicture = pictureUrl;
         yield user.save();
-        return res.json({ message: 'Profile picture updated correctly', user });
+        return res.json({ message: 'Profile picture updated successfully', user });
     }
     catch (error) {
         return (0, utils_1.handleError)(error, res);

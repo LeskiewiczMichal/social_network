@@ -41,7 +41,7 @@ const express_1 = __importDefault(require("express"));
 const __1 = require("..");
 const middleware_1 = require("../../middleware");
 const models_1 = require("../../models");
-const __testUtils__1 = require("../../__testUtils__");
+const TestUtils = __importStar(require("../../__testUtils__"));
 // Config test server
 dotenv.config();
 const app = (0, express_1.default)();
@@ -55,7 +55,7 @@ describe('Users route tests', () => {
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
         try {
-            db = yield (0, __testUtils__1.initializeMongoServer)();
+            db = yield TestUtils.initializeMongoServer();
         }
         catch (error) {
             console.error(error);
@@ -68,9 +68,9 @@ describe('Users route tests', () => {
     }));
     describe('Querying users', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-            users = yield (0, __testUtils__1.createFakeUsers)(__testUtils__1.TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+            users = yield TestUtils.createFakeUsers(TestUtils.CONSTANTS.DEFAULT_USERS_PROPS);
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test('Get all users', (done) => {
             (0, supertest_1.default)(app)
                 .get('/')
@@ -84,7 +84,7 @@ describe('Users route tests', () => {
         });
         test('Get single user by id', (done) => {
             (0, supertest_1.default)(app)
-                .get(`/${__testUtils__1.TEST_CONSTANTS.USER_IDS.one}`)
+                .get(`/${TestUtils.CONSTANTS.USER_IDS.one}`)
                 .expect('Content-Type', /json/)
                 .expect((res) => {
                 expect(res.body).toMatchObject({
@@ -104,13 +104,13 @@ describe('Users route tests', () => {
     describe('Update user data', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)(__testUtils__1.TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+                users = yield TestUtils.createFakeUsers(TestUtils.CONSTANTS.DEFAULT_USERS_PROPS);
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test('should update user data when verified', (done) => {
             const requestBody = {
                 email: 'john@example.com',
@@ -139,13 +139,13 @@ describe('Users route tests', () => {
     describe('Delete user', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)(__testUtils__1.TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+                users = yield TestUtils.createFakeUsers(TestUtils.CONSTANTS.DEFAULT_USERS_PROPS);
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test('should delete user when verified', (done) => {
             (0, supertest_1.default)(app)
                 .delete('/')
@@ -168,23 +168,23 @@ describe('Users route tests', () => {
     describe('Get friends', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)({
+                users = yield TestUtils.createFakeUsers({
                     userOne: {
                         friends: [
-                            __testUtils__1.TEST_CONSTANTS.USER_IDS.two,
-                            __testUtils__1.TEST_CONSTANTS.USER_IDS.three,
+                            TestUtils.CONSTANTS.USER_IDS.two,
+                            TestUtils.CONSTANTS.USER_IDS.three,
                         ],
                     },
                     userTwo: {},
                     userThree: {},
-                    ids: __testUtils__1.TEST_CONSTANTS.USER_IDS,
+                    ids: TestUtils.CONSTANTS.USER_IDS,
                 });
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test('return empty array when user has no friends', (done) => {
             (0, supertest_1.default)(app)
                 .get(`/${users.three._id}/friends`)
@@ -213,20 +213,20 @@ describe('Users route tests', () => {
     describe('Add friend', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)({
+                users = yield TestUtils.createFakeUsers({
                     userOne: {
-                        friendRequests: [__testUtils__1.TEST_CONSTANTS.USER_IDS.two],
+                        friendRequests: [TestUtils.CONSTANTS.USER_IDS.two],
                     },
                     userTwo: {},
                     userThree: {},
-                    ids: __testUtils__1.TEST_CONSTANTS.USER_IDS,
+                    ids: TestUtils.CONSTANTS.USER_IDS,
                 });
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test("returns 404 if the user doesn't exist", (done) => {
             (0, supertest_1.default)(app)
                 .post(`/friends/000`)
@@ -263,20 +263,20 @@ describe('Users route tests', () => {
     describe('Delete friend', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)({
+                users = yield TestUtils.createFakeUsers({
                     userOne: {
-                        friends: [__testUtils__1.TEST_CONSTANTS.USER_IDS.two],
+                        friends: [TestUtils.CONSTANTS.USER_IDS.two],
                     },
                     userTwo: {},
                     userThree: {},
-                    ids: __testUtils__1.TEST_CONSTANTS.USER_IDS,
+                    ids: TestUtils.CONSTANTS.USER_IDS,
                 });
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test("delete friend returns 404 if the user doesn't exist", (done) => {
             (0, supertest_1.default)(app)
                 .delete('/friends/000')
@@ -312,23 +312,23 @@ describe('Users route tests', () => {
     describe('Get friend requests', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)({
+                users = yield TestUtils.createFakeUsers({
                     userOne: {
                         friendRequests: [
-                            __testUtils__1.TEST_CONSTANTS.USER_IDS.two,
-                            __testUtils__1.TEST_CONSTANTS.USER_IDS.three,
+                            TestUtils.CONSTANTS.USER_IDS.two,
+                            TestUtils.CONSTANTS.USER_IDS.three,
                         ],
                     },
                     userTwo: { friendRequests: [] },
                     userThree: {},
-                    ids: __testUtils__1.TEST_CONSTANTS.USER_IDS,
+                    ids: TestUtils.CONSTANTS.USER_IDS,
                 });
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test('returns empty list on success', (done) => {
             (0, supertest_1.default)(app)
                 .get('/friendRequests')
@@ -353,18 +353,18 @@ describe('Users route tests', () => {
     describe('Send friend requests', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)({
+                users = yield TestUtils.createFakeUsers({
                     userOne: {},
-                    userTwo: { friendRequests: [__testUtils__1.TEST_CONSTANTS.USER_IDS.one] },
+                    userTwo: { friendRequests: [TestUtils.CONSTANTS.USER_IDS.one] },
                     userThree: {},
-                    ids: __testUtils__1.TEST_CONSTANTS.USER_IDS,
+                    ids: TestUtils.CONSTANTS.USER_IDS,
                 });
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test('returns status 404 on wrong userId provided', (done) => {
             (0, supertest_1.default)(app)
                 .post('/friendRequests/000')
@@ -393,18 +393,18 @@ describe('Users route tests', () => {
     describe('Delete friend request', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                users = yield (0, __testUtils__1.createFakeUsers)({
-                    userOne: { friendRequests: [__testUtils__1.TEST_CONSTANTS.USER_IDS.two] },
+                users = yield TestUtils.createFakeUsers({
+                    userOne: { friendRequests: [TestUtils.CONSTANTS.USER_IDS.two] },
                     userTwo: {},
                     userThree: {},
-                    ids: __testUtils__1.TEST_CONSTANTS.USER_IDS,
+                    ids: TestUtils.CONSTANTS.USER_IDS,
                 });
             }
             catch (error) {
                 console.error(error);
             }
         }));
-        afterAll(__testUtils__1.deleteAllUsers);
+        afterAll(TestUtils.deleteAllUsers);
         test('returns 404 if wrong userId provided', (done) => {
             (0, supertest_1.default)(app)
                 .delete(`/friendRequests/000`)

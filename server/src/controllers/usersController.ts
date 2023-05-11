@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { User, UserInterface } from '../models';
 import { ErrorTypes, UserTypes } from '../types';
 import { handleError } from '../utils';
-import { NotFoundError } from '../types/errors';
 
 const getAllUsers = async (
   req: Request,
@@ -192,7 +191,7 @@ const deleteFriendRequest = async (
     )) as UserInterface;
 
     if (!user.friendRequests.includes(friendRequestId)) {
-      throw new NotFoundError();
+      throw new ErrorTypes.NotFoundError();
     }
 
     user.friendRequests = user.friendRequests.filter(
@@ -213,14 +212,14 @@ const uploadProfilePic = async (req: Request, res: Response) => {
     const { file } = req;
 
     if (!file) {
-      throw new NotFoundError();
+      throw new ErrorTypes.NotFoundError();
     }
 
-    const pictureUrl = `/profile-pictures/${file.filename}`;
+    const pictureUrl = `/photos/profilePictures/${file.filename}`;
     user.profilePicture = pictureUrl;
     await user.save();
 
-    return res.json({ message: 'Profile picture updated correctly', user });
+    return res.json({ message: 'Profile picture updated successfully', user });
   } catch (error: any) {
     return handleError(error, res);
   }

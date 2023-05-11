@@ -40,9 +40,9 @@ const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const socket_io_client_1 = require("socket.io-client");
-const __testUtils__1 = require("../../__testUtils__");
+const TestUtils = __importStar(require("../../__testUtils__"));
 const middleware_1 = require("../../middleware");
-const __1 = require("..");
+const EventHanlers = __importStar(require(".."));
 const models_1 = require("../../models");
 describe('Chat handlers', () => {
     let io;
@@ -54,8 +54,8 @@ describe('Chat handlers', () => {
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         try {
             dotenv.config();
-            db = yield (0, __testUtils__1.initializeMongoServer)();
-            users = yield (0, __testUtils__1.createFakeUsers)(__testUtils__1.TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+            db = yield TestUtils.initializeMongoServer();
+            users = yield TestUtils.createFakeUsers(TestUtils.CONSTANTS.DEFAULT_USERS_PROPS);
             const app = (0, express_1.default)();
             const httpServer = (0, http_1.createServer)(app);
             io = new socket_io_1.Server(httpServer, {
@@ -64,10 +64,10 @@ describe('Chat handlers', () => {
                 },
             });
             (0, middleware_1.serverConfig)(app);
-            io.use(__1.authenticationHandler);
+            io.use(EventHanlers.authenticationHandler);
             io.on('connection', (socket) => {
-                (0, __1.registerChatHandlers)(io, socket);
-                (0, __1.registerDisconnectHandlers)(io, socket);
+                EventHanlers.registerChatHandlers(io, socket);
+                EventHanlers.registerDisconnectHandlers(io, socket);
             });
             yield new Promise((resolve, reject) => {
                 httpServer.listen(() => {
@@ -108,8 +108,8 @@ describe('Chat handlers', () => {
         });
         clientSocket.emit('send-message', {
             body: 'test',
-            receiver: __testUtils__1.TEST_CONSTANTS.USER_IDS.one,
-            sender: __testUtils__1.TEST_CONSTANTS.USER_IDS.one,
+            receiver: TestUtils.CONSTANTS.USER_IDS.one,
+            sender: TestUtils.CONSTANTS.USER_IDS.one,
         });
     });
     test('creates new message in database', (done) => {
@@ -119,8 +119,8 @@ describe('Chat handlers', () => {
                     if (message) {
                         expect(message).toMatchObject({
                             body: 'test',
-                            sender: __testUtils__1.TEST_CONSTANTS.USER_IDS.one,
-                            receiver: __testUtils__1.TEST_CONSTANTS.USER_IDS.one,
+                            sender: TestUtils.CONSTANTS.USER_IDS.one,
+                            receiver: TestUtils.CONSTANTS.USER_IDS.one,
                         });
                         done();
                     }
@@ -136,8 +136,8 @@ describe('Chat handlers', () => {
         });
         clientSocket.emit('send-message', {
             body: 'test',
-            receiver: __testUtils__1.TEST_CONSTANTS.USER_IDS.one,
-            sender: __testUtils__1.TEST_CONSTANTS.USER_IDS.one,
+            receiver: TestUtils.CONSTANTS.USER_IDS.one,
+            sender: TestUtils.CONSTANTS.USER_IDS.one,
         });
     });
 });

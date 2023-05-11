@@ -38,7 +38,7 @@ describe('handleError function', () => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn(),
         };
-        const error = new types_1.BadRequestError('Post is already liked');
+        const error = new types_1.ErrorTypes.BadRequestError('Post is already liked');
         (0, __1.handleError)(error, res);
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
@@ -50,7 +50,7 @@ describe('handleError function', () => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn(),
         };
-        const error = new types_1.UnauthorizedError();
+        const error = new types_1.ErrorTypes.UnauthorizedError();
         (0, __1.handleError)(error, res);
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({
@@ -62,7 +62,7 @@ describe('handleError function', () => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn(),
         };
-        const error = new types_1.MissingBodyError('text');
+        const error = new types_1.ErrorTypes.MissingBodyError('text');
         (0, __1.handleError)(error, res);
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({

@@ -1,18 +1,13 @@
 import express from 'express';
 import passport from 'passport';
-import {
-  login,
-  loginGoogle,
-  createAccount,
-  authenticateUser,
-} from '../controllers/authController';
+import * as AuthController from '../controllers/authController';
 import { verifyToken } from '../middleware';
 
 const router = express.Router();
 
-router.post('/', createAccount);
-router.post('/login', login);
-router.get('/token', verifyToken, authenticateUser);
+router.post('/', AuthController.createAccount);
+router.post('/login', AuthController.login);
+router.get('/token', verifyToken, AuthController.authenticateUser);
 router.get(
   '/google',
   passport.authenticate('google', {
@@ -20,6 +15,6 @@ router.get(
     scope: ['profile', 'email'],
   }),
 );
-router.get('/google/callback', loginGoogle);
+router.get('/google/callback', AuthController.loginGoogle);
 
 export default router;

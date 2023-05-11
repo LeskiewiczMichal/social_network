@@ -7,6 +7,7 @@ const postSchema = new mongoose_1.Schema({
     author: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User' },
     comments: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Comment' }],
     likes: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
+    photo: { type: String, required: false, default: null },
 }, { timestamps: true });
 const Post = (0, mongoose_1.model)('Post', postSchema);
 exports.default = Post;

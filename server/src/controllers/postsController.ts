@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { PostTypes, ErrorTypes } from '../types';
 import { Comment, Post, PostInterface, UserInterface } from '../models';
 import { handleError } from '../utils';
@@ -152,6 +152,22 @@ const unlikePost = async (
   }
 };
 
+const uploadPhoto = async (req: Request, res: Response) => {
+  try {
+    const { file } = req;
+
+    if (!file) {
+      throw new ErrorTypes.NotFoundError();
+    }
+
+    const photoUrl = `/photos/photos/${file.filename}`;
+
+    return res.json({ message: 'Photo updated successfully', url: photoUrl });
+  } catch (error: any) {
+    return handleError(error, res);
+  }
+};
+
 export {
   createPost,
   getPosts,
@@ -160,4 +176,5 @@ export {
   deletePost,
   likePost,
   unlikePost,
+  uploadPhoto,
 };

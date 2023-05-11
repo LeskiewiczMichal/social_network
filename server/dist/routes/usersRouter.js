@@ -39,7 +39,7 @@ router.post('/friends/:friendId', middleware_1.verifyToken, UsersController.addF
 router.delete('/friends/:friendId', middleware_1.verifyToken, UsersController.deleteFriend);
 router.get('/:userId/friends', middleware_1.verifyToken, UsersController.getFriends);
 // User
-router.post('/profile-picture', middleware_1.verifyToken, middleware_1.upload.single('picture'), UsersController.uploadProfilePic);
+router.post('/profile-picture', middleware_1.verifyToken, middleware_1.FileUploads.profilePicture.single('picture'), UsersController.uploadProfilePic);
 router.put('/', middleware_1.verifyToken, UsersController.updateUserData);
 router.delete('/', middleware_1.verifyToken, UsersController.deleteUser);
 router.get('/:userId', UsersController.getUserById);

@@ -6,6 +6,7 @@ export interface PostInterface extends Document {
   author: Schema.Types.ObjectId;
   comments: Schema.Types.ObjectId[];
   likes: Schema.Types.ObjectId[];
+  photo: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,6 +18,7 @@ const postSchema: Schema = new Schema(
     author: { type: Schema.Types.ObjectId, ref: 'User' },
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    photo: { type: String, required: false, default: null },
   },
   { timestamps: true },
 );

@@ -40,9 +40,9 @@ const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const socket_io_client_1 = require("socket.io-client");
-const __testUtils__1 = require("../../__testUtils__");
+const TestUtils = __importStar(require("../../__testUtils__"));
 const middleware_1 = require("../../middleware");
-const __1 = require("..");
+const EventHandlers = __importStar(require(".."));
 const models_1 = require("../../models");
 describe('User authentication handlers', () => {
     let io;
@@ -54,8 +54,8 @@ describe('User authentication handlers', () => {
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         try {
             dotenv.config();
-            db = yield (0, __testUtils__1.initializeMongoServer)();
-            users = yield (0, __testUtils__1.createFakeUsers)(__testUtils__1.TEST_CONSTANTS.DEFAULT_USERS_PROPS);
+            db = yield TestUtils.initializeMongoServer();
+            users = yield TestUtils.createFakeUsers(TestUtils.CONSTANTS.DEFAULT_USERS_PROPS);
             const app = (0, express_1.default)();
             const httpServer = (0, http_1.createServer)(app);
             io = new socket_io_1.Server(httpServer, {
@@ -64,10 +64,10 @@ describe('User authentication handlers', () => {
                 },
             });
             (0, middleware_1.serverConfig)(app);
-            io.use(__1.authenticationHandler);
+            io.use(EventHandlers.authenticationHandler);
             io.on('connection', (socket) => {
-                (0, __1.registerChatHandlers)(io, socket);
-                (0, __1.registerDisconnectHandlers)(io, socket);
+                EventHandlers.registerChatHandlers(io, socket);
+                EventHandlers.registerDisconnectHandlers(io, socket);
             });
             yield new Promise((resolve, reject) => {
                 httpServer.listen(() => {
@@ -92,7 +92,7 @@ describe('User authentication handlers', () => {
         clientSocket.close();
     }));
     test('User in database has updated socketId when connected', (done) => {
-        models_1.User.findById(__testUtils__1.TEST_CONSTANTS.USER_IDS.one)
+        models_1.User.findById(TestUtils.CONSTANTS.USER_IDS.one)
             .then((user) => {
             if (user) {
                 expect(user.socketId).not.toBeNull();
@@ -110,7 +110,7 @@ describe('User authentication handlers', () => {
     test('User in database socketId is null when disconnected', (done) => {
         clientSocket.close();
         setTimeout(() => {
-            models_1.User.findById(__testUtils__1.TEST_CONSTANTS.USER_IDS.one)
+            models_1.User.findById(TestUtils.CONSTANTS.USER_IDS.one)
                 .then((user) => {
                 if (user) {
                     expect(user.socketId).toBeNull();

@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
     EventHandlers.registerChatHandlers(io, socket);
     EventHandlers.registerDisconnectHandlers(io, socket);
 });
-app.use('/profile-pictures', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
+app.use('/photos', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
     res.send('Welcome');
 });

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unlikePost = exports.likePost = exports.deletePost = exports.updatePost = exports.getPostById = exports.getPosts = exports.createPost = void 0;
+exports.uploadPhoto = exports.unlikePost = exports.likePost = exports.deletePost = exports.updatePost = exports.getPostById = exports.getPosts = exports.createPost = void 0;
 const types_1 = require("../types");
 const models_1 = require("../models");
 const utils_1 = require("../utils");
@@ -132,3 +132,17 @@ const unlikePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.unlikePost = unlikePost;
+const uploadPhoto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { file } = req;
+        if (!file) {
+            throw new types_1.ErrorTypes.NotFoundError();
+        }
+        const photoUrl = `/photos/photos/${file.filename}`;
+        return res.json({ message: 'Photo updated successfully', url: photoUrl });
+    }
+    catch (error) {
+        return (0, utils_1.handleError)(error, res);
+    }
+});
+exports.uploadPhoto = uploadPhoto;
