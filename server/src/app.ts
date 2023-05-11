@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import path from 'path';
 import { mongoConfig, serverConfig } from './middleware';
 import { usersRouter, authRouter, postsRouter, commentsRouter } from './routes';
 import {
@@ -39,6 +40,10 @@ io.on('connection', (socket: MySocket) => {
   registerDisconnectHandlers(io, socket);
 });
 
+app.use(
+  '/profile-pictures',
+  express.static(path.join(__dirname, '../uploads')),
+);
 app.get('/', (req, res) => {
   res.send('Welcome');
 });

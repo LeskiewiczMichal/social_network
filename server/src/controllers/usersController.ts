@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { User, UserInterface } from '../models';
 import {
   BadRequestError,
@@ -226,6 +226,25 @@ const deleteFriendRequest = async (
   }
 };
 
+const uploadProfilePic = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as UserInterface;
+    const { file } = req;
+
+    if (!file) {
+      throw new NotFoundError();
+    }
+
+    const pictureUrl = `/profile-pictures/${file.filename}`;
+    user.profilePicture = pictureUrl;
+    await user.save();
+
+    return res.json({ message: 'Profile picture updated correctly', user });
+  } catch (error: any) {
+    return handleError(error, res);
+  }
+};
+
 export {
   updateUserData,
   deleteUser,
@@ -237,4 +256,5 @@ export {
   sendFriendRequest,
   getFriendRequests,
   deleteFriendRequest,
+  uploadProfilePic,
 };

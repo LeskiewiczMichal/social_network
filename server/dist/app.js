@@ -30,6 +30,7 @@ const dotenv = __importStar(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
+const path_1 = __importDefault(require("path"));
 const middleware_1 = require("./middleware");
 const routes_1 = require("./routes");
 const handlers_1 = require("./handlers");
@@ -48,6 +49,7 @@ io.on('connection', (socket) => {
     (0, handlers_1.registerChatHandlers)(io, socket);
     (0, handlers_1.registerDisconnectHandlers)(io, socket);
 });
+app.use('/profile-pictures', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
     res.send('Welcome');
 });

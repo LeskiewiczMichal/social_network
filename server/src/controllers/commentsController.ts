@@ -6,18 +6,7 @@ import {
   UserInterface,
 } from '../models';
 import {
-  GetAllCommentsRequest,
-  AddCommentRequest,
-  UpdateCommentRequest,
-  DeleteCommentRequest,
-  LikeCommentRequest,
-  DislikeCommentRequest,
-  GetAllCommentsResponse,
-  AddCommentResponse,
-  UpdateCommentResponse,
-  DeleteCommentResponse,
-  LikeCommentResponse,
-  DislikeCommentResponse,
+  CommentTypes,
   BadRequestError,
   MissingBodyError,
   UnauthorizedError,
@@ -25,9 +14,9 @@ import {
 import { handleError } from '../utils';
 
 const getAllComments = async (
-  req: GetAllCommentsRequest,
-  res: GetAllCommentsResponse,
-): Promise<GetAllCommentsResponse> => {
+  req: CommentTypes.GetAllCommentsRequest,
+  res: CommentTypes.GetAllCommentsResponse,
+): Promise<CommentTypes.GetAllCommentsResponse> => {
   try {
     const { postId } = req.params;
     const comments: CommentInterface[] = (await Comment.find({
@@ -41,9 +30,9 @@ const getAllComments = async (
 };
 
 const addComment = async (
-  req: AddCommentRequest,
-  res: AddCommentResponse,
-): Promise<AddCommentResponse> => {
+  req: CommentTypes.AddCommentRequest,
+  res: CommentTypes.AddCommentResponse,
+): Promise<CommentTypes.AddCommentResponse> => {
   try {
     const { body } = req.body;
     const { postId: postParamId } = req.params;
@@ -69,9 +58,9 @@ const addComment = async (
 };
 
 const updateComment = async (
-  req: UpdateCommentRequest,
-  res: UpdateCommentResponse,
-): Promise<UpdateCommentResponse> => {
+  req: CommentTypes.UpdateCommentRequest,
+  res: CommentTypes.UpdateCommentResponse,
+): Promise<CommentTypes.UpdateCommentResponse> => {
   try {
     const { commentId } = req.params;
     const { body } = req.body;
@@ -94,9 +83,9 @@ const updateComment = async (
 };
 
 const deleteComment = async (
-  req: DeleteCommentRequest,
-  res: DeleteCommentResponse,
-): Promise<DeleteCommentResponse> => {
+  req: CommentTypes.DeleteCommentRequest,
+  res: CommentTypes.DeleteCommentResponse,
+): Promise<CommentTypes.DeleteCommentResponse> => {
   try {
     const { commentId } = req.params;
     const { id: userId } = req.user as UserInterface;
@@ -119,9 +108,9 @@ const deleteComment = async (
 };
 
 const likeComment = async (
-  req: LikeCommentRequest,
-  res: LikeCommentResponse,
-): Promise<LikeCommentResponse> => {
+  req: CommentTypes.LikeCommentRequest,
+  res: CommentTypes.LikeCommentResponse,
+): Promise<CommentTypes.LikeCommentResponse> => {
   try {
     const { commentId } = req.params;
     const { id: userId } = req.user as UserInterface;
@@ -141,9 +130,9 @@ const likeComment = async (
 };
 
 const dislikeComment = async (
-  req: DislikeCommentRequest,
-  res: DislikeCommentResponse,
-): Promise<DislikeCommentResponse> => {
+  req: CommentTypes.DislikeCommentRequest,
+  res: CommentTypes.DislikeCommentResponse,
+): Promise<CommentTypes.DislikeCommentResponse> => {
   try {
     const { commentId } = req.params;
     const { id: userId } = req.user as UserInterface;

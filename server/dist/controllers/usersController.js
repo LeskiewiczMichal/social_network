@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteFriendRequest = exports.getFriendRequests = exports.sendFriendRequest = exports.deleteFriend = exports.addFriend = exports.getFriends = exports.getAllUsers = exports.getUserById = exports.deleteUser = exports.updateUserData = void 0;
+exports.uploadProfilePic = exports.deleteFriendRequest = exports.getFriendRequests = exports.sendFriendRequest = exports.deleteFriend = exports.addFriend = exports.getFriends = exports.getAllUsers = exports.getUserById = exports.deleteUser = exports.updateUserData = void 0;
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
@@ -167,3 +167,20 @@ const deleteFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.deleteFriendRequest = deleteFriendRequest;
+const uploadProfilePic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const { file } = req;
+        if (!file) {
+            throw new errors_1.NotFoundError();
+        }
+        const pictureUrl = `/profile-pictures/${file.filename}`;
+        user.profilePicture = pictureUrl;
+        yield user.save();
+        return res.json({ message: 'Profile picture updated correctly', user });
+    }
+    catch (error) {
+        return (0, utils_1.handleError)(error, res);
+    }
+});
+exports.uploadProfilePic = uploadProfilePic;

@@ -1,34 +1,37 @@
 import express from 'express';
-import {
-  updateUserData,
-  deleteUser,
-  getUserById,
-  getAllUsers,
-  getFriends,
-  addFriend,
-  deleteFriend,
-  sendFriendRequest,
-  getFriendRequests,
-  deleteFriendRequest,
-} from '../controllers/usersController';
-import { verifyToken } from '../middleware';
+import * as UsersController from '../controllers/usersController';
+import { verifyToken, upload } from '../middleware';
 
 const router = express.Router();
 
 // Friend requests
-router.get('/friendRequests', verifyToken, getFriendRequests);
-router.post('/friendRequests/:friendId', verifyToken, sendFriendRequest);
-router.delete('/friendRequests/:friendId', verifyToken, deleteFriendRequest);
+router.get('/friendRequests', verifyToken, UsersController.getFriendRequests);
+router.post(
+  '/friendRequests/:friendId',
+  verifyToken,
+  UsersController.sendFriendRequest,
+);
+router.delete(
+  '/friendRequests/:friendId',
+  verifyToken,
+  UsersController.deleteFriendRequest,
+);
 
 // Friends
-router.post('/friends/:friendId', verifyToken, addFriend);
-router.delete('/friends/:friendId', verifyToken, deleteFriend);
-router.get('/:userId/friends', verifyToken, getFriends);
+router.post('/friends/:friendId', verifyToken, UsersController.addFriend);
+router.delete('/friends/:friendId', verifyToken, UsersController.deleteFriend);
+router.get('/:userId/friends', verifyToken, UsersController.getFriends);
 
 // User
-router.put('/', verifyToken, updateUserData);
-router.delete('/', verifyToken, deleteUser);
-router.get('/:userId', getUserById);
-router.get('/', getAllUsers);
+router.post(
+  '/profile-picture',
+  verifyToken,
+  upload.single('picture'),
+  UsersController.uploadProfilePic,
+);
+router.put('/', verifyToken, UsersController.updateUserData);
+router.delete('/', verifyToken, UsersController.deleteUser);
+router.get('/:userId', UsersController.getUserById);
+router.get('/', UsersController.getAllUsers);
 
 export default router;
