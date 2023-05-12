@@ -8,13 +8,16 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        {userLogged ? (
+      {userLogged ? (
+        <Routes>
           <Route path="/" element={<Pages.Home />} />
-        ) : (
+        </Routes>
+      ) : (
+        <Routes>
           <Route path="/" element={<Pages.Login />} />
-        )}
-      </Routes>
+          <Route path="/register" element={<Pages.Registration />} />
+        </Routes>
+      )}
     </BrowserRouter>
   );
 }
