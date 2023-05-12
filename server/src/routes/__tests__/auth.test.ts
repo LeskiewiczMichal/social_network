@@ -22,6 +22,11 @@ const mockUser = {
   lastName: 'Surname',
   birthday: '1000-05-05T00:00:00.000Z',
   password: 'password123',
+  country: 'Poland',
+  city: 'Sieradz',
+  postalCode: '98-200',
+  about: 'test',
+  profilePicture: '/test/test.png',
 };
 
 describe('Auth route tests', () => {
@@ -61,6 +66,11 @@ describe('Auth route tests', () => {
         lastName: 'Doe',
         birthday: new Date('2000-01-01'),
         password: 'example123',
+        country: 'Poland',
+        city: 'Sieradz',
+        postalCode: '98-200',
+        about: 'test',
+        profilePicture: '/test/test.png',
       };
       request(app)
         .post('/')
@@ -75,6 +85,11 @@ describe('Auth route tests', () => {
               birthday: '2000-01-01T00:00:00.000Z',
               friends: [],
               friendRequests: [],
+              country: 'Poland',
+              city: 'Sieradz',
+              postalCode: '98-200',
+              about: 'test',
+              profilePicture: '/test/test.png',
             },
           });
         })
@@ -109,6 +124,11 @@ describe('Auth route tests', () => {
             birthday: '2000-01-01T00:00:00.000Z',
             friends: [],
             friendRequests: [],
+            country: 'Poland',
+            city: 'Sieradz',
+            postalCode: '98-200',
+            about: 'test',
+            profilePicture: '/test/test.png',
           });
         })
         .expect(200, done);
@@ -131,6 +151,11 @@ describe('Auth route tests', () => {
               lastName: 'Surname',
               birthday: '1000-05-05T00:00:00.000Z',
               password: 'password123',
+              country: 'Poland',
+              city: 'Sieradz',
+              postalCode: '98-200',
+              about: 'test',
+              profilePicture: '/test/test.png',
             },
           });
         })

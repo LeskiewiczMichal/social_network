@@ -15,6 +15,11 @@ interface CreateAccountRequest extends Request {
     birthday: Date;
     firstName: string;
     lastName: string;
+    country: string;
+    city: string;
+    postalCode: string;
+    about: string;
+    profilePicture: string;
   };
 }
 

@@ -25,6 +25,11 @@ const createFakeUsers = async (props: CreateFakeUsersProps) => {
     friends: [],
     friendRequests: [],
     birthday: new Date('1990-01-01'),
+    country: 'Poland',
+    city: 'Sieradz',
+    postalCode: '98-200',
+    about: 'test',
+    profilePicture: '/test/test.png',
     ...props.userOne,
   };
 
@@ -37,6 +42,11 @@ const createFakeUsers = async (props: CreateFakeUsersProps) => {
     friends: [],
     friendRequests: [],
     birthday: new Date('1995-05-04'),
+    country: 'Poland',
+    city: 'Sieradz',
+    postalCode: '98-200',
+    about: 'test',
+    profilePicture: '/test/test.png',
     googleId: '5234553455',
     ...props.userTwo,
   };
@@ -50,6 +60,11 @@ const createFakeUsers = async (props: CreateFakeUsersProps) => {
     friends: [],
     friendRequests: [],
     birthday: new Date('2000-03-09'),
+    country: 'Poland',
+    city: 'Sieradz',
+    postalCode: '98-200',
+    about: 'test',
+    profilePicture: '/test/test.png',
     ...props.userThree,
   };
 

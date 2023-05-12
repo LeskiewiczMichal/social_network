@@ -45,6 +45,11 @@ describe('Utility functions', () => {
         friends: [],
         friendRequests: [],
         birthday: new Date('2000-03-09'),
+        country: 'Poland',
+        city: 'Sieradz',
+        postalCode: '98-200',
+        about: 'test',
+        profilePicture: '/test/test.png',
       });
 
       const userTwo = new User({
@@ -54,6 +59,11 @@ describe('Utility functions', () => {
         friends: [],
         friendRequests: [],
         birthday: new Date('2000-03-09'),
+        country: 'Poland',
+        city: 'Sieradz',
+        postalCode: '98-200',
+        about: 'test',
+        profilePicture: '/test/test.png',
       });
 
       await userOne.save();
@@ -83,6 +93,11 @@ describe('Utility functions', () => {
         friends: [],
         friendRequests: [],
         birthday: new Date('2000-03-09'),
+        country: 'Poland',
+        city: 'Sieradz',
+        postalCode: '98-200',
+        about: 'test',
+        profilePicture: '/test/test.png',
       });
       await userOne.save();
 

@@ -13,7 +13,7 @@ type CreateFakePostsProps = {
   authorId: mongoose.Types.ObjectId;
 };
 
-const createFakeUsers = async (props: CreateFakePostsProps) => {
+const createFakePosts = async (props: CreateFakePostsProps) => {
   const defaultPostOne: PostInterface = {
     _id: props.postIds.one,
     title: 'Testing',
@@ -94,4 +94,4 @@ const createFakeUsers = async (props: CreateFakePostsProps) => {
   };
 };
 
-export default createFakeUsers;
+export default createFakePosts;

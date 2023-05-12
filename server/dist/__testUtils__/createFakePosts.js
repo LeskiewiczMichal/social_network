@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
-const createFakeUsers = (props) => __awaiter(void 0, void 0, void 0, function* () {
+const createFakePosts = (props) => __awaiter(void 0, void 0, void 0, function* () {
     const defaultPostOne = Object.assign({ _id: props.postIds.one, title: 'Testing', body: 'Testing post number one', author: props.authorId, comments: [], likes: [] }, props.postOne);
     const defaultPostTwo = Object.assign({ _id: props.postIds.two, title: 'TesterPost', body: 'Testing post number two', author: props.authorId, comments: [], likes: [] }, props.postTwo);
     const defaultPostThree = Object.assign({ _id: props.postIds.three, title: 'TesterPost', body: 'Testing post number three', author: props.authorId, comments: [], likes: [] }, props.postThree);
@@ -43,4 +43,4 @@ const createFakeUsers = (props) => __awaiter(void 0, void 0, void 0, function* (
         three: expectedPostThree,
     };
 });
-exports.default = createFakeUsers;
+exports.default = createFakePosts;

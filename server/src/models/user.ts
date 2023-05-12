@@ -5,6 +5,10 @@ export interface UserInterface extends Document {
   lastName: string;
   password: string;
   email: string;
+  country: string;
+  city: string;
+  postalCode: string;
+  about: string;
   friends: Schema.Types.ObjectId[];
   friendRequests: Schema.Types.ObjectId[];
   birthday: Date;
@@ -18,6 +22,10 @@ const userSchema: Schema = new Schema({
   lastName: { type: String, required: true },
   password: { type: String, required: false },
   email: { type: String, required: true },
+  country: { type: String, required: true },
+  city: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  about: { type: String, required: true },
   friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   friendRequests: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   birthday: { type: Date, required: false },

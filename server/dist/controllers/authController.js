@@ -80,7 +80,7 @@ const loginGoogle = (req, res) => {
 exports.loginGoogle = loginGoogle;
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password, birthday, firstName, lastName } = req.body;
+        const { email, password, birthday, firstName, lastName, country, city, postalCode, about, profilePicture, } = req.body;
         if (!email) {
             throw new types_1.ErrorTypes.MissingBodyError('email');
         }
@@ -96,6 +96,18 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!lastName) {
             throw new types_1.ErrorTypes.MissingBodyError('lastName');
         }
+        if (!country) {
+            throw new types_1.ErrorTypes.MissingBodyError('country');
+        }
+        if (!city) {
+            throw new types_1.ErrorTypes.MissingBodyError('city');
+        }
+        if (!postalCode) {
+            throw new types_1.ErrorTypes.MissingBodyError('postalCode');
+        }
+        if (!profilePicture) {
+            throw new types_1.ErrorTypes.MissingBodyError('profilePicture');
+        }
         const hash = yield bcrypt.hash(password, 10);
         const user = new models_1.User({
             firstName,
@@ -105,6 +117,11 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             firends: [],
             friendRequests: [],
             birthday,
+            country,
+            city,
+            postalCode,
+            about,
+            profilePicture,
         });
         yield user.save();
         return res.json({ user });

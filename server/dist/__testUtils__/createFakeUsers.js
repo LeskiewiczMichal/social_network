@@ -35,9 +35,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jwt = __importStar(require("jsonwebtoken"));
 const models_1 = require("../models");
 const createFakeUsers = (props) => __awaiter(void 0, void 0, void 0, function* () {
-    const defaultUserOne = Object.assign({ _id: props.ids.one, firstName: 'John', lastName: 'Doe', password: 'password123', email: 'john.doe@example.com', friends: [], friendRequests: [], birthday: new Date('1990-01-01') }, props.userOne);
-    const defaultUserTwo = Object.assign({ _id: props.ids.two, firstName: 'Jane', lastName: 'Doe', password: 'password456', email: 'jane.doe@example.com', friends: [], friendRequests: [], birthday: new Date('1995-05-04'), googleId: '5234553455' }, props.userTwo);
-    const defaultUserThree = Object.assign({ _id: props.ids.three, firstName: 'Marry', lastName: 'Christmas', password: 'password90', email: 'marry.christmas@example.com', friends: [], friendRequests: [], birthday: new Date('2000-03-09') }, props.userThree);
+    const defaultUserOne = Object.assign({ _id: props.ids.one, firstName: 'John', lastName: 'Doe', password: 'password123', email: 'john.doe@example.com', friends: [], friendRequests: [], birthday: new Date('1990-01-01'), country: 'Poland', city: 'Sieradz', postalCode: '98-200', about: 'test', profilePicture: '/test/test.png' }, props.userOne);
+    const defaultUserTwo = Object.assign({ _id: props.ids.two, firstName: 'Jane', lastName: 'Doe', password: 'password456', email: 'jane.doe@example.com', friends: [], friendRequests: [], birthday: new Date('1995-05-04'), country: 'Poland', city: 'Sieradz', postalCode: '98-200', about: 'test', profilePicture: '/test/test.png', googleId: '5234553455' }, props.userTwo);
+    const defaultUserThree = Object.assign({ _id: props.ids.three, firstName: 'Marry', lastName: 'Christmas', password: 'password90', email: 'marry.christmas@example.com', friends: [], friendRequests: [], birthday: new Date('2000-03-09'), country: 'Poland', city: 'Sieradz', postalCode: '98-200', about: 'test', profilePicture: '/test/test.png' }, props.userThree);
     const userOne = new models_1.User(defaultUserOne);
     const userTwo = new models_1.User(defaultUserTwo);
     const userThree = new models_1.User(defaultUserThree);

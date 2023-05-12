@@ -3,6 +3,10 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  country: string;
+  city: string;
+  postalCode: string;
+  about: string;
   friends: string[];
   friendRequests: string[];
   birthday: Date;
@@ -15,6 +19,10 @@ export type UserState = {
   firstName: string | null;
   lastName: string | null;
   email: string | null;
+  country: string | null;
+  city: string | null;
+  postalCode: string | null;
+  about: string | null;
   friends: string[] | null;
   friendRequests: string[] | null;
   birthday: Date | null;

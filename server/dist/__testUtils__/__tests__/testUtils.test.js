@@ -77,6 +77,11 @@ describe('Utility functions', () => {
                 friends: [],
                 friendRequests: [],
                 birthday: new Date('2000-03-09'),
+                country: 'Poland',
+                city: 'Sieradz',
+                postalCode: '98-200',
+                about: 'test',
+                profilePicture: '/test/test.png',
             });
             const userTwo = new models_1.User({
                 firstName: 'qwer',
@@ -85,6 +90,11 @@ describe('Utility functions', () => {
                 friends: [],
                 friendRequests: [],
                 birthday: new Date('2000-03-09'),
+                country: 'Poland',
+                city: 'Sieradz',
+                postalCode: '98-200',
+                about: 'test',
+                profilePicture: '/test/test.png',
             });
             yield userOne.save();
             yield userTwo.save();
@@ -110,6 +120,11 @@ describe('Utility functions', () => {
                 friends: [],
                 friendRequests: [],
                 birthday: new Date('2000-03-09'),
+                country: 'Poland',
+                city: 'Sieradz',
+                postalCode: '98-200',
+                about: 'test',
+                profilePicture: '/test/test.png',
             });
             yield userOne.save();
             const postOne = new models_1.Post({

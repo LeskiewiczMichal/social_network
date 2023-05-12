@@ -7,6 +7,10 @@ const initialState: UserTypes.UserState = {
   lastName: null,
   email: null,
   friends: null,
+  country: null,
+  city: null,
+  postalCode: null,
+  about: null,
   friendRequests: null,
   birthday: null,
   profilePicture: null,
@@ -26,6 +30,10 @@ export const userSlice = createSlice({
       state.friendRequests = action.payload.friendRequests;
       state.birthday = action.payload.birthday;
       state.profilePicture = action.payload.profilePicture;
+      state.country = action.payload.country;
+      state.city = action.payload.city;
+      state.postalCode = action.payload.postalCode;
+      state.about = action.payload.about;
       if (action.payload.googleId) {
         state.googleId = action.payload.googleId;
       }

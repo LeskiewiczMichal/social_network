@@ -66,7 +66,18 @@ const createAccount = async (
   res: AuthTypes.CreateAccountResponse,
 ): Promise<AuthTypes.CreateAccountResponse> => {
   try {
-    const { email, password, birthday, firstName, lastName } = req.body;
+    const {
+      email,
+      password,
+      birthday,
+      firstName,
+      lastName,
+      country,
+      city,
+      postalCode,
+      about,
+      profilePicture,
+    } = req.body;
 
     if (!email) {
       throw new ErrorTypes.MissingBodyError('email');
@@ -83,6 +94,18 @@ const createAccount = async (
     if (!lastName) {
       throw new ErrorTypes.MissingBodyError('lastName');
     }
+    if (!country) {
+      throw new ErrorTypes.MissingBodyError('country');
+    }
+    if (!city) {
+      throw new ErrorTypes.MissingBodyError('city');
+    }
+    if (!postalCode) {
+      throw new ErrorTypes.MissingBodyError('postalCode');
+    }
+    if (!profilePicture) {
+      throw new ErrorTypes.MissingBodyError('profilePicture');
+    }
     const hash = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -93,6 +116,11 @@ const createAccount = async (
       firends: [],
       friendRequests: [],
       birthday,
+      country,
+      city,
+      postalCode,
+      about,
+      profilePicture,
     });
 
     await user.save();

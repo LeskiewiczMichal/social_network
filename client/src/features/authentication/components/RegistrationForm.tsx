@@ -6,7 +6,6 @@ enum RegisterFields {
   Birthday = 'birthday',
   Email = 'email',
   Country = 'country',
-  Street = 'street',
   City = 'city',
   PostalCode = 'postalCode',
   About = 'about',
@@ -20,7 +19,6 @@ export default function RegistrationForm() {
     birthday: '',
     email: '',
     country: 'Poland',
-    street: '',
     city: '',
     postalCode: '',
     about: '',
@@ -65,9 +63,6 @@ export default function RegistrationForm() {
           break;
         case RegisterFields.ProfilePicture:
           newData.profilePicture = value;
-          break;
-        case RegisterFields.Street:
-          newData.street = value;
           break;
         default:
           break;
@@ -495,27 +490,6 @@ export default function RegistrationForm() {
                 <option value="Zambia">Zambia</option>
                 <option value="Zimbabwe">Zimbabwe</option>
               </select>
-            </div>
-          </div>
-
-          {/* Street */}
-          <div className="col-span-full">
-            <label
-              htmlFor={RegisterFields.Street}
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Street address
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name={RegisterFields.Street}
-                id={RegisterFields.Street}
-                value={formData[RegisterFields.Street]}
-                autoComplete="street-address"
-                className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                onChange={handleChange}
-              />
             </div>
           </div>
 
