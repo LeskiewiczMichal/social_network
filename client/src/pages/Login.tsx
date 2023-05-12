@@ -2,8 +2,8 @@ import { LoginForm } from '../features/authentication';
 
 export default function Login() {
   return (
-    <main>
+    <div className="min-h-screen w-screen flex justify-center">
       <LoginForm />
-    </main>
+    </div>
   );
 }

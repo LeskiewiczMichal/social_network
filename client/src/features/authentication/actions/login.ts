@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AppThunk } from '../../../types';
+import { AppThunk, UserTypes } from '../../../types';
 import { setUser } from '../../../store/reducers/userReducer';
 
 type LoginProps = {
@@ -21,11 +21,26 @@ const login =
         },
       );
 
-      const { token, user } = response.data;
+      // Create user with data from request and get token
+      const { token, user: userData } = response.data;
+      const user: UserTypes.User = {
+        id: userData._id,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        friends: userData.friends,
+        friendRequests: userData.friendRequests,
+        birthday: userData.birthday,
+        profilePicture: userData.profilePicture,
+      };
+      if (userData.googleId) {
+        user.googleId = userData.googleId;
+      }
+
       localStorage.setItem('social_network_token', `Bearer ${token}`);
       dispatch(setUser(user));
     } catch (err: any) {
-      console.error(err);
+      console.log(err.response.data.error);
     }
   };
 

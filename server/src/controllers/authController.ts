@@ -20,9 +20,7 @@ const login = (
         }
 
         if (!process.env.SECRET) {
-          throw new ErrorTypes.BadRequestError(
-            'Secret environment variable not defined',
-          );
+          throw new Error('Secret environment variable not defined');
         }
 
         const token = jwt.sign({ id: user.id }, process.env.SECRET);

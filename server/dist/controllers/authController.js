@@ -49,7 +49,7 @@ const login = (req, res) => {
                 throw new types_1.ErrorTypes.BadRequestError('Incorrect email or password');
             }
             if (!process.env.SECRET) {
-                throw new types_1.ErrorTypes.BadRequestError('Secret environment variable not defined');
+                throw new Error('Secret environment variable not defined');
             }
             const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.SECRET);
             return res.json({ user, token });
