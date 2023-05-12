@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../../hooks';
 import login from '../actions/login';
 import { ReactComponent as Logo } from '../../../assets/logo.svg';
@@ -27,7 +28,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form className="self-center w-5/6">
+    <form className="self-center w-96">
       {/* Text */}
       <div className="mb-10">
         <Logo />
@@ -36,12 +37,12 @@ export default function LoginForm() {
         </h1>
         <h4 className="text-gray-500">
           Not a member?{' '}
-          <a
-            href="ok"
+          <Link
+            to="/register"
             className="font-bold text-primary hover:text-primary-lighter"
           >
             Click here to register
-          </a>
+          </Link>
         </h4>
       </div>
       {/* Input fields */}
@@ -79,25 +80,20 @@ export default function LoginForm() {
       </div>
       {/* Sing-ins */}
       <div className="flex flex-col mt-4">
-        <a
-          href="aef"
-          className="font-bold text-primary self-end mb-4 hover:text-primary-lighter"
-        >
-          Forgot password?
-        </a>
         <button
-          className="bg-primary hover:bg-primary-lighter text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150"
+          className="bg-primary hover:bg-primary-lighter text-white font-bold py-2 px-4 mt-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150"
           type="button"
           onClick={handleSubmit}
         >
           Sign In
         </button>
 
-        <div className="inline-flex items-center justify-center w-full">
-          <hr className="w-full h-px my-8 bg-gray-300 border-0 dark:bg-gray-700" />
-          <span className="absolute px-3 font-medium text-gray-600 -translate-x-1/2 bg-white left-1/2 dark:text-white dark:bg-gray-900">
+        <div className="relative flex py-5 items-center">
+          <div className="flex-grow border-t border-gray-300" />
+          <span className="flex-shrink mx-4 text-gray-500">
             Or continue with
           </span>
+          <div className="flex-grow border-t border-gray-300" />
         </div>
         <div className="flex justify-between">
           <button

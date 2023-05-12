@@ -6,14 +6,14 @@ import { useAppSelector } from './hooks';
 function App() {
   const userLogged = useAppSelector((state) => state.user.id);
 
-  if (!userLogged) {
-    return <Pages.Login />;
-  }
-
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Pages.Home />} />
+        {userLogged ? (
+          <Route path="/" element={<Pages.Home />} />
+        ) : (
+          <Route path="/" element={<Pages.Login />} />
+        )}
       </Routes>
     </BrowserRouter>
   );
