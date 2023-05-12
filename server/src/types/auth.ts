@@ -25,7 +25,7 @@ interface CreateAccountRequest extends Request {
 
 type LoginResponse = Response<{ user: UserInterface; token: string }>;
 type LoginGoogleResponse = Response<{ user: UserInterface; token: string }>;
-type CreateAccountResponse = Response<{ user: UserInterface }>;
+type CreateAccountResponse = Response<{ user: UserInterface; message: string }>;
 type AuthenticateUserResponse = Response<{ user: UserInterface }>;
 
 export {

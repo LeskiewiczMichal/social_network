@@ -124,7 +124,7 @@ const createAccount = async (
     });
 
     await user.save();
-    return res.json({ user });
+    return res.json({ message: 'Account created successfully', user });
   } catch (error: any) {
     return handleError(error, res);
   }

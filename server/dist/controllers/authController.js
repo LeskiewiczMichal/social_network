@@ -124,7 +124,7 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             profilePicture,
         });
         yield user.save();
-        return res.json({ user });
+        return res.json({ message: 'Account created successfully', user });
     }
     catch (error) {
         return (0, utils_1.handleError)(error, res);

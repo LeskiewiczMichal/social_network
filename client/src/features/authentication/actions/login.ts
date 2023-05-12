@@ -31,6 +31,10 @@ const login =
         friends: userData.friends,
         friendRequests: userData.friendRequests,
         birthday: userData.birthday,
+        country: userData.country,
+        city: userData.city,
+        postalCode: userData.postalCode,
+        about: userData.about,
         profilePicture: userData.profilePicture,
       };
       if (userData.googleId) {
