@@ -76,8 +76,9 @@ const createAccount = async (
       city,
       postalCode,
       about,
-      profilePicture,
     } = req.body;
+    const { file } = req;
+
 
     if (!email) {
       throw new ErrorTypes.MissingBodyError('email');
@@ -103,9 +104,7 @@ const createAccount = async (
     if (!postalCode) {
       throw new ErrorTypes.MissingBodyError('postalCode');
     }
-    if (!profilePicture) {
-      throw new ErrorTypes.MissingBodyError('profilePicture');
-    }
+
     const hash = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -120,8 +119,13 @@ const createAccount = async (
       city,
       postalCode,
       about,
-      profilePicture,
     });
+
+    // Add path to user's profile picture if it was uploaded
+    if (file) {
+      const pictureUrl = `/photos/profilePictures/${file.filename}`;
+      user.profilePicture = pictureUrl;
+    }
 
     await user.save();
     return res.json({ message: 'Account created successfully', user });

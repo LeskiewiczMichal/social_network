@@ -1,11 +1,15 @@
 import express from 'express';
 import passport from 'passport';
 import * as AuthController from '../controllers/authController';
-import { verifyToken } from '../middleware';
+import { verifyToken, FileUploads } from '../middleware';
 
 const router = express.Router();
 
-router.post('/', AuthController.createAccount);
+router.post(
+  '/',
+  FileUploads.profilePicture.single('profilePicture'),
+  AuthController.createAccount,
+);
 router.post('/login', AuthController.login);
 router.get('/token', verifyToken, AuthController.authenticateUser);
 router.get(

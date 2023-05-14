@@ -19,7 +19,6 @@ interface CreateAccountRequest extends Request {
     city: string;
     postalCode: string;
     about: string;
-    profilePicture: string;
   };
 }
 

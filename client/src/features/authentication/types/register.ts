@@ -1,3 +1,5 @@
+export const DEFAULT_PIC_URL = `${process.env.REACT_APP_SERVER_URL}/photos/profilePictures/default.png`;
+
 export enum RegisterFieldNames {
   FirstName = 'firstName',
   LastName = 'lastName',
@@ -21,7 +23,7 @@ export type RegisterFormData = {
   city: string;
   postalCode: string;
   about: string;
-  profilePicture: string;
+  profilePicture: File | null;
 };
 
 export type RegisterChangeEvent =

@@ -1,25 +1,35 @@
 import React, { useState } from 'react';
+import { redirect } from 'react-router-dom';
+import { useAppDispatch } from '../../../hooks';
 import {
   RegisterFormData,
   RegisterFieldNames,
   RegisterChangeEvent,
+  DEFAULT_PIC_URL,
 } from '../types/register';
 import CountrySelect from './CountrySelect';
-// import register from '../actions/register';
+import register from '../actions/register';
 
 export default function RegistrationForm() {
+  const dispatch = useAppDispatch();
+  const [imagePreview, setImagePreview] = useState(DEFAULT_PIC_URL);
   const [formData, setFormData] = useState<RegisterFormData>({
     firstName: '',
     lastName: '',
-    birthday: '',
+    birthday: '2020-01-01',
     email: '',
     password: '',
     country: 'Poland',
     city: '',
     postalCode: '',
     about: '',
-    profilePicture: '/photos/profilePictures/default.png',
+    profilePicture: null,
   });
+
+  const handleRegister = () => {
+    dispatch(register({ ...formData }));
+    return redirect('/');
+  };
 
   const handleChange = (e: RegisterChangeEvent): void => {
     const { value, name } = e.target;
@@ -54,10 +64,33 @@ export default function RegistrationForm() {
           break;
         case RegisterFieldNames.ProfilePicture:
           if (e.target instanceof HTMLInputElement) {
-            if (!e.target.files) {
+            const { files } = e.target;
+            if (!files) {
+              newData.profilePicture = null;
+              setImagePreview(DEFAULT_PIC_URL);
               break;
             }
-            newData.profilePicture = e.target.files[0].name;
+
+            // eslint-disable-next-line prefer-destructuring
+            const file = files[0];
+            if (!file) {
+              newData.profilePicture = null;
+              setImagePreview(DEFAULT_PIC_URL);
+              break;
+            }
+            newData.profilePicture = file;
+            const reader = new FileReader();
+            reader.onload = () => {
+              if (reader.result) {
+                let dataURL = reader.result;
+                if (typeof dataURL !== 'string') {
+                  const decoder = new TextDecoder('utf-8');
+                  dataURL = decoder.decode(dataURL);
+                }
+                setImagePreview(dataURL);
+              }
+            };
+            reader.readAsDataURL(file);
           }
           break;
         case RegisterFieldNames.Password:
@@ -66,20 +99,6 @@ export default function RegistrationForm() {
         default:
           break;
       }
-
-      return newData;
-    });
-  };
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((oldData) => {
-      const newData = { ...oldData };
-
-      if (!e.target.files) {
-        return oldData;
-      }
-
-      newData.profilePicture = e.target.files[0].name;
 
       return newData;
     });
@@ -286,6 +305,11 @@ export default function RegistrationForm() {
 
             {/* Profile picture */}
             <div className="col-span-full">
+              <img
+                src={imagePreview}
+                alt="Preview of profile pic"
+                className="w-60 h-60 border-2 border-black"
+              />
               <label
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 htmlFor={RegisterFieldNames.ProfilePicture}
@@ -293,12 +317,12 @@ export default function RegistrationForm() {
                 Upload profile picture
               </label>
               <input
-                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                className="w-full rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-lighter focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 aria-describedby="User avatar input"
                 id={RegisterFieldNames.ProfilePicture}
                 name={RegisterFieldNames.ProfilePicture}
                 type="file"
-                onChange={handleFileUpload}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -313,8 +337,9 @@ export default function RegistrationForm() {
           Cancel
         </button>
         <button
-          type="submit"
+          type="button"
           className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-lighter focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          onClick={handleRegister}
         >
           Save
         </button>

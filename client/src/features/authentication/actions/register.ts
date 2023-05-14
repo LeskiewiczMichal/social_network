@@ -6,13 +6,12 @@ type RegisterProps = {
   lastName: string;
   password: string;
   email: string;
-  birthday: Date;
+  birthday: string;
   country: string;
-  street: string;
   city: string;
   postalCode: string;
   about: string;
-  profilePicture: string;
+  profilePicture: File | null;
   googleId?: string;
 };
 
@@ -26,7 +25,6 @@ const register =
         email,
         birthday,
         country,
-        street,
         city,
         postalCode,
         about,
@@ -34,19 +32,31 @@ const register =
         password,
       } = props;
 
-      await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/users/auth/`, {
-        email,
-        password,
-        birthday,
-        country,
-        street,
-        city,
-        postalCode,
-        about,
-        profilePicture,
-        firstName,
-        lastName,
-      });
+      const formData = new FormData();
+
+      formData.append('firstName', firstName);
+      formData.append('lastName', lastName);
+      formData.append('email', email);
+      formData.append('birthday', birthday);
+      formData.append('country', country);
+      formData.append('city', city);
+      formData.append('postalCode', postalCode);
+      formData.append('about', about);
+      if (profilePicture) {
+        formData.append('profilePicture', profilePicture);
+      }
+      formData.append('password', password);
+
+      console.log(profilePicture);
+      await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/api/users/auth/`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
     } catch (err) {
       console.log(err);
     }

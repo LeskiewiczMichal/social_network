@@ -31,7 +31,7 @@ const passport_1 = __importDefault(require("passport"));
 const AuthController = __importStar(require("../controllers/authController"));
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
-router.post('/', AuthController.createAccount);
+router.post('/', middleware_1.FileUploads.profilePicture.single('profilePicture'), AuthController.createAccount);
 router.post('/login', AuthController.login);
 router.get('/token', middleware_1.verifyToken, AuthController.authenticateUser);
 router.get('/google', passport_1.default.authenticate('google', {
