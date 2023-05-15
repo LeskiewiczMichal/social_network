@@ -3,24 +3,24 @@ import { useDispatch } from 'react-redux';
 
 import { renderWithProviders } from '../../../../utils/test_utils';
 import LoginForm from '../LoginForm';
-import login from '../../actions/login';
+// import login from '../../actions/login';
 
-jest.mock('../../actions/login');
-// jest.mock('react-redux', 'useDispatch');
+// jest.mock('../../actions/login');
+jest.mock('react-redux');
 
 describe('Login form test', () => {
-  // let mockDispatch: jest.Mock<any, any>;
-  // let useDispatch: any;
+  let mockDispatch: jest.Mock<any, any>;
+  let useDispatch: any;
 
-  // beforeAll(() => {
-  //   useDispatch = jest.fn(() => jest.fn());
-  //   mockDispatch = jest.fn();
-  //   (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
-  // });
+  beforeAll(() => {
+    useDispatch = jest.fn(() => jest.fn());
+    mockDispatch = jest.fn();
+    (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
+  });
 
-  // afterAll(() => {
-  //   mockDispatch.mockClear();
-  // });
+  afterAll(() => {
+    mockDispatch.mockClear();
+  });
 
   test('renders correctly', () => {
     renderWithProviders(<LoginForm />);
@@ -59,6 +59,6 @@ describe('Login form test', () => {
     expect(button).toBeInTheDocument();
     fireEvent.click(button);
 
-    expect(loginSpy).toHaveBeenCalled();
+    expect(mockDispatch).toHaveBeenCalled();
   });
 });
