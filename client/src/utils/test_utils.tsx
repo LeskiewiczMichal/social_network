@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
 import userReducer from '../store/reducers/userReducer';
+import errorReducer from '../store/reducers/errorReducer';
 import setupStore from '../store/store';
 import type { RootState } from '../types';
 
@@ -34,8 +35,14 @@ function renderWithProviders(
         profilePicture: null,
         googleId: null,
       },
+      error: {
+        loginError: null,
+      },
     },
-    store = configureStore({ reducer: { user: userReducer }, preloadedState }),
+    store = configureStore({
+      reducer: { user: userReducer, error: errorReducer },
+      preloadedState,
+    }),
     ...renderOptions
   }: ExtendedRenderOptions = {},
 ) {
@@ -50,4 +57,15 @@ function renderWithProviders(
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
 
-export { renderWithProviders };
+const createTestStore = () => {
+  const store = configureStore({
+    reducer: {
+      user: userReducer,
+      error: errorReducer,
+    },
+  });
+
+  return store;
+};
+
+export { renderWithProviders, createTestStore };

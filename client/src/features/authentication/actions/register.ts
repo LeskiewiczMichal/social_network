@@ -1,5 +1,7 @@
 import axios from 'axios';
+
 import { AppThunk } from '../../../types';
+import { setLoginError } from '../../../store/reducers/errorReducer';
 
 type RegisterProps = {
   firstName: string;
@@ -17,7 +19,7 @@ type RegisterProps = {
 
 const register =
   (props: RegisterProps): AppThunk =>
-  async () => {
+  async (dispatch) => {
     try {
       const {
         firstName,
@@ -47,7 +49,6 @@ const register =
       }
       formData.append('password', password);
 
-      console.log(profilePicture);
       await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/api/users/auth/`,
         formData,
@@ -57,8 +58,8 @@ const register =
           },
         },
       );
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      dispatch(setLoginError(err.response.data.error));
     }
   };
 

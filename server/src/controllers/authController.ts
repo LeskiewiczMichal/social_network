@@ -79,7 +79,6 @@ const createAccount = async (
     } = req.body;
     const { file } = req;
 
-
     if (!email) {
       throw new ErrorTypes.MissingBodyError('email');
     }

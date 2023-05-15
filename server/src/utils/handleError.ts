@@ -11,7 +11,6 @@ export const ERROR_MESSAGE = 'Something went wrong on the server';
 
 function handleError(error: any, res: Response) {
   if (error instanceof mongoose.Error.CastError) {
-    // return handleError(res, 'Not found', 404);
     return res.status(404).json({ error: 'Not found' });
   }
   if (
@@ -20,12 +19,9 @@ function handleError(error: any, res: Response) {
     error instanceof MissingBodyError ||
     error instanceof NotFoundError
   ) {
-    // return handleError(res, error.message, error.status);
     return res.status(error.status).json({ error: error.message });
   }
 
-  // return handleError(res, ERROR_MESSAGE, 500);
-  console.error(error);
   return res.status(500).json({ error: 'Something went wrong on the server' });
 }
 

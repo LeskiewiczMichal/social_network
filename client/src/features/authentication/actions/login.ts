@@ -1,6 +1,8 @@
 import axios from 'axios';
+
 import { AppThunk, UserTypes } from '../../../types';
 import { setUser } from '../../../store/reducers/userReducer';
+import { setLoginError } from '../../../store/reducers/errorReducer';
 
 type LoginProps = {
   email: string;
@@ -9,7 +11,7 @@ type LoginProps = {
 
 const login =
   (props: LoginProps): AppThunk =>
-  async (dispatch) => {
+  async (dispatch): Promise<void> => {
     try {
       const { email, password } = props;
 
@@ -44,7 +46,8 @@ const login =
       localStorage.setItem('social_network_token', `Bearer ${token}`);
       dispatch(setUser(user));
     } catch (err: any) {
-      console.log(err.response.data.error);
+      console.log(err);
+      dispatch(setLoginError(err.response.data.error));
     }
   };
 

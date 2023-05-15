@@ -7,7 +7,9 @@ import { useAppDispatch } from '../../../../hooks';
 import login from '../../actions/login';
 
 const mockUseAppDispatch = jest.fn();
+const mockUseAppSelector = jest.fn();
 jest.mock('../../../../hooks', () => ({
+  useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
 jest.mock('../../actions/login', () => jest.fn());

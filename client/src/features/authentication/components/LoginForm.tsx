@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import login from '../actions/login';
 import { ReactComponent as Logo } from '../../../assets/logo.svg';
 import GoogleLogo from '../../../assets/google-icon.svg';
 
 export default function LoginForm() {
   const dispatch = useAppDispatch();
+  const error = useAppSelector((state) => state.error.loginError);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -78,6 +79,9 @@ export default function LoginForm() {
         />
       </div>
       {/* Sing-ins */}
+      {error && (
+        <p className="text-red-500 text-sm italic mb-2 self-center">{error}</p>
+      )}
       <div className="flex flex-col mt-4">
         <button
           className="bg-primary hover:bg-primary-lighter text-white font-bold py-2 px-4 mt-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150"
