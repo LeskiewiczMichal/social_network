@@ -9,7 +9,7 @@ export interface User {
   about: string;
   friends: string[];
   friendRequests: string[];
-  birthday: Date;
+  birthday: string;
   profilePicture: string;
   googleId?: string;
 }
@@ -25,7 +25,7 @@ export type UserState = {
   about: string | null;
   friends: string[] | null;
   friendRequests: string[] | null;
-  birthday: Date | null;
+  birthday: string | null;
   profilePicture: string | null;
   googleId: string | null;
 };
