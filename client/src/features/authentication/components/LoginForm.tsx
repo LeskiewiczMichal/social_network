@@ -23,7 +23,6 @@ export default function LoginForm() {
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log("WORKS");
     dispatch(login({ email, password }));
   };
 

@@ -1,27 +1,18 @@
 import { screen, fireEvent } from '@testing-library/react';
-import { useDispatch } from 'react-redux';
 
 import { renderWithProviders } from '../../../../utils/test_utils';
 import LoginForm from '../LoginForm';
-// import login from '../../actions/login';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useAppDispatch } from '../../../../hooks';
+import login from '../../actions/login';
 
-// jest.mock('../../actions/login');
-jest.mock('react-redux');
+const mockUseAppDispatch = jest.fn();
+jest.mock('../../../../hooks', () => ({
+  useAppDispatch: () => mockUseAppDispatch,
+}));
+jest.mock('../../actions/login', () => jest.fn());
 
 describe('Login form test', () => {
-  let mockDispatch: jest.Mock<any, any>;
-  let useDispatch: any;
-
-  beforeAll(() => {
-    useDispatch = jest.fn(() => jest.fn());
-    mockDispatch = jest.fn();
-    (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
-  });
-
-  afterAll(() => {
-    mockDispatch.mockClear();
-  });
-
   test('renders correctly', () => {
     renderWithProviders(<LoginForm />);
 
@@ -50,15 +41,51 @@ describe('Login form test', () => {
     expect(buttons[2]).toHaveTextContent('Offline');
   });
 
-  test('Sign in button dispatches login', () => {
-    const { store } = renderWithProviders(<LoginForm />);
-    const loginSpy = jest.spyOn('../../actions/login', 'login');
+  describe('Buttons dispatching actions', () => {
+    beforeEach(() => {
+      renderWithProviders(<LoginForm />);
+    });
 
-    const button = screen.getByText('Sign In');
+    test('Sign in', () => {
+      const button = screen.getByText('Sign In');
 
-    expect(button).toBeInTheDocument();
-    fireEvent.click(button);
+      expect(button).toBeInTheDocument();
+      fireEvent.click(button);
 
-    expect(mockDispatch).toHaveBeenCalled();
+      expect(mockUseAppDispatch).toHaveBeenCalled();
+      expect(login).toHaveBeenCalledWith({ email: '', password: '' });
+    });
+
+    test('Google', () => {
+      const button = screen.getByText('Offline');
+
+      expect(button).toBeInTheDocument();
+      fireEvent.click(button);
+
+      expect(mockUseAppDispatch).toHaveBeenCalled();
+      expect(login).toHaveBeenCalledWith({ email: '', password: '' });
+    });
+  });
+
+  describe('Form data', () => {
+    beforeEach(() => {
+      renderWithProviders(<LoginForm />);
+    });
+
+    test('email input working properly', () => {
+      const input = screen.getByLabelText('Email address');
+      expect(input).toBeInTheDocument();
+
+      fireEvent.change(input, { target: { value: 'A' } });
+      expect(screen.getByDisplayValue('A')).toBeInTheDocument();
+    });
+
+    test('password input working properly', () => {
+      const input = screen.getByLabelText('Email address');
+      expect(input).toBeInTheDocument();
+
+      fireEvent.change(input, { target: { value: 'pass' } });
+      expect(screen.getByDisplayValue('pass')).toBeInTheDocument();
+    });
   });
 });
