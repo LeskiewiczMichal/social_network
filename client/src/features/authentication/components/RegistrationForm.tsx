@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../hooks';
 import {
   RegisterFormData,
@@ -10,25 +10,28 @@ import {
 import CountrySelect from './CountrySelect';
 import register from '../actions/register';
 
+export const initialFormData: RegisterFormData = {
+  firstName: '',
+  lastName: '',
+  birthday: '2020-01-01',
+  email: '',
+  password: '',
+  country: 'Poland',
+  city: '',
+  postalCode: '',
+  about: '',
+  profilePicture: null,
+};
+
 export default function RegistrationForm() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [imagePreview, setImagePreview] = useState(DEFAULT_PIC_URL);
-  const [formData, setFormData] = useState<RegisterFormData>({
-    firstName: '',
-    lastName: '',
-    birthday: '2020-01-01',
-    email: '',
-    password: '',
-    country: 'Poland',
-    city: '',
-    postalCode: '',
-    about: '',
-    profilePicture: null,
-  });
+  const [formData, setFormData] = useState<RegisterFormData>(initialFormData);
 
   const handleRegister = () => {
     dispatch(register({ ...formData }));
-    return redirect('/');
+    return navigate('/');
   };
 
   const handleChange = (e: RegisterChangeEvent): void => {
@@ -132,6 +135,7 @@ export default function RegistrationForm() {
                 autoComplete="given-name"
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -153,6 +157,7 @@ export default function RegistrationForm() {
                 autoComplete="family-name"
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -173,6 +178,7 @@ export default function RegistrationForm() {
                 value={formData[RegisterFieldNames.Password]}
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -194,6 +200,7 @@ export default function RegistrationForm() {
                 min="1950-01-01"
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -215,6 +222,7 @@ export default function RegistrationForm() {
                 autoComplete="email"
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -243,6 +251,7 @@ export default function RegistrationForm() {
                 autoComplete="address-level2"
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -264,6 +273,7 @@ export default function RegistrationForm() {
                 autoComplete="postal-code"
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -299,7 +309,7 @@ export default function RegistrationForm() {
                 />
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-600">
-                Write a few sentences about yourself.
+                Write a few sentences.
               </p>
             </div>
 
@@ -333,6 +343,7 @@ export default function RegistrationForm() {
         <button
           type="button"
           className="text-sm font-semibold leading-6 text-gray-900"
+          onClick={() => navigate('/')}
         >
           Cancel
         </button>

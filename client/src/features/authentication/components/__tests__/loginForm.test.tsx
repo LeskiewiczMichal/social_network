@@ -16,8 +16,10 @@ describe('Login form test', () => {
   test('renders correctly', () => {
     renderWithProviders(<LoginForm />);
 
+    // Logo
     expect(screen.getByRole('img')).toBeInTheDocument();
 
+    // Headers
     const headings = screen.getAllByRole('heading');
     expect(headings).toHaveLength(2);
     expect(headings[0]).toHaveTextContent('Sign in to your account');
@@ -25,15 +27,19 @@ describe('Login form test', () => {
       'Not a member? Click here to register',
     );
 
+    // Inputs
     expect(screen.getByLabelText('Email address')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
 
+    // Link to registration
     const registerLink = screen.getByRole('link');
     expect(registerLink).toBeInTheDocument();
     expect(registerLink).toHaveTextContent('Click here to register');
 
+    // Line with text
     expect(screen.getByText('Or continue with')).toBeInTheDocument();
 
+    // Buttons
     const buttons = screen.getAllByRole('button');
     expect(buttons).toHaveLength(3);
     expect(buttons[0]).toHaveTextContent('Sign In');
@@ -41,22 +47,22 @@ describe('Login form test', () => {
     expect(buttons[2]).toHaveTextContent('Offline');
   });
 
-  describe('Buttons dispatching actions', () => {
+  describe('Buttons functionality', () => {
     beforeEach(() => {
       renderWithProviders(<LoginForm />);
     });
 
-    test('Sign in', () => {
+    test('Sign in dispatches login', () => {
       const button = screen.getByText('Sign In');
-
       expect(button).toBeInTheDocument();
+
       fireEvent.click(button);
 
       expect(mockUseAppDispatch).toHaveBeenCalled();
       expect(login).toHaveBeenCalledWith({ email: '', password: '' });
     });
 
-    test('Google', () => {
+    test('Google dispatches login', () => {
       const button = screen.getByText('Offline');
 
       expect(button).toBeInTheDocument();
@@ -77,6 +83,7 @@ describe('Login form test', () => {
       expect(input).toBeInTheDocument();
 
       fireEvent.change(input, { target: { value: 'A' } });
+
       expect(screen.getByDisplayValue('A')).toBeInTheDocument();
     });
 
@@ -85,6 +92,7 @@ describe('Login form test', () => {
       expect(input).toBeInTheDocument();
 
       fireEvent.change(input, { target: { value: 'pass' } });
+
       expect(screen.getByDisplayValue('pass')).toBeInTheDocument();
     });
   });
