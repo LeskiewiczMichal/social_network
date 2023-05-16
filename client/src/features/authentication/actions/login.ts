@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AppThunk, UserTypes } from '../../../types';
 import { setUser } from '../../../store/reducers/userReducer';
 import { setLoginError } from '../../../store/reducers/errorReducer';
+import dataToUserObject from '../utils/dataToUserObject';
 
 type LoginProps = {
   email: string;
@@ -25,23 +26,7 @@ const login =
 
       // Create user with data from request and get token
       const { token, user: userData } = response.data;
-      const user: UserTypes.User = {
-        id: userData._id,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        friends: userData.friends,
-        friendRequests: userData.friendRequests,
-        birthday: userData.birthday,
-        country: userData.country,
-        city: userData.city,
-        postalCode: userData.postalCode,
-        about: userData.about,
-        profilePicture: userData.profilePicture,
-      };
-      if (userData.googleId) {
-        user.googleId = userData.googleId;
-      }
+      const user: UserTypes.User = dataToUserObject({ ...userData });
 
       localStorage.setItem('social_network_token', `Bearer ${token}`);
       dispatch(setUser(user));

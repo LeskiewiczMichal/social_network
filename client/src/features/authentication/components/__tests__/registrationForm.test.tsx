@@ -9,8 +9,10 @@ import RegistrationForm, { initialFormData } from '../RegistrationForm';
 import { useAppDispatch } from '../../../../hooks';
 import register from '../../actions/register';
 
+const mockUseAppSelector = jest.fn();
 const mockUseAppDispatch = jest.fn();
 jest.mock('../../../../hooks', () => ({
+  useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
 jest.mock('../../actions/register', () => jest.fn());
