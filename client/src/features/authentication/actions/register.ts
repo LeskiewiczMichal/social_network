@@ -62,6 +62,7 @@ const register =
         },
       );
 
+      dispatch(setRegisterError(null));
       navigate('/');
     } catch (err: any) {
       dispatch(setRegisterError(err.response.data.error));
