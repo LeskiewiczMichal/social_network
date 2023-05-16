@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { NavigateFunction } from 'react-router-dom';
 
 import { AppThunk } from '../../../types';
-import { setLoginError } from '../../../store/reducers/errorReducer';
+import { setRegisterError } from '../../../store/reducers/errorReducer';
 
 type RegisterProps = {
   firstName: string;
@@ -15,11 +16,12 @@ type RegisterProps = {
   about: string;
   profilePicture: File | null;
   googleId?: string;
+  navigate: NavigateFunction;
 };
 
 const register =
   (props: RegisterProps): AppThunk =>
-  async (dispatch) => {
+  async (dispatch): Promise<void> => {
     try {
       const {
         firstName,
@@ -32,6 +34,7 @@ const register =
         about,
         profilePicture,
         password,
+        navigate,
       } = props;
 
       const formData = new FormData();
@@ -58,8 +61,10 @@ const register =
           },
         },
       );
+
+      navigate('/');
     } catch (err: any) {
-      dispatch(setLoginError(err.response.data.error));
+      dispatch(setRegisterError(err.response.data.error));
     }
   };
 

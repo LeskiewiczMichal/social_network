@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import {
   RegisterFormData,
   RegisterFieldNames,
@@ -26,12 +26,12 @@ export const initialFormData: RegisterFormData = {
 export default function RegistrationForm() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const error = useAppSelector((state) => state.error.registerError);
   const [imagePreview, setImagePreview] = useState(DEFAULT_PIC_URL);
   const [formData, setFormData] = useState<RegisterFormData>(initialFormData);
 
   const handleRegister = () => {
-    dispatch(register({ ...formData }));
-    return navigate('/');
+    dispatch(register({ ...formData, navigate }));
   };
 
   const handleChange = (e: RegisterChangeEvent): void => {
@@ -336,6 +336,11 @@ export default function RegistrationForm() {
               />
             </div>
           </div>
+          {error && (
+            <p className="text-red-500 text-sm italic mb-2 self-center">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 

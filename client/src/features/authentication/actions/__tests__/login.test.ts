@@ -8,7 +8,7 @@ import { setUser } from '../../../../store/reducers/userReducer';
 import { setLoginError } from '../../../../store/reducers/errorReducer';
 import { createTestStore } from '../../../../utils/test_utils';
 import { UserState } from '../../../../types/user';
-import { AppThunk } from '../../../../types';
+import { ErrorState } from '../../../../types/error';
 
 const expectedUser = {
   firstName: 'test',
@@ -29,12 +29,14 @@ describe('Login thunk', () => {
   let store: ToolkitStore<
     {
       user: UserState;
+      error: ErrorState;
     },
     AnyAction,
     [
       ThunkMiddleware<
         {
           user: UserState;
+          error: ErrorState;
         },
         AnyAction
       >,

@@ -37,6 +37,7 @@ function renderWithProviders(
       },
       error: {
         loginError: null,
+        registerError: null,
       },
     },
     store = configureStore({

@@ -4,6 +4,7 @@ import { ErrorState } from '../../types/error';
 
 const initialState: ErrorState = {
   loginError: null,
+  registerError: null,
 };
 
 export const errorSlice = createSlice({
@@ -13,9 +14,12 @@ export const errorSlice = createSlice({
     setLoginError: (state, action: PayloadAction<string | null>) => {
       state.loginError = action.payload;
     },
+    setRegisterError: (state, action: PayloadAction<string | null>) => {
+      state.registerError = action.payload;
+    },
   },
 });
 
-export const { setLoginError } = errorSlice.actions;
+export const { setLoginError, setRegisterError } = errorSlice.actions;
 
 export default errorSlice.reducer;

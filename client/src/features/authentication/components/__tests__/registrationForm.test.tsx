@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
+import { NavigateFunction } from 'react-router-dom';
 
 import { renderWithProviders } from '../../../../utils/test_utils';
 import RegistrationForm, { initialFormData } from '../RegistrationForm';
@@ -69,7 +70,10 @@ describe('Register form test', () => {
       });
 
       expect(mockUseAppDispatch).toHaveBeenCalled();
-      expect(register).toHaveBeenCalledWith(initialFormData);
+      expect(register).toHaveBeenCalledWith({
+        ...initialFormData,
+        navigate: expect.any(Function) as NavigateFunction,
+      });
     });
   });
 

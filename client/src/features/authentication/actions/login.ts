@@ -46,7 +46,6 @@ const login =
       localStorage.setItem('social_network_token', `Bearer ${token}`);
       dispatch(setUser(user));
     } catch (err: any) {
-      console.log(err);
       dispatch(setLoginError(err.response.data.error));
     }
   };
