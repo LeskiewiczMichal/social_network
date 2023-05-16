@@ -44,7 +44,8 @@ const authenticationHandler = (socket, next) => __awaiter(void 0, void 0, void 0
         throw new Error('Environment variables not defined');
     }
     try {
-        const decodedToken = jwt.verify(token, process.env.SECRET);
+        const tokenString = token.substring(7, token.length);
+        const decodedToken = jwt.verify(tokenString, process.env.SECRET);
         const user = (yield models_1.User.findByIdAndUpdate(decodedToken.id, { socketId: socket.id }, { new: true }));
         if (!user) {
             socket.disconnect();

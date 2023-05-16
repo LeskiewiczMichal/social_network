@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 
+import createSocket from './createSocket';
 import * as Pages from './pages';
 import { useAppSelector, useAppDispatch } from './hooks';
 import { autoLogin } from './features/authentication';
@@ -10,7 +12,9 @@ function App() {
   const dispatch = useAppDispatch();
   const userLogged = useAppSelector((state) => state.user.id);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
+  let socket: Socket | null = null;
 
+  // Auto login
   useEffect(() => {
     const handleAutoLogin = async () => {
       await dispatch(autoLogin());
@@ -19,6 +23,19 @@ function App() {
 
     handleAutoLogin();
   }, [dispatch]);
+
+  if (userLogged) {
+    socket = createSocket();
+  }
+
+  // Websockets connection
+  useEffect(() => {
+    if (socket) {
+      socket.on('connect', () => {
+        console.log('POLACZONE');
+      });
+    }
+  }, [userLogged, socket]);
 
   if (isLoading) {
     return (
@@ -33,6 +50,7 @@ function App() {
       {userLogged ? (
         <Routes>
           <Route path="/" element={<Pages.Home />} />
+          {/* <button type="button" onClick={() => }>gowno</button> */}
         </Routes>
       ) : (
         <Routes>

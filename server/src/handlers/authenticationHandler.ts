@@ -7,6 +7,7 @@ const authenticationHandler = async (
   next: any,
 ) => {
   const { token } = socket.handshake.auth;
+
   if (!token) {
     socket.disconnect();
     return;
@@ -17,10 +18,12 @@ const authenticationHandler = async (
   }
 
   try {
+    const tokenString = token.substring(7, token.length);
     const decodedToken = jwt.verify(
-      token,
+      tokenString,
       process.env.SECRET,
     ) as jwt.JwtPayload;
+
     const user = (await User.findByIdAndUpdate(
       decodedToken.id,
       { socketId: socket.id },
@@ -33,6 +36,7 @@ const authenticationHandler = async (
     }
 
     socket.user = user;
+
     next();
   } catch (error) {
     socket.disconnect();

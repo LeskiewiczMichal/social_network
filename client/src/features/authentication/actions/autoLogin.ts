@@ -9,7 +9,6 @@ const autoLogin =
   async (dispatch): Promise<void> => {
     try {
       const token = localStorage.getItem('social_network_token');
-      console.log(token);
       if (token) {
         axios.defaults.headers.common.Authorization = token;
 
