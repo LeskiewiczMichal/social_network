@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ReactComponent as Logo } from '../../../assets/logo.svg';
@@ -11,6 +11,8 @@ import {
 } from '../types/register';
 import CountrySelect from './CountrySelect';
 import register from '../actions/register';
+import StandardButton from '../../../components/StandardButton';
+import StandardInput from '../../../components/StandardInput';
 
 export const initialFormData: RegisterFormData = {
   firstName: '',
@@ -75,7 +77,6 @@ export default function RegistrationForm() {
               setImagePreview(DEFAULT_PIC_URL);
               break;
             }
-
             // eslint-disable-next-line prefer-destructuring
             const file = files[0];
             if (!file) {
@@ -83,6 +84,7 @@ export default function RegistrationForm() {
               setImagePreview(DEFAULT_PIC_URL);
               break;
             }
+            // Set file in form and add preview to the page
             newData.profilePicture = file;
             const reader = new FileReader();
             reader.onload = () => {
@@ -123,111 +125,60 @@ export default function RegistrationForm() {
         {/* First name */}
         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="sm:col-span-3">
-            <label
-              htmlFor={RegisterFieldNames.FirstName}
-              className="block text-gray-700 text-sm font-bold mb-3"
-            >
-              First name
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name={RegisterFieldNames.FirstName}
-                id={RegisterFieldNames.FirstName}
-                value={formData[RegisterFieldNames.FirstName]}
-                autoComplete="given-name"
-                className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <StandardInput
+              name={RegisterFieldNames.FirstName}
+              labelText="First name"
+              value={formData[RegisterFieldNames.FirstName]}
+              handleChange={handleChange}
+              autoComplete="name"
+              autoCapitalize="words"
+            />
           </div>
 
           {/* Last name */}
           <div className="sm:col-span-3">
-            <label
-              htmlFor={RegisterFieldNames.LastName}
-              className="block text-gray-700 text-sm font-bold mb-3"
-            >
-              Last name
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name={RegisterFieldNames.LastName}
-                id={RegisterFieldNames.LastName}
-                value={formData[RegisterFieldNames.LastName]}
-                autoComplete="family-name"
-                className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <StandardInput
+              name={RegisterFieldNames.LastName}
+              labelText="Last name"
+              value={formData[RegisterFieldNames.LastName]}
+              handleChange={handleChange}
+              autoComplete="family-name"
+              autoCapitalize="words"
+            />
           </div>
 
           {/* Password */}
           <div className="sm:col-span-3">
-            <label
-              htmlFor={RegisterFieldNames.Password}
-              className="block text-gray-700 text-sm font-bold mb-3"
-            >
-              Password
-            </label>
-            <div className="mt-2">
-              <input
-                type="password"
-                name={RegisterFieldNames.Password}
-                id={RegisterFieldNames.Password}
-                value={formData[RegisterFieldNames.Password]}
-                className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <StandardInput
+              name={RegisterFieldNames.Password}
+              type="password"
+              labelText="Password"
+              value={formData[RegisterFieldNames.Password]}
+              handleChange={handleChange}
+            />
           </div>
 
           {/* Birthday */}
           <div className="sm:col-span-4">
-            <label
-              htmlFor={RegisterFieldNames.Birthday}
-              className="block text-gray-700 text-sm font-bold mb-3"
-            >
-              Birthday
-            </label>
-            <div className="mt-2">
-              <input
-                type="date"
-                id={RegisterFieldNames.Birthday}
-                name={RegisterFieldNames.Birthday}
-                value={formData[RegisterFieldNames.Birthday]}
-                min="1950-01-01"
-                className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <StandardInput
+              name={RegisterFieldNames.Birthday}
+              type="date"
+              labelText="Birthday"
+              value={formData[RegisterFieldNames.Birthday]}
+              handleChange={handleChange}
+            />
           </div>
 
           {/* Email */}
           <div className="sm:col-span-4">
-            <label
-              htmlFor={RegisterFieldNames.Email}
-              className="block text-gray-700 text-sm font-bold mb-3"
-            >
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                id={RegisterFieldNames.Email}
-                name={RegisterFieldNames.Email}
-                value={formData[RegisterFieldNames.Email]}
-                type="email"
-                autoComplete="email"
-                className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <StandardInput
+              name={RegisterFieldNames.Email}
+              type="email"
+              labelText="Email address"
+              value={formData[RegisterFieldNames.Email]}
+              handleChange={handleChange}
+              autoComplete="email"
+            />
           </div>
 
           {/* Country */}
@@ -239,118 +190,97 @@ export default function RegistrationForm() {
 
           {/* City */}
           <div className="sm:col-span-2 sm:col-start-1">
-            <label
-              htmlFor={RegisterFieldNames.City}
-              className="block text-gray-700 text-sm font-bold mb-3"
-            >
-              City
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name={RegisterFieldNames.City}
-                id={RegisterFieldNames.City}
-                value={formData[RegisterFieldNames.City]}
-                autoComplete="address-level2"
-                className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <StandardInput
+              name={RegisterFieldNames.City}
+              labelText="City"
+              value={formData[RegisterFieldNames.City]}
+              handleChange={handleChange}
+              autoComplete="address-level2"
+              autoCapitalize="words"
+            />
           </div>
 
           {/* ZIP */}
           <div className="sm:col-span-2">
-            <label
-              htmlFor={RegisterFieldNames.PostalCode}
-              className="block text-gray-700 text-sm font-bold mb-3"
-            >
-              ZIP / Postal code
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name={RegisterFieldNames.PostalCode}
-                id={RegisterFieldNames.PostalCode}
-                value={formData[RegisterFieldNames.PostalCode]}
-                autoComplete="postal-code"
-                className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <StandardInput
+              name={RegisterFieldNames.PostalCode}
+              labelText="ZIP / Postal code"
+              value={formData[RegisterFieldNames.PostalCode]}
+              handleChange={handleChange}
+              autoComplete="postal-code"
+            />
           </div>
         </div>
       </div>
 
       {/* About */}
-      <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div className="col-span-full">
-          <label
-            htmlFor={RegisterFieldNames.About}
-            className="block text-gray-700 text-sm font-bold mb-3"
-          >
-            About me
-          </label>
-          <div className="mt-2">
-            <textarea
-              id={RegisterFieldNames.About}
-              name={RegisterFieldNames.About}
-              value={formData[RegisterFieldNames.About]}
-              rows={3}
-              className="block w-full rounded-md px-2 border py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+      <div className="border-b border-gray-900/10 pb-12">
+        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div className="col-span-full">
+            <label
+              htmlFor={RegisterFieldNames.About}
+              className="block text-gray-700 text-sm font-bold mb-3"
+            >
+              About me
+            </label>
+            <div className="mt-2">
+              <textarea
+                id={RegisterFieldNames.About}
+                name={RegisterFieldNames.About}
+                value={formData[RegisterFieldNames.About]}
+                rows={3}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                onChange={handleChange}
+              />
+            </div>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Write a few sentences.
+            </p>
+          </div>
+
+          {/* Profile picture */}
+          <div className="col-span-full">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-3"
+              htmlFor={RegisterFieldNames.ProfilePicture}
+            >
+              Upload profile picture
+            </label>
+            <img
+              src={imagePreview}
+              alt="Preview of profile pic"
+              className="w-60 h-60 border-2 border-black mb-2"
+              loading="lazy"
+            />
+            <input
+              className="w-full rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-lighter focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              aria-describedby="User avatar input"
+              id={RegisterFieldNames.ProfilePicture}
+              name={RegisterFieldNames.ProfilePicture}
+              type="file"
               onChange={handleChange}
             />
           </div>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
-            Write a few sentences.
+        </div>
+        {/* Error */}
+        {error && (
+          <p className="text-red-500 text-sm italic mb-2 self-center">
+            {error}
           </p>
-        </div>
-
-        {/* Profile picture */}
-        <div className="col-span-full">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-3"
-            htmlFor={RegisterFieldNames.ProfilePicture}
-          >
-            Upload profile picture
-          </label>
-          <img
-            src={imagePreview}
-            alt="Preview of profile pic"
-            className="w-60 h-60 border-2 border-black mb-2"
-            loading="lazy"
-          />
-
-          <input
-            className="w-full rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-lighter focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            aria-describedby="User avatar input"
-            id={RegisterFieldNames.ProfilePicture}
-            name={RegisterFieldNames.ProfilePicture}
-            type="file"
-            onChange={handleChange}
-          />
-        </div>
+        )}
       </div>
-      {error && (
-        <p className="text-red-500 text-sm italic mb-2 self-center">{error}</p>
-      )}
 
+      {/* Buttons */}
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button
-          type="button"
-          className="text-sm font-semibold leading-6 text-gray-900"
-          onClick={() => navigate('/')}
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-lighter focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          onClick={handleRegister}
-        >
-          Save
-        </button>
+        <StandardButton
+          text="Cancel"
+          handleClick={() => navigate('/')}
+          width="1/5"
+          bgColor="white"
+          hoverColor="white"
+          textColor="black"
+        />
+        <StandardButton text="Save" handleClick={handleRegister} width="1/5" />
       </div>
     </form>
   );

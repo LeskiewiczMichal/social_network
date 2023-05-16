@@ -5,6 +5,9 @@ import { useAppDispatch, useAppSelector } from '../../../hooks';
 import login from '../actions/login';
 import { ReactComponent as Logo } from '../../../assets/logo.svg';
 import GoogleLogo from '../../../assets/google-icon.svg';
+import SeparatorLine from '../../../components/SeparatorLine';
+import StandardButton from '../../../components/StandardButton';
+import StandardInput from '../../../components/StandardInput';
 
 export default function LoginForm() {
   const dispatch = useAppDispatch();
@@ -14,7 +17,6 @@ export default function LoginForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
     if (name === 'email') {
       setEmail(value);
     }
@@ -46,59 +48,42 @@ export default function LoginForm() {
           </Link>
         </h4>
       </div>
+
       {/* Input fields */}
       <div className="mb-6">
-        <label
-          htmlFor="email"
-          className="block text-gray-700 text-sm font-bold mb-3"
-        >
-          Email address
-        </label>
-        <input
-          type="email"
+        <StandardInput
           name="email"
-          id="email"
+          type="email"
+          labelText="Email address"
           value={email}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          handleChange={handleChange}
+          autoComplete="email"
         />
       </div>
+
       <div>
-        <label
-          htmlFor="password"
-          className="block text-gray-700 text-sm font-bold mb-3"
-        >
-          Password
-        </label>
-        <input
-          type="password"
+        <StandardInput
           name="password"
-          id="password"
+          type="password"
+          labelText="Password"
           value={password}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          handleChange={handleChange}
         />
       </div>
-      {/* Sing-ins */}
+
+      {/* Error  */}
       {error && (
         <p className="text-red-500 text-sm italic mb-2 self-center">{error}</p>
       )}
-      <div className="flex flex-col mt-4">
-        <button
-          className="bg-primary hover:bg-primary-lighter text-white font-bold py-2 px-4 mt-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150"
-          type="button"
-          onClick={handleSubmit}
-        >
-          Sign In
-        </button>
 
-        <div className="relative flex py-5 items-center">
-          <div className="flex-grow border-t border-gray-300" />
-          <span className="flex-shrink mx-4 text-gray-500">
-            Or continue with
-          </span>
-          <div className="flex-grow border-t border-gray-300" />
-        </div>
+      {/* Buttons */}
+      <div className="flex flex-col mt-4">
+        {/* Sign in */}
+        <StandardButton text="Sign In" handleClick={handleSubmit} />
+
+        <SeparatorLine text="Or continue with" />
+
+        {/* Google */}
         <div className="flex justify-between">
           <button
             type="button"
@@ -112,13 +97,13 @@ export default function LoginForm() {
             />
             <span>Google</span>
           </button>
-          <button
-            className="w-2/5 bg-primary hover:bg-primary-lighter text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150"
-            type="button"
-            onClick={handleSubmit}
-          >
-            Offline
-          </button>
+
+          {/* Offline */}
+          <StandardButton
+            text="Offline"
+            handleClick={handleSubmit}
+            width="2/5"
+          />
         </div>
       </div>
     </form>
