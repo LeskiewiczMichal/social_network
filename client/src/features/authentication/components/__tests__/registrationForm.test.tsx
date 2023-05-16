@@ -22,10 +22,9 @@ describe('Register form test', () => {
     renderWithProviders(<RegistrationForm />);
 
     // Headers
-    const headers = screen.getAllByRole('heading');
-    expect(headers).toHaveLength(2);
-    expect(headers[0]).toHaveTextContent('Personal Information');
-    expect(headers[1]).toHaveTextContent('Profile');
+    expect(screen.getByRole('heading')).toHaveTextContent(
+      'Personal Information',
+    );
 
     // Inputs
     expect(screen.getByLabelText('First name')).toBeInTheDocument();
@@ -35,15 +34,10 @@ describe('Register form test', () => {
     expect(screen.getByLabelText('Email address')).toBeInTheDocument();
     expect(screen.getByLabelText('City')).toBeInTheDocument();
     expect(screen.getByLabelText('ZIP / Postal code')).toBeInTheDocument();
-    expect(screen.getByLabelText('About')).toBeInTheDocument();
+    expect(screen.getByLabelText('About me')).toBeInTheDocument();
     expect(screen.getByLabelText('Upload profile picture')).toBeInTheDocument();
 
     // Texts
-    expect(
-      screen.getByText(
-        'Informations will be displayed publicly so be careful what you share.',
-      ),
-    ).toBeInTheDocument();
     expect(
       screen.getByText('Give us some info about yourself.'),
     ).toBeInTheDocument();
@@ -164,7 +158,7 @@ describe('Register form test', () => {
     });
 
     test('about code working correctly', async () => {
-      const input = screen.getByLabelText('About');
+      const input = screen.getByLabelText('About me');
 
       await act(async () => {
         await userEvent.type(input, 'test');
