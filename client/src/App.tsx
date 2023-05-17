@@ -4,13 +4,14 @@ import { Socket } from 'socket.io-client';
 
 import createSocket from './createSocket';
 import * as Pages from './pages';
-import { useAppSelector, useAppDispatch } from './hooks';
+import { useAppDispatch } from './hooks';
 import { autoLogin } from './features/authentication';
 import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const dispatch = useAppDispatch();
-  const userLogged = useAppSelector((state) => state.user.id);
+  // const userLogged = useAppSelector((state) => state.user.id);
+  const userLogged = true;
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   let socket: Socket | null = null;
 
