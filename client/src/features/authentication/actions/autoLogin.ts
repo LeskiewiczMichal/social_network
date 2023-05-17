@@ -8,7 +8,7 @@ const autoLogin =
   (): AppThunk =>
   async (dispatch): Promise<void> => {
     try {
-      const token = localStorage.getItem('social_network_token');
+      const token = localStorage.getItem(UserTypes.Token.localStorageName);
       if (token) {
         axios.defaults.headers.common.Authorization = token;
 

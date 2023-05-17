@@ -31,10 +31,17 @@ function App() {
 
   // Websockets connection
   useEffect(() => {
-    if (socket) {
+    if (socket && userLogged) {
       socket.on('connect', () => {
         console.log('POLACZONE');
       });
+      socket.on('disconnect', () => {
+        console.log('DISCONNECTED');
+      });
+    }
+
+    if (!userLogged) {
+      socket?.disconnect();
     }
   }, [userLogged, socket]);
 
@@ -51,6 +58,10 @@ function App() {
       {userLogged ? (
         <Routes>
           <Route path="/" element={<Pages.Home />} />
+          {/* Tymczasowo */}
+          <Route path="/login" element={<Pages.Login />} />
+          <Route path="/register" element={<Pages.Registration />} />{' '}
+          {/* Tymczasowo */}
           {/* <button type="button" onClick={() => }>gowno</button> */}
         </Routes>
       ) : (

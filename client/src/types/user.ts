@@ -1,3 +1,7 @@
+export enum Token {
+  localStorageName = 'social_network_token',
+}
+
 export interface User {
   id: string;
   firstName: string;

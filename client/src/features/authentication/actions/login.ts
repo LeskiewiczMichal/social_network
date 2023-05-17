@@ -28,7 +28,7 @@ const login =
       const { token, user: userData } = response.data;
       const user: UserTypes.User = dataToUserObject({ ...userData });
 
-      localStorage.setItem('social_network_token', `Bearer ${token}`);
+      localStorage.setItem(UserTypes.Token.localStorageName, `Bearer ${token}`);
       dispatch(setUser(user));
       dispatch(setLoginError(null));
     } catch (err: any) {
