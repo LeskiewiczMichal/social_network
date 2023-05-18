@@ -24,7 +24,7 @@ const profilePicsStorage = multer.diskStorage({
   },
 });
 
-const postPhotoDir = path.join(__dirname, '../../uploads/photos');
+const postPhotoDir = path.join(__dirname, '../../uploads/posts');
 const postPhotoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, postPhotoDir);

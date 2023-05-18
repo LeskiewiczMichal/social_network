@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { JsxElement } from 'typescript';
 
 import { UserTypes } from '../types';
 import { Post, PostTypes } from '../features/posts';

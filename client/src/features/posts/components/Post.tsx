@@ -24,9 +24,18 @@ export default function Post(props: PostType) {
           <h4 className="mt-2 text-bold">{title}</h4>
 
           {/* Text */}
-          <p className="mt-1 mb-3 text-gray-700 text-sm">{body}</p>
-          <hr />
-          <div className="mt-2 mb-2 flex justify-end items-center">
+          <p className="mt-1 mb-5 text-gray-700 text-sm ">{body}</p>
+
+          {/* Photo if available */}
+          {photo && (
+            <img
+              className="h-full mb-5 w-full"
+              src={`${process.env.REACT_APP_SERVER_URL}${photo}`}
+              alt={`${title} post`}
+            />
+          )}
+
+          <div className="mb-2 flex justify-end items-center border-t border-b py-2">
             {/* Hearts */}
             <button
               className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
@@ -68,7 +77,6 @@ export default function Post(props: PostType) {
               <span>{comments.length}</span>
             </button>
           </div>
-          <hr />
         </div>
       </div>
     </div>

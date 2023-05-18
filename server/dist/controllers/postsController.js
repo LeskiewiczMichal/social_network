@@ -38,6 +38,7 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { id: userId } = req.user;
         const { body, title } = req.body;
+        const { file } = req;
         if (!title) {
             throw new types_1.ErrorTypes.MissingBodyError('title');
         }
@@ -51,6 +52,11 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             comments: [],
             likes: [],
         });
+        // Add path to photo if it was uploaded
+        if (file) {
+            const photoUrl = `/photos/posts/${file.filename}`;
+            post.photo = photoUrl;
+        }
         yield post.save();
         return res.json({ message: 'Post successfully created', post });
     }

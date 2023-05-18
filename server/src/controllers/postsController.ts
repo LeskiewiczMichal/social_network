@@ -37,6 +37,7 @@ const createPost = async (
   try {
     const { id: userId } = req.user as UserInterface;
     const { body, title } = req.body;
+    const { file } = req;
 
     if (!title) {
       throw new ErrorTypes.MissingBodyError('title');
@@ -51,6 +52,12 @@ const createPost = async (
       comments: [],
       likes: [],
     });
+
+    // Add path to photo if it was uploaded
+    if (file) {
+      const photoUrl = `/photos/posts/${file.filename}`;
+      post.photo = photoUrl;
+    }
 
     await post.save();
     return res.json({ message: 'Post successfully created', post });
