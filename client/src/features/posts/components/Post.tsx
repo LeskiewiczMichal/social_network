@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { Post as PostType } from '../types/Post';
 
 export default function Post(props: PostType) {
@@ -5,19 +7,25 @@ export default function Post(props: PostType) {
     props;
 
   return (
-    <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto  max-w-md md:max-w-2xl mb-6 md:mb-12">
+    <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
       <div className="flex flex-col md:flex-row items-start px-4 py-6">
-        <img
-          className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0"
-          src={`${process.env.REACT_APP_SERVER_URL}${author.profilePicture}`}
-          alt="avatar"
-        />
+        <Link className="" to={`/profile/${author.id}`}>
+          <div className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0">
+            <img
+              className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0"
+              src={`${process.env.REACT_APP_SERVER_URL}${author.profilePicture}`}
+              alt="avatar"
+            />
+          </div>
+        </Link>
         <div className="">
           {/* User */}
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900 -mt-1">
-              {author.firstName} {author.lastName}{' '}
-            </h2>
+            <Link to={`/profile/${author.id}`}>
+              <h2 className="text-lg font-semibold text-gray-900 -mt-1">
+                {author.firstName} {author.lastName}{' '}
+              </h2>
+            </Link>
             <small className="text-sm text-gray-700">22h ago</small>
           </div>
 
@@ -29,7 +37,7 @@ export default function Post(props: PostType) {
           {/* Photo if available */}
           {photo && (
             <img
-              className="h-full mb-5 w-full"
+              className="h-full max-h-80 sm:max-h-96 md:max-h-full mb-5 w-full"
               src={`${process.env.REACT_APP_SERVER_URL}${photo}`}
               alt={`${title} post`}
             />
