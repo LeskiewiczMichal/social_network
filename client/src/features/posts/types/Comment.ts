@@ -1,13 +1,11 @@
 import { UserTypes } from '../../../types';
 
-export interface PostInterface {
+export interface CommentInterface {
   id: string;
-  title: string;
   body: string;
   author: UserTypes.User;
-  comments: string[];
   likes: string[];
-  photo: string | null;
+  post: string[];
   createdAt: Date;
   updatedAt: Date;
 }

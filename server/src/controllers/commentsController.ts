@@ -8,15 +8,28 @@ import {
 import { CommentTypes, ErrorTypes } from '../types';
 import { handleError } from '../utils';
 
-const getAllComments = async (
+const getComments = async (
   req: CommentTypes.GetAllCommentsRequest,
   res: CommentTypes.GetAllCommentsResponse,
 ): Promise<CommentTypes.GetAllCommentsResponse> => {
   try {
     const { postId } = req.params;
-    const comments: CommentInterface[] = (await Comment.find({
-      post: postId,
-    })) as CommentInterface[];
+    const { limit, offset, sortOrder } = req.query;
+    const dbQuery = Comment.find().where('post', postId);
+
+    if (limit) {
+      dbQuery.limit(parseInt(limit as string, 10));
+    }
+    if (offset) {
+      dbQuery.skip(parseInt(offset as string, 10));
+    }
+    if (sortOrder) {
+      dbQuery.sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
+    }
+    dbQuery.populate('author');
+
+    const comments: CommentInterface[] =
+      (await dbQuery.exec()) as CommentInterface[];
 
     return res.json({ comments });
   } catch (error) {
@@ -150,7 +163,7 @@ const dislikeComment = async (
 
 export {
   addComment,
-  getAllComments,
+  getComments,
   updateComment,
   deleteComment,
   likeComment,

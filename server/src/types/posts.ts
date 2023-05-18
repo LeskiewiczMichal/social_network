@@ -2,6 +2,16 @@ import { Request, Response } from 'express';
 import { PostInterface } from '../models';
 
 // Requests
+interface GetPostsRequest extends Request {
+  query: {
+    limit?: string;
+    offset?: string;
+    sortOrder?: 'asc' | 'desc';
+    author?: string;
+    inFriends?: 'true';
+  };
+}
+
 interface GetPostByIdRequest extends Request {
   params: {
     postId: string;
@@ -53,6 +63,7 @@ type LikePostResponse = Response<{ message: string }>;
 type UnlikePostResponse = Response<{ message: string }>;
 
 export {
+  GetPostsRequest,
   GetPostByIdRequest,
   CreatePostRequest,
   UpdatePostRequest,

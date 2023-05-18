@@ -15,7 +15,26 @@ const models_1 = require("../models");
 const utils_1 = require("../utils");
 const getPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const posts = (yield models_1.Post.find().populate('author'));
+        const user = req.user;
+        const { sortOrder, limit, offset, author, inFriends } = req.query;
+        const dbQuery = models_1.Post.find();
+        if (limit) {
+            dbQuery.limit(parseInt(limit, 10));
+        }
+        if (offset) {
+            dbQuery.skip(parseInt(offset, 10));
+        }
+        if (author) {
+            dbQuery.where('author', author);
+        }
+        if (inFriends === 'true') {
+            dbQuery.where('author').in(user.friends);
+        }
+        if (sortOrder) {
+            dbQuery.sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
+        }
+        dbQuery.populate('author');
+        const posts = (yield dbQuery.exec());
         return res.json({ posts });
     }
     catch (error) {

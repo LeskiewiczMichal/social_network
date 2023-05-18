@@ -9,23 +9,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dislikeComment = exports.likeComment = exports.deleteComment = exports.updateComment = exports.getAllComments = exports.addComment = void 0;
+exports.dislikeComment = exports.likeComment = exports.deleteComment = exports.updateComment = exports.getComments = exports.addComment = void 0;
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
-const getAllComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { postId } = req.params;
-        const comments = (yield models_1.Comment.find({
-            post: postId,
-        }));
+        const { limit, offset, sortOrder } = req.query;
+        const dbQuery = models_1.Comment.find().where('post', postId);
+        if (limit) {
+            dbQuery.limit(parseInt(limit, 10));
+        }
+        if (offset) {
+            dbQuery.skip(parseInt(offset, 10));
+        }
+        if (sortOrder) {
+            dbQuery.sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
+        }
+        dbQuery.populate('author');
+        const comments = (yield dbQuery.exec());
         return res.json({ comments });
     }
     catch (error) {
         return (0, utils_1.handleError)(error, res);
     }
 });
-exports.getAllComments = getAllComments;
+exports.getComments = getComments;
 const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req.body;

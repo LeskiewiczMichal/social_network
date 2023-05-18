@@ -6,6 +6,11 @@ interface GetAllCommentsRequest extends Request {
   params: {
     postId: string;
   };
+  query: {
+    limit?: string;
+    offset?: string;
+    sortOrder?: 'asc' | 'desc';
+  };
 }
 
 interface AddCommentRequest extends Request {

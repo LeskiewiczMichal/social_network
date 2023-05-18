@@ -3,23 +3,29 @@ import axios from 'axios';
 
 import { UserTypes } from '../types';
 import { Post, PostTypes } from '../features/posts';
-import dataToPostObject from '../utils/dataToPostObject';
+import dataToPostObject from '../features/posts/utils/dataToPostObject';
 
 export default function Home() {
-  const [posts, setPosts] = useState<PostTypes.Post[]>([]);
+  const [posts, setPosts] = useState<PostTypes.PostInterface[]>([]);
+  const [offset, setOffset] = useState<number>(0);
+
   useEffect(() => {
     const getPosts = async () => {
       const token = localStorage.getItem(UserTypes.Token.localStorageName);
       axios.defaults.headers.common.Authorization = token;
 
-      const request = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/api/posts`,
+      const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts?sortOrder=desc&limit=15&offset=${offset}}`;
+      setOffset((oldOffset) => oldOffset + 15);
+
+      const request = await axios.get(apiUrl);
+      const { posts: postsData } = request.data;
+
+      const postsDataObjects: PostTypes.PostInterface[] = postsData.map(
+        (post: any) => {
+          return dataToPostObject(post);
+        },
       );
 
-      const { posts: postsData } = request.data;
-      const postsDataObjects: PostTypes.Post[] = postsData.map((post: any) => {
-        return dataToPostObject(post);
-      });
       setPosts(postsDataObjects);
     };
 
@@ -28,7 +34,7 @@ export default function Home() {
 
   return (
     <div className="bg-slate-50 min-h-screen padding-top-header flex flex-col items-center">
-      {posts.map((post: PostTypes.Post) => {
+      {posts.map((post: PostTypes.PostInterface) => {
         return (
           <Post
             key={post.id}

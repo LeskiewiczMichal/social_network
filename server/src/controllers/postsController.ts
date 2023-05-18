@@ -4,11 +4,32 @@ import { Comment, Post, PostInterface, UserInterface } from '../models';
 import { handleError } from '../utils';
 
 const getPosts = async (
-  req: Request,
+  req: PostTypes.GetPostsRequest,
   res: PostTypes.GetPostsResponse,
 ): Promise<PostTypes.GetPostsResponse> => {
   try {
-    const posts = (await Post.find().populate('author')) as PostInterface[];
+    const user = req.user as UserInterface;
+    const { sortOrder, limit, offset, author, inFriends } = req.query;
+    const dbQuery = Post.find();
+
+    if (limit) {
+      dbQuery.limit(parseInt(limit as string, 10));
+    }
+    if (offset) {
+      dbQuery.skip(parseInt(offset as string, 10));
+    }
+    if (author) {
+      dbQuery.where('author', author);
+    }
+    if (inFriends === 'true') {
+      dbQuery.where('author').in(user.friends);
+    }
+    if (sortOrder) {
+      dbQuery.sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
+    }
+    dbQuery.populate('author');
+
+    const posts: PostInterface[] = (await dbQuery.exec()) as PostInterface[];
 
     return res.json({ posts });
   } catch (error: any) {

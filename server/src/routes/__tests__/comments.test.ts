@@ -67,7 +67,11 @@ describe('Comments route tests', () => {
         .expect('Content-Type', /json/)
         .expect((res) => {
           expect(res.body).toMatchObject({
-            comments: [comments.one, comments.two, comments.three],
+            comments: [
+              { ...comments.one, author: users.one },
+              { ...comments.two, author: users.one },
+              { ...comments.three, author: users.one },
+            ],
           });
         })
         .expect(200, done);

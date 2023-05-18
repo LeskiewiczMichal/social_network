@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
+import ReactTimeAgo from 'react-time-ago';
 
-import { Post as PostType } from '../types/Post';
+import { PostInterface } from '../types/Post';
+import CommentsSection from './CommentsSection';
 
-export default function Post(props: PostType) {
-  const { title, body, author, comments, likes, photo, createdAt, updatedAt } =
-    props;
+export default function Post(props: PostInterface) {
+  const { id, title, body, author, comments, likes, photo, createdAt } = props;
 
   return (
     <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
@@ -18,7 +19,7 @@ export default function Post(props: PostType) {
             />
           </div>
         </Link>
-        <div className="">
+        <div>
           {/* User */}
           <div className="flex items-center justify-between">
             <Link to={`/profile/${author.id}`}>
@@ -26,7 +27,9 @@ export default function Post(props: PostType) {
                 {author.firstName} {author.lastName}{' '}
               </h2>
             </Link>
-            <small className="text-sm text-gray-700">22h ago</small>
+            <small className="text-sm text-gray-700 flex flex-col">
+              <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
+            </small>
           </div>
 
           <h4 className="mt-2 text-bold">{title}</h4>
@@ -85,6 +88,7 @@ export default function Post(props: PostType) {
               <span>{comments.length}</span>
             </button>
           </div>
+          <CommentsSection postId={id} />
         </div>
       </div>
     </div>

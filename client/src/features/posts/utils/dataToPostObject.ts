@@ -1,19 +1,12 @@
-import { PostTypes } from '../features/posts';
-import dataToUserObject from './dataToUserObject';
+import { PostInterface } from '../types/Post';
+import dataToUserObject from '../../../utils/dataToUserObject';
 
-type DataToPostObject = {
+interface DataToPostObject extends PostInterface {
   _id: string;
-  title: string;
-  body: string;
   author: any;
-  comments: string[];
-  likes: string[];
-  photo: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
+}
 
-const datatoPostObject = (props: DataToPostObject): PostTypes.Post => {
+const datatoPostObject = (props: DataToPostObject): PostInterface => {
   const {
     _id: id,
     title,
@@ -28,7 +21,7 @@ const datatoPostObject = (props: DataToPostObject): PostTypes.Post => {
 
   const authorObject = dataToUserObject({ ...author });
 
-  const post: PostTypes.Post = {
+  const post: PostInterface = {
     id,
     title,
     body,

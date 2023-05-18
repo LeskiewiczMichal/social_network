@@ -32,7 +32,7 @@ const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 router.use(middleware_1.verifyToken);
 router.post('/:postId', CommentsController.addComment);
-router.get('/:postId', CommentsController.getAllComments);
+router.get('/:postId', CommentsController.getComments);
 router.post('/:commentId/likes', CommentsController.likeComment);
 router.delete('/:commentId/likes', CommentsController.dislikeComment);
 router.put('/:commentId', CommentsController.updateComment);
