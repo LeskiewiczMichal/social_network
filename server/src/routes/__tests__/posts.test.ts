@@ -62,7 +62,11 @@ describe('Posts route tests', () => {
         .expect('Content-Type', /json/)
         .expect((res) => {
           expect(res.body).toMatchObject({
-            posts: [posts.one, posts.two, posts.three],
+            posts: [
+              { ...posts.one, author: users.one },
+              { ...posts.two, author: users.one },
+              { ...posts.three, author: users.one },
+            ],
           });
         })
         .expect(200, done);

@@ -1,4 +1,4 @@
-import { UserTypes } from '../../../types';
+import { UserTypes } from '../types';
 
 type DataToUserObjectProps = {
   _id: string;

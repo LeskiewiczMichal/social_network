@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AppThunk, UserTypes } from '../../../types';
 import { setUser } from '../../../store/reducers/userReducer';
 import { setLoginError } from '../../../store/reducers/errorReducer';
-import dataToUserObject from '../utils/dataToUserObject';
+import dataToUserObject from '../../../utils/dataToUserObject';
 
 type LoginProps = {
   email: string;

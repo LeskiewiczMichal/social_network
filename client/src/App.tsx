@@ -7,6 +7,7 @@ import * as Pages from './pages';
 import { useAppDispatch } from './hooks';
 import { autoLogin } from './features/authentication';
 import LoadingSpinner from './components/LoadingSpinner';
+import Header from './features/header';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -56,14 +57,17 @@ function App() {
   return (
     <BrowserRouter>
       {userLogged ? (
-        <Routes>
-          <Route path="/" element={<Pages.Home />} />
-          {/* Tymczasowo */}
-          <Route path="/login" element={<Pages.Login />} />
-          <Route path="/register" element={<Pages.Registration />} />{' '}
-          {/* Tymczasowo */}
-          {/* <button type="button" onClick={() => }>gowno</button> */}
-        </Routes>
+        <>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Pages.Home />} />
+            {/* Tymczasowo */}
+            <Route path="/login" element={<Pages.Login />} />
+            <Route path="/register" element={<Pages.Registration />} />{' '}
+            {/* Tymczasowo */}
+            {/* <button type="button" onClick={() => }>gowno</button> */}
+          </Routes>
+        </>
       ) : (
         <Routes>
           <Route path="/" element={<Pages.Login />} />

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { AppThunk, UserTypes } from '../../../types';
-import dataToUserObject from '../utils/dataToUserObject';
+import dataToUserObject from '../../../utils/dataToUserObject';
 import { setUser } from '../../../store/reducers/userReducer';
 
 const autoLogin =

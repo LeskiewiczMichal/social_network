@@ -15,7 +15,7 @@ const models_1 = require("../models");
 const utils_1 = require("../utils");
 const getPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const posts = (yield models_1.Post.find());
+        const posts = (yield models_1.Post.find().populate('author'));
         return res.json({ posts });
     }
     catch (error) {

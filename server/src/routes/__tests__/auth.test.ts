@@ -70,7 +70,6 @@ describe('Auth route tests', () => {
         city: 'Sieradz',
         postalCode: '98-200',
         about: 'test',
-        profilePicture: '/test/test.png',
       };
       request(app)
         .post('/')
@@ -89,7 +88,7 @@ describe('Auth route tests', () => {
               city: 'Sieradz',
               postalCode: '98-200',
               about: 'test',
-              profilePicture: '/test/test.png',
+              profilePicture: '/photos/profilePictures/default.png',
             },
           });
         })
@@ -128,7 +127,7 @@ describe('Auth route tests', () => {
             city: 'Sieradz',
             postalCode: '98-200',
             about: 'test',
-            profilePicture: '/test/test.png',
+            profilePicture: '/photos/profilePictures/default.png',
           });
         })
         .expect(200, done);

@@ -8,7 +8,7 @@ const getPosts = async (
   res: PostTypes.GetPostsResponse,
 ): Promise<PostTypes.GetPostsResponse> => {
   try {
-    const posts = (await Post.find()) as PostInterface[];
+    const posts = (await Post.find().populate('author')) as PostInterface[];
 
     return res.json({ posts });
   } catch (error: any) {
