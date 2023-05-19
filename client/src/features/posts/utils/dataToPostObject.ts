@@ -1,5 +1,5 @@
 import { PostInterface } from '../types/Post';
-import dataToUserObject from '../../../utils/dataToUserObject';
+import { dataToUserObject } from '../../users';
 
 interface DataToPostObject extends PostInterface {
   _id: string;

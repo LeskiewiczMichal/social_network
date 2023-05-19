@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-import { AppThunk, UserTypes } from '../../../types';
-import { setUser } from '../../../store/reducers/userReducer';
+import { TokenEnum } from '../types/token';
+import { AppThunk } from '../../../types';
+import { setUser } from '../reducers/userReducer';
 import { setLoginError } from '../../../store/reducers/errorReducer';
-import dataToUserObject from '../../../utils/dataToUserObject';
+import dataToUserObject from '../../users/utils/dataToUserObject';
 
 type LoginProps = {
   email: string;
@@ -26,9 +27,9 @@ const login =
 
       // Create user with data from request and get token
       const { token, user: userData } = response.data;
-      const user: UserTypes.User = dataToUserObject({ ...userData });
+      const user = dataToUserObject({ ...userData });
 
-      localStorage.setItem(UserTypes.Token.localStorageName, `Bearer ${token}`);
+      localStorage.setItem(TokenEnum.localStorageName, `Bearer ${token}`);
       dispatch(setUser(user));
       dispatch(setLoginError(null));
     } catch (err: any) {

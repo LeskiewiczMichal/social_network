@@ -1,9 +1,10 @@
-import { AppThunk, UserTypes } from '../../../types';
-import { setUser } from '../../../store/reducers/userReducer';
+import { AppThunk } from '../../../types';
+import { TokenEnum } from '../types/token';
+import { setUser } from '../reducers/userReducer';
 
 const logout = (): AppThunk => async (dispatch) => {
   try {
-    localStorage.removeItem(UserTypes.Token.localStorageName);
+    localStorage.removeItem(TokenEnum.localStorageName);
 
     dispatch(
       setUser({

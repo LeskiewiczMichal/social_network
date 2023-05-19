@@ -6,7 +6,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
-import userReducer from '../store/reducers/userReducer';
+import userReducer from '../features/authentication/reducers/userReducer';
 import errorReducer from '../store/reducers/errorReducer';
 import setupStore from '../store/store';
 import type { RootState } from '../types';

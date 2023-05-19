@@ -1,14 +1,15 @@
 import axios from 'axios';
 
-import { AppThunk, UserTypes } from '../../../types';
-import dataToUserObject from '../../../utils/dataToUserObject';
-import { setUser } from '../../../store/reducers/userReducer';
+import { TokenEnum } from '../types/token';
+import { AppThunk } from '../../../types';
+import dataToUserObject from '../../users/utils/dataToUserObject';
+import { setUser } from '../reducers/userReducer';
 
 const autoLogin =
   (): AppThunk =>
   async (dispatch): Promise<void> => {
     try {
-      const token = localStorage.getItem(UserTypes.Token.localStorageName);
+      const token = localStorage.getItem(TokenEnum.localStorageName);
       if (token) {
         axios.defaults.headers.common.Authorization = token;
 
@@ -16,7 +17,7 @@ const autoLogin =
           `${process.env.REACT_APP_SERVER_URL}/api/users/auth/token`,
         );
         const { user: userData } = response.data;
-        const user: UserTypes.User = dataToUserObject({ ...userData });
+        const user = dataToUserObject({ ...userData });
         dispatch(setUser(user));
       }
     } catch (err: any) {

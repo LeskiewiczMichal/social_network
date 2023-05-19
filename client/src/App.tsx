@@ -64,6 +64,7 @@ function App() {
             {/* Tymczasowo */}
             <Route path="/login" element={<Pages.Login />} />
             <Route path="/register" element={<Pages.Registration />} />{' '}
+            <Route path="/profile/:userId" element={<Pages.Profile />} />
             {/* Tymczasowo */}
             {/* <button type="button" onClick={() => }>gowno</button> */}
           </Routes>

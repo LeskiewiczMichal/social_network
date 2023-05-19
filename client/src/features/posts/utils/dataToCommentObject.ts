@@ -1,5 +1,5 @@
 import { CommentInterface } from '../types/Comment';
-import dataToUserObject from '../../../utils/dataToUserObject';
+import { dataToUserObject } from '../../users';
 
 interface DataToCommentObjectProps extends CommentInterface {
   _id: string;

@@ -4,10 +4,10 @@ import { AnyAction, ThunkMiddleware } from '@reduxjs/toolkit';
 import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
 import login from '../login';
-import { setUser } from '../../../../store/reducers/userReducer';
+import { setUser } from '../../reducers/userReducer';
 import { setLoginError } from '../../../../store/reducers/errorReducer';
 import { createTestStore } from '../../../../utils/test_utils';
-import { UserState } from '../../../../types/user';
+import { UserState } from '../../../users/types/user';
 import { ErrorState } from '../../../../types/error';
 
 const expectedUser = {

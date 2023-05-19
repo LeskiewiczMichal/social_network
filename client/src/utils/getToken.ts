@@ -1,7 +1,7 @@
-import { UserTypes } from '../types';
+import { TokenEnum } from '../features/authentication';
 
 const getToken = () => {
-  return localStorage.getItem(UserTypes.Token.localStorageName);
+  return localStorage.getItem(TokenEnum.localStorageName);
 };
 
 export default getToken;

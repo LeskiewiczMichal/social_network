@@ -1,3 +1,12 @@
+import { useParams } from 'react-router-dom';
+
 export default function Profile() {
-  return <h1>ok</h1>;
+  const { userId } = useParams();
+  console.log(userId);
+
+  return (
+    <main className="padding-top-header">
+      <h1>ok</h1>
+    </main>
+  );
 }

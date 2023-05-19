@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import userReducer from './reducers/userReducer';
+import userReducer from '../features/authentication/reducers/userReducer';
 import errorReducer from './reducers/errorReducer';
 
 export const store = configureStore({

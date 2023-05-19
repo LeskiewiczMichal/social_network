@@ -4,13 +4,13 @@ import { NavigateFunction } from 'react-router-dom';
 import { AnyAction, ThunkMiddleware } from '@reduxjs/toolkit';
 import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
-import { setUser } from '../../../../store/reducers/userReducer';
+import { setUser } from '../../reducers/userReducer';
 import {
   setLoginError,
   setRegisterError,
 } from '../../../../store/reducers/errorReducer';
 import { createTestStore } from '../../../../utils/test_utils';
-import { UserState } from '../../../../types/user';
+import { UserState } from '../../../users/types/user';
 import { ErrorState } from '../../../../types/error';
 import { AppThunk } from '../../../../types';
 import register from '../register';

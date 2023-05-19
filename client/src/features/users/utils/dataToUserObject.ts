@@ -1,4 +1,4 @@
-import { UserTypes } from '../types';
+import { UserInterface } from '../types/user';
 
 type DataToUserObjectProps = {
   _id: string;
@@ -16,7 +16,7 @@ type DataToUserObjectProps = {
   googleId?: string;
 };
 
-const dataToUserObject = (props: DataToUserObjectProps): UserTypes.User => {
+const dataToUserObject = (props: DataToUserObjectProps): UserInterface => {
   const {
     _id: id,
     firstName,
@@ -33,7 +33,7 @@ const dataToUserObject = (props: DataToUserObjectProps): UserTypes.User => {
     googleId,
   } = props;
 
-  const user: UserTypes.User = {
+  const user: UserInterface = {
     id,
     firstName,
     lastName,
