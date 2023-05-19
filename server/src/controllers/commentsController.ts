@@ -48,16 +48,20 @@ const addComment = async (
       throw new ErrorTypes.MissingBodyError('body');
     }
     const { id: userId } = req.user as UserInterface;
-    const { id: postId } = (await Post.findById(postParamId)) as PostInterface;
+    const post = (await Post.findById(postParamId)) as PostInterface;
 
+    // Create comment
     const comment = new Comment({
       body,
       author: userId,
       likes: [],
-      post: postId,
+      post: post._id,
     });
-
     await comment.save();
+
+    // Update post
+    post.comments.push(comment._id);
+    await post.save();
 
     return res.json({ message: 'Comment successfully created', comment });
   } catch (error) {

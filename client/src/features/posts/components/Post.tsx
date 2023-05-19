@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 
+import { ProfilePicture } from '../../../components';
 import { PostInterface } from '../types/Post';
 import CommentsSection from './CommentsSection';
 
@@ -9,8 +10,9 @@ export default function Post(props: PostInterface) {
 
   return (
     <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
-      <div className="flex flex-col md:flex-row items-start px-4 py-6">
-        <Link className="" to={`/profile/${author.id}`}>
+      <div className="flex flex-col md:flex-row items-start px-4 py-2 md:py-6">
+        {/* Profile picture */}
+        {/* <Link className="" to={`/profile/${author.id}`}>
           <div className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0">
             <img
               className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0"
@@ -18,16 +20,21 @@ export default function Post(props: PostInterface) {
               alt="avatar"
             />
           </div>
-        </Link>
+        </Link> */}
+        <ProfilePicture
+          size={12}
+          userId={author.id}
+          userPicture={author.profilePicture}
+        />
         <div>
           {/* User */}
           <div className="flex items-center justify-between">
             <Link to={`/profile/${author.id}`}>
-              <h2 className="text-lg font-semibold text-gray-900 -mt-1">
+              <h2 className="text-lg font-semibold text-gray-900 ">
                 {author.firstName} {author.lastName}{' '}
               </h2>
             </Link>
-            <small className="text-sm text-gray-700 flex flex-col">
+            <small className="text-xs text-gray-700 flex flex-col">
               <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
             </small>
           </div>
@@ -47,7 +54,7 @@ export default function Post(props: PostInterface) {
           )}
 
           <div className="mb-2 flex justify-end items-center border-t border-b py-2">
-            {/* Hearts */}
+            {/* Hearts button */}
             <button
               className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
               type="button"
@@ -67,7 +74,7 @@ export default function Post(props: PostInterface) {
               </svg>
               <span>{likes.length}</span>
             </button>
-            {/* Comments */}
+            {/* Comments button */}
             <button
               className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
               type="button"

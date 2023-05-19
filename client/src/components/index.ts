@@ -1,4 +1,4 @@
 import LoadingSpinner from './LoadingSpinner';
+import ProfilePicture from './ProfilePicture';
 
-// eslint-disable-next-line import/prefer-default-export
-export { LoadingSpinner };
+export { LoadingSpinner, ProfilePicture };

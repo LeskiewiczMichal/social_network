@@ -1,42 +1,41 @@
 import { Link } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 
+import { ProfilePicture } from '../../../components';
 import { CommentInterface } from '../types/Comment';
 
 export default function Comment(props: CommentInterface) {
   const { body, author, createdAt, likes } = props;
 
   return (
-    <div className="flex flex-col md:flex-row items-start px-4 py-6">
-      <Link className="" to={`/profile/${author.id}`}>
-        <div className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0">
-          <img
-            className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0"
-            src={`${process.env.REACT_APP_SERVER_URL}${author.profilePicture}`}
-            alt="avatar"
-          />
-        </div>
-      </Link>
-      <div>
+    <div className="flex flex-row w-full items-start px-4 py-1">
+      <ProfilePicture
+        size={10}
+        userId={author.id}
+        userPicture={author.profilePicture}
+      />
+      <div className="w-full">
         {/* User */}
         <div className="flex items-center justify-between">
-          <Link to={`/profile/${author.id}`}>
-            <h2 className="text-lg font-semibold text-gray-900 -mt-1">
+          <h2 className="text-sm font-semibold text-gray-900">
+            <Link to={`/profile/${author.id}`}>
               {author.firstName} {author.lastName}{' '}
-            </h2>
-          </Link>
-          <small className="text-sm text-gray-700 flex flex-col">
+            </Link>
+          </h2>
+          <small className="text-xs text-gray-700 flex flex-col items-center justify-center">
             <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
           </small>
         </div>
 
         {/* Text */}
-        <p className="mt-1 mb-5 text-gray-700 text-sm ">{body}</p>
+        <p className="mt-1 text-gray-700 text-sm bg-gray-200 p-2 rounded-lg">
+          {body}
+        </p>
 
-        <div className="mb-2 flex justify-end items-center border-t border-b py-2">
+        <div className="flex justify-end items-center ">
           {/* Hearts */}
           <button
-            className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
+            className="flex text-gray-700 text-lg md:text-base justify-center items-center"
             type="button"
           >
             <svg

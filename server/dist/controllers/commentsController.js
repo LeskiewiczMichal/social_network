@@ -44,14 +44,18 @@ const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             throw new types_1.ErrorTypes.MissingBodyError('body');
         }
         const { id: userId } = req.user;
-        const { id: postId } = (yield models_1.Post.findById(postParamId));
+        const post = (yield models_1.Post.findById(postParamId));
+        // Create comment
         const comment = new models_1.Comment({
             body,
             author: userId,
             likes: [],
-            post: postId,
+            post: post._id,
         });
         yield comment.save();
+        // Update post
+        post.comments.push(comment._id);
+        yield post.save();
         return res.json({ message: 'Comment successfully created', comment });
     }
     catch (error) {
