@@ -14,24 +14,29 @@ type GetPostsProps = {
 };
 
 const getPosts = async (props: GetPostsProps): Promise<PostInterface[]> => {
-  const {
-    offset = 0,
-    limit = 10,
-    sortOrder = DbQueries.SortOrder.DESCENDING,
-  } = props;
+  try {
+    const {
+      offset = 0,
+      limit = 10,
+      sortOrder = DbQueries.SortOrder.DESCENDING,
+    } = props;
 
-  axios.defaults.headers.common.Authorization = getToken();
+    axios.defaults.headers.common.Authorization = getToken();
 
-  const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}}`;
+    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}}`;
 
-  const request = await axios.get(apiUrl);
-  const { posts: postsData } = request.data;
+    const request = await axios.get(apiUrl);
+    const { posts: postsData } = request.data;
 
-  const postsDataObjects: PostInterface[] = postsData.map((post: any) => {
-    return dataToPostObject(post);
-  });
+    const postsDataObjects: PostInterface[] = postsData.map((post: any) => {
+      return dataToPostObject(post);
+    });
 
-  return postsDataObjects;
+    return postsDataObjects;
+  } catch (err: any) {
+    console.error(err);
+    return [];
+  }
 };
 
 export default getPosts;

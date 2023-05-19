@@ -7,8 +7,8 @@ import login from '../login';
 import { setUser } from '../../reducers/userReducer';
 import { setLoginError } from '../../../../store/reducers/errorReducer';
 import { createTestStore } from '../../../../utils/test_utils';
-import { UserState } from '../../../users/types/user';
 import { ErrorState } from '../../../../types/error';
+import { UserState } from '../../types/userState';
 
 const expectedUser = {
   firstName: 'test',

@@ -10,6 +10,8 @@ import userReducer from '../features/authentication/reducers/userReducer';
 import errorReducer from '../store/reducers/errorReducer';
 import setupStore from '../store/store';
 import type { RootState } from '../types';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useAppDispatch, useAppSelector } from '../hooks';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: PreloadedState<RootState>;
@@ -68,5 +70,6 @@ const createTestStore = () => {
 
   return store;
 };
+
 
 export { renderWithProviders, createTestStore };

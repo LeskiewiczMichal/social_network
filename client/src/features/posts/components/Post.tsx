@@ -95,7 +95,7 @@ export default function Post(props: PostInterface) {
               <span>{comments.length}</span>
             </button>
           </div>
-          <CommentsSection postId={id} />
+          <CommentsSection postId={id} numberOfComments={comments.length} />
         </div>
       </div>
     </div>

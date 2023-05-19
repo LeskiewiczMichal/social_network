@@ -13,14 +13,14 @@ export default function NotificationsDropdown() {
 
   return (
     <div className="relative">
+      {/* Notifications button */}
       <button
-        id="dropdownUserAvatarButton"
-        data-dropdown-toggle="dropdownAvatar"
+        id="notifcationsButton"
         className="flex self-center items-center text-sm rounded-full md:mr-0 "
         type="button"
+        aria-label="Drop down notifications"
         onClick={handleDropdown}
       >
-        <span className="sr-only">Open Notifications Menu</span>
         <img
           className="w-10 h-10 rounded-full"
           src={notificationsImage}
@@ -35,7 +35,7 @@ export default function NotificationsDropdown() {
         className={`${
           isDropdownHidden ? 'fixed sm:absolute' : 'hidden'
         } z-20 w-screen sm:w-80 bg-white divide-y divide-gray-100 rounded-lg left-0 sm:-left-72 top-14 sm:top-12 sm:border shadow dark:bg-gray-800 dark:divide-gray-700`}
-        aria-labelledby="dropdownNotificationButton"
+        aria-label="notifcationsButton"
       >
         <div className="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
           Notifications

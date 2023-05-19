@@ -15,14 +15,14 @@ export default function ProfileDropdown() {
 
   return (
     <div className="relative">
+      {/* User picture button */}
       <button
-        id="dropdownUserAvatarButton"
-        data-dropdown-toggle="dropdownAvatar"
+        id="profileButton"
+        aria-label="Profile dropdown"
         className="flex self-center flex-auto text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
         type="button"
         onClick={handleDropDown}
       >
-        <span className="sr-only">Open user menu</span>
         <img
           className="w-10 h-10 rounded-full"
           src={`${process.env.REACT_APP_SERVER_URL}${user.profilePicture}`}
@@ -30,12 +30,14 @@ export default function ProfileDropdown() {
         />
       </button>
 
-      <div
-        id="dropdownAvatar"
+      {/* Dropdown */}
+      <nav
+        aria-labelledby="profileButton"
         className={`z-10 bg-white border divide-y divide-gray-100 rounded-lg shadow w-screen sm:w-44 left-0 sm:-left-36 top-14 sm:top-12 dark:bg-gray-700 dark:divide-gray-600 ${
           profileMenuOpen ? 'fixed sm:absolute' : 'hidden'
         }`}
       >
+        {/* User info */}
         <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
           <div>
             {user.firstName} {user.lastName}
@@ -46,15 +48,18 @@ export default function ProfileDropdown() {
           className="py-2 text-sm text-gray-700 dark:text-gray-200"
           aria-labelledby="dropdownUserAvatarButton"
         >
+          {/* Profile link button */}
           <li>
             <Link
-              to="/profile"
+              to={`/profile/${user.id}`}
+              aria-label="profile"
               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
             >
               Profile
             </Link>
           </li>
         </ul>
+        {/* Sing out button */}
         <div className="py-2">
           <button
             type="button"
@@ -64,7 +69,7 @@ export default function ProfileDropdown() {
             Sign out
           </button>
         </div>
-      </div>
+      </nav>
     </div>
   );
 }

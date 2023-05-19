@@ -8,10 +8,11 @@ import { LoadingSpinner } from '../../../components';
 
 type CommentsSectionProps = {
   postId: string;
+  numberOfComments: number;
 };
 
 export default function CommentsSection(props: CommentsSectionProps) {
-  const { postId } = props;
+  const { postId, numberOfComments } = props;
   const [comments, setComments] = useState<CommentInterface[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -48,7 +49,9 @@ export default function CommentsSection(props: CommentsSectionProps) {
           />
         );
       })}
-      {comments.length !== 0 && <h1>placeholder for see more button</h1>}
+      {comments.length < numberOfComments && (
+        <h1>placeholder for see more button</h1>
+      )}
     </section>
   );
 }

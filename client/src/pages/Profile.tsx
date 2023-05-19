@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 
 export default function Profile() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { userId } = useParams();
-  console.log(userId);
 
   return (
     <main className="padding-top-header">

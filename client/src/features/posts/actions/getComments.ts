@@ -15,27 +15,32 @@ type GetCommentsProps = {
 const getComments = async (
   props: GetCommentsProps,
 ): Promise<CommentInterface[]> => {
-  const {
-    postId,
-    sortOrder = DbQueries.SortOrder.DESCENDING,
-    limit = 1,
-    offset = 0,
-  } = props;
+  try {
+    const {
+      postId,
+      sortOrder = DbQueries.SortOrder.DESCENDING,
+      limit = 1,
+      offset = 0,
+    } = props;
 
-  axios.defaults.headers.common.Authorization = getToken();
+    axios.defaults.headers.common.Authorization = getToken();
 
-  const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/comments/${postId}?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}`;
+    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/comments/${postId}?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}`;
 
-  const request = await axios.get(apiUrl);
-  const { comments: commentsData } = request.data;
+    const request = await axios.get(apiUrl);
+    const { comments: commentsData } = request.data;
 
-  const commentObjects: CommentInterface[] = commentsData.map(
-    (comment: any) => {
-      return dataToCommentObject(comment);
-    },
-  );
+    const commentObjects: CommentInterface[] = commentsData.map(
+      (comment: any) => {
+        return dataToCommentObject(comment);
+      },
+    );
 
-  return commentObjects;
+    return commentObjects;
+  } catch (err: any) {
+    console.error(err);
+    return [];
+  }
 };
 
 export default getComments;
