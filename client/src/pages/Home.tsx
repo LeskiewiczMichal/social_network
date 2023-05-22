@@ -10,10 +10,14 @@ export default function Home() {
 
   useEffect(() => {
     const handleGetPosts = async () => {
-      const queriedPosts = await getPosts({ offset });
-      setOffset((oldOffset) => oldOffset + 10);
-      setPosts(queriedPosts);
-      setIsLoading(false);
+      try {
+        const queriedPosts = await getPosts({ offset });
+        setOffset((oldOffset) => oldOffset + 10);
+        setPosts(queriedPosts);
+        setIsLoading(false);
+      } catch (err: any) {
+        console.error(err);
+      }
     };
 
     handleGetPosts();
