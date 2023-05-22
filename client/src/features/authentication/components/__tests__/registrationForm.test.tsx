@@ -5,8 +5,6 @@ import { NavigateFunction } from 'react-router-dom';
 
 import { renderWithProviders } from '../../../../utils/test_utils';
 import RegistrationForm, { initialFormData } from '../RegistrationForm';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useAppDispatch } from '../../../../hooks';
 import register from '../../actions/register';
 
 const mockUseAppSelector = jest.fn();
@@ -15,9 +13,20 @@ jest.mock('../../../../hooks', () => ({
   useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
+// Mock register action
 jest.mock('../../actions/register', () => jest.fn());
 
 describe('Register form test', () => {
+  const consoleErrorSpy = jest.spyOn(console, 'error');
+
+  beforeAll(() => {
+    consoleErrorSpy.mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore();
+  });
+
   test('Renders correctly', () => {
     renderWithProviders(<RegistrationForm />);
 

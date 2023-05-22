@@ -23,7 +23,7 @@ const getPosts = async (props: GetPostsProps): Promise<PostInterface[]> => {
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}}`;
+    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}`;
 
     const request = await axios.get(apiUrl);
     const { posts: postsData } = request.data;

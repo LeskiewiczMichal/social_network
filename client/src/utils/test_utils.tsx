@@ -6,6 +6,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
+import { UserInterface } from '../features/users/types/user';
 import userReducer from '../features/authentication/reducers/userReducer';
 import errorReducer from '../store/reducers/errorReducer';
 import setupStore from '../store/store';
@@ -17,6 +18,37 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: PreloadedState<RootState>;
   store?: typeof setupStore;
 }
+
+const mockedUser: UserInterface = {
+  id: 'test',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'test@mail.pl',
+  country: 'test',
+  city: 'test',
+  postalCode: 'test',
+  about: 'test',
+  friends: [],
+  friendRequests: [],
+  birthday: 'test',
+  profilePicture: 'test',
+};
+
+const postProps = {
+  id: 'test',
+  title: 'Test Title',
+  body: 'This is testing body',
+  author: mockedUser,
+  comments: [],
+  likes: [],
+  photo: null,
+  createdAt: new Date('2020-01-01'),
+};
+
+const MOCKS = {
+  USER: mockedUser,
+  POST: postProps,
+};
 
 function renderWithProviders(
   ui: React.ReactElement,
@@ -71,5 +103,4 @@ const createTestStore = () => {
   return store;
 };
 
-
-export { renderWithProviders, createTestStore };
+export { renderWithProviders, createTestStore, MOCKS };

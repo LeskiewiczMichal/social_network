@@ -5,7 +5,7 @@ export interface CommentInterface {
   body: string;
   author: UserTypes.UserInterface;
   likes: string[];
-  post: string[];
+  post: string;
   createdAt: Date;
   updatedAt: Date;
 }

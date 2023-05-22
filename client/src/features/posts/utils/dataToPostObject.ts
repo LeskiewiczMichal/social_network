@@ -6,7 +6,7 @@ interface DataToPostObject extends PostInterface {
   author: any;
 }
 
-const datatoPostObject = (props: DataToPostObject): PostInterface => {
+const dataToPostObject = (props: DataToPostObject): PostInterface => {
   const {
     _id: id,
     title,
@@ -36,4 +36,4 @@ const datatoPostObject = (props: DataToPostObject): PostInterface => {
   return post;
 };
 
-export default datatoPostObject;
+export default dataToPostObject;

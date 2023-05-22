@@ -42,7 +42,7 @@ export default function Post(props: PostInterface) {
           <h4 className="mt-2 text-bold">{title}</h4>
 
           {/* Text */}
-          <p className="mt-1 mb-5 text-gray-700 text-sm ">{body}</p>
+          <p className="mt-1 mb-5 text-gray-700 text-sm">{body}</p>
 
           {/* Photo if available */}
           {photo && (
@@ -58,6 +58,7 @@ export default function Post(props: PostInterface) {
             <button
               className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
               type="button"
+              aria-label="give a heart"
             >
               <svg
                 fill="#4f46e5"
@@ -78,6 +79,7 @@ export default function Post(props: PostInterface) {
             <button
               className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
               type="button"
+              aria-label="show all comments"
             >
               <svg
                 fill="none"

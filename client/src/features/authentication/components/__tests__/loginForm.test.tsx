@@ -2,8 +2,6 @@ import { screen, fireEvent } from '@testing-library/react';
 
 import { renderWithProviders } from '../../../../utils/test_utils';
 import LoginForm from '../LoginForm';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useAppDispatch } from '../../../../hooks';
 import login from '../../actions/login';
 
 const mockUseAppDispatch = jest.fn();
@@ -12,9 +10,20 @@ jest.mock('../../../../hooks', () => ({
   useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
+// Mock login function
 jest.mock('../../actions/login', () => jest.fn());
 
 describe('Login form test', () => {
+  const consoleErrorSpy = jest.spyOn(console, 'error');
+
+  beforeAll(() => {
+    consoleErrorSpy.mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore();
+  });
+
   test('renders correctly', () => {
     renderWithProviders(<LoginForm />);
 

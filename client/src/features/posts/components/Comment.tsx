@@ -18,7 +18,7 @@ export default function Comment(props: CommentInterface) {
         {/* User */}
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">
-            <Link to={`/profile/${author.id}`}>
+            <Link aria-label="author profile" to={`/profile/${author.id}`}>
               {author.firstName} {author.lastName}{' '}
             </Link>
           </h2>
@@ -37,6 +37,7 @@ export default function Comment(props: CommentInterface) {
           <button
             className="flex text-gray-700 text-lg md:text-base justify-center items-center"
             type="button"
+            aria-label="hearts"
           >
             <svg
               fill="#4f46e5"

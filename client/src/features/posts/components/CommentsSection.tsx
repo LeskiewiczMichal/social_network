@@ -19,10 +19,14 @@ export default function CommentsSection(props: CommentsSectionProps) {
 
   useEffect(() => {
     const handleGetComments = async () => {
-      const queriedComments = await getComments({ postId, limit: 2, offset });
-      setOffset((oldOffset: number) => oldOffset + 2);
-      setComments(queriedComments);
-      setIsLoading(false);
+      try {
+        const queriedComments = await getComments({ postId, limit: 2, offset });
+        setOffset((oldOffset: number) => oldOffset + 2);
+        setComments(queriedComments);
+        setIsLoading(false);
+      } catch (err: any) {
+        console.error(err);
+      }
     };
 
     handleGetComments();
@@ -50,7 +54,7 @@ export default function CommentsSection(props: CommentsSectionProps) {
         );
       })}
       {comments.length < numberOfComments && (
-        <h1>placeholder for see more button</h1>
+        <p>placeholder for see more button</p>
       )}
     </section>
   );

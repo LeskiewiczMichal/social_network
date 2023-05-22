@@ -28,6 +28,7 @@ const getComments = async (
     const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/comments/${postId}?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}`;
 
     const request = await axios.get(apiUrl);
+
     const { comments: commentsData } = request.data;
 
     const commentObjects: CommentInterface[] = commentsData.map(

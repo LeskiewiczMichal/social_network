@@ -8,19 +8,25 @@ type GetUserProps = {
   userId: string;
 };
 
-const getUser = async (props: GetUserProps): Promise<UserInterface> => {
-  const { userId } = props;
+// eslint-disable-next-line consistent-return
+const getUser = async (props: GetUserProps): Promise<UserInterface | null> => {
+  try {
+    const { userId } = props;
 
-  axios.defaults.headers.common.Authorization = getToken();
+    axios.defaults.headers.common.Authorization = getToken();
 
-  const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users/${userId}`;
+    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users/${userId}`;
 
-  const request = await axios.get(apiUrl);
-  const { user: userData } = request.data;
+    const request = await axios.get(apiUrl);
+    const { user: userData } = request.data;
 
-  const userObject: UserInterface = dataToUserObject(userData);
+    const userObject: UserInterface = dataToUserObject(userData);
 
-  return userObject;
+    return userObject;
+  } catch (err: any) {
+    console.error(err);
+    return null;
+  }
 };
 
 export default getUser;

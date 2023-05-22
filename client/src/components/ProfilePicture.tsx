@@ -10,7 +10,7 @@ export default function ProfilePicture(props: ProfilePictureProps) {
   const { userId, userPicture, size } = props;
 
   return (
-    <Link className="" to={`/profile/${userId}`}>
+    <Link aria-label="Profile" to={`/profile/${userId}`}>
       <div
         className={`w-${size} h-${size} rounded-full object-cover mr-4 shadow mb-2 md:mb-0`}
       >
