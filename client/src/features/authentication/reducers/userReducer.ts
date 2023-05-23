@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { UserState } from '../types/userState';
-import { UserTypes } from '../../users';
 
 const initialState: UserState = {
   id: null,
@@ -16,13 +15,9 @@ const initialState: UserState = {
   friendRequests: null,
   birthday: null,
   profilePicture: null,
-  googleId: null,
 };
 
-const setUserReducer = (
-  state: any,
-  action: PayloadAction<UserState | UserTypes.UserInterface>,
-) => {
+const setUserReducer = (state: any, action: PayloadAction<UserState>) => {
   state.id = action.payload.id;
   state.firstName = action.payload.firstName;
   state.lastName = action.payload.lastName;
@@ -35,9 +30,6 @@ const setUserReducer = (
   state.city = action.payload.city;
   state.postalCode = action.payload.postalCode;
   state.about = action.payload.about;
-  if (action.payload.googleId) {
-    state.googleId = action.payload.googleId;
-  }
 };
 
 export const userSlice = createSlice({

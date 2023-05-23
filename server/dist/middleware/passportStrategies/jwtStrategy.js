@@ -22,7 +22,7 @@ const JWToptions = {
 };
 const jwtStrategy = new JWTStrategy(JWToptions, (jwtPayload, cb) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = (yield models_1.User.findById(jwtPayload.id));
+        const user = (yield models_1.User.findById(jwtPayload.id).select('+friendRequests'));
         return cb(null, user);
     }
     catch (error) {

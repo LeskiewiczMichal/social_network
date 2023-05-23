@@ -5,7 +5,6 @@ import { verifyToken, FileUploads } from '../middleware';
 const router = express.Router();
 
 // Friend requests
-router.get('/friendRequests', verifyToken, UsersController.getFriendRequests);
 router.post(
   '/friendRequests/:friendId',
   verifyToken,
@@ -32,6 +31,6 @@ router.post(
 router.put('/', verifyToken, UsersController.updateUserData);
 router.delete('/', verifyToken, UsersController.deleteUser);
 router.get('/:userId', UsersController.getUserById);
-router.get('/', UsersController.getAllUsers);
+router.get('/', UsersController.getUsers);
 
 export default router;

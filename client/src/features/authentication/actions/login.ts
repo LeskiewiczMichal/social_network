@@ -30,7 +30,12 @@ const login =
       const user = dataToUserObject({ ...userData });
 
       localStorage.setItem(TokenEnum.localStorageName, `Bearer ${token}`);
-      dispatch(setUser(user));
+      dispatch(
+        setUser({
+          ...user,
+          friendRequests: userData.friendRequests,
+        }),
+      );
       dispatch(setLoginError(null));
     } catch (err: any) {
       dispatch(setLoginError(err.response.data.error));

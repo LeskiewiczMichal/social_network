@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         primary: 'var(--primary)',
         'primary-lighter': 'var(--primary-lighter)',
+        'background-white': 'var(--background-white)',
       },
     },
   },

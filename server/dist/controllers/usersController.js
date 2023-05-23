@@ -9,20 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadProfilePic = exports.deleteFriendRequest = exports.getFriendRequests = exports.sendFriendRequest = exports.deleteFriend = exports.addFriend = exports.getFriends = exports.getAllUsers = exports.getUserById = exports.deleteUser = exports.updateUserData = void 0;
+exports.uploadProfilePic = exports.deleteFriendRequest = exports.sendFriendRequest = exports.deleteFriend = exports.addFriend = exports.getFriends = exports.getUsers = exports.getUserById = exports.deleteUser = exports.updateUserData = void 0;
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
-const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = (yield models_1.User.find());
+        const { usersList } = req.query;
+        const dbQuery = models_1.User.find();
+        if (usersList) {
+            const usersArray = Array.isArray(usersList) ? usersList : [usersList];
+            dbQuery.where('_id').in(usersArray);
+        }
+        const users = (yield dbQuery.exec());
         return res.json({ users });
     }
     catch (error) {
         return (0, utils_1.handleError)(error, res);
     }
 });
-exports.getAllUsers = getAllUsers;
+exports.getUsers = getUsers;
 const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = (yield models_1.User.findById(req.params.userId));
@@ -95,7 +101,7 @@ const addFriend = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         user.friends.push(newFriendId);
         yield user.save();
-        return res.json({ message: 'Friend added successfully', user });
+        return res.json({ message: 'Friend added successfully' });
     }
     catch (error) {
         return (0, utils_1.handleError)(error, res);
@@ -125,7 +131,7 @@ const sendFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const { id: userId } = req.user;
         const { friendId } = req.params;
-        const friend = (yield models_1.User.findById(friendId));
+        const friend = (yield models_1.User.findById(friendId).select('+friendRequests'));
         if (friend.friendRequests.includes(userId)) {
             throw new types_1.ErrorTypes.BadRequestError('Friend request was already sent');
         }
@@ -138,17 +144,6 @@ const sendFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.sendFriendRequest = sendFriendRequest;
-const getFriendRequests = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const user = req.user;
-        yield user.populate('friendRequests');
-        return res.json({ friendRequests: user.friendRequests });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.getFriendRequests = getFriendRequests;
 const deleteFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;

@@ -91,19 +91,34 @@ const createFakeUsers = async (props: CreateFakeUsersProps) => {
   await userTwo.save();
   await userThree.save();
 
-  const expectedUserOne = {
+  const {
+    friendRequests: df1,
+    googleId: dg1,
+    password: dp1,
+    ...expectedUserOne
+  } = {
     ...defaultUserOne,
     _id: props.ids.one.toString(),
     birthday: '1990-01-01T00:00:00.000Z',
   };
 
-  const expectedUserTwo = {
+  const {
+    friendRequests: df2,
+    googleId: dg2,
+    password: dp2,
+    ...expectedUserTwo
+  } = {
     ...defaultUserTwo,
     _id: props.ids.two.toString(),
     birthday: '1995-05-04T00:00:00.000Z',
   };
 
-  const expectedUserThree = {
+  const {
+    friendRequests: df3,
+    googleId: dg3,
+    password: dp3,
+    ...expectedUserThree
+  } = {
     ...defaultUserThree,
     _id: props.ids.three.toString(),
     birthday: '2000-03-09T00:00:00.000Z',

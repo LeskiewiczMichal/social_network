@@ -26,7 +26,7 @@ const googleOptions = {
 const googleStrategy = new passport_google_oauth20_1.Strategy(googleOptions, (accessToken, refreshToken, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
     try {
-        const user = yield models_1.User.findOne({ googleId: profile.id });
+        const user = yield models_1.User.findOne({ googleId: profile.id }).select('+friendRequests');
         if (!user) {
             const newUser = new models_1.User({
                 email: (_b = (_a = profile.emails) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.value,

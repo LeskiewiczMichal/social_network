@@ -20,7 +20,6 @@ const logout = (): AppThunk => async (dispatch) => {
         friendRequests: null,
         birthday: null,
         profilePicture: null,
-        googleId: null,
       }),
     );
   } catch (err) {

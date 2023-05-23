@@ -8,8 +8,6 @@ export interface UserInterface {
   postalCode: string;
   about: string;
   friends: string[];
-  friendRequests: string[];
   birthday: string;
   profilePicture: string;
-  googleId?: string;
 }

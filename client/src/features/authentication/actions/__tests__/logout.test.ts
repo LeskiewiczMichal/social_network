@@ -5,25 +5,12 @@ import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
 import logout from '../logout';
 import { setUser } from '../../reducers/userReducer';
-import { createTestStore } from '../../../../utils/test_utils';
+import { createTestStore, MOCKS } from '../../../../utils/test_utils';
 import { ErrorState } from '../../../../types/error';
 import { UserState } from '../../types/userState';
 
-const expectedUser = {
-  firstName: 'test',
-  lastName: 'test',
-  email: 'test@mail.pl',
-  friends: [],
-  friendRequests: [],
-  birthday: '2020-01-01',
-  country: 'test',
-  city: 'test',
-  postalCode: 'test',
-  about: 'test',
-  profilePicture: 'test',
-};
-
 describe('Logout', () => {
+  // Set up API and store mocks
   let mock: MockAdapter;
   let store: ToolkitStore<
     {
@@ -60,13 +47,15 @@ describe('Logout', () => {
   });
 
   test('should dispatch user to reducer', async () => {
+    // Mock localstorage and API call
     jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('ABCD');
     mock
       .onGet(`${process.env.REACT_APP_SERVER_URL}/api/users/auth/token`)
       .reply(200, {
-        user: { ...expectedUser, _id: '2115' },
+        user: { ...MOCKS.USER, _id: '2115' },
       });
 
+    // Expect to null the reducer
     const expectedAction = setUser({
       id: null,
       firstName: null,
@@ -80,11 +69,10 @@ describe('Logout', () => {
       friendRequests: null,
       birthday: null,
       profilePicture: null,
-      googleId: null,
     });
 
+    // Create and call function
     const logoutThunk = logout();
-
     await logoutThunk(dispatch, store.getState, mockExtraArguments);
 
     expect(dispatch).toHaveBeenCalledWith(expectedAction);

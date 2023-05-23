@@ -29,8 +29,7 @@ const mockedUser: UserInterface = {
   postalCode: 'test',
   about: 'test',
   friends: [],
-  friendRequests: [],
-  birthday: 'test',
+  birthday: 'January 1, 2020',
   profilePicture: 'test',
 };
 
@@ -67,7 +66,6 @@ function renderWithProviders(
         friendRequests: null,
         birthday: null,
         profilePicture: null,
-        googleId: null,
       },
       error: {
         loginError: null,

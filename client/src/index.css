@@ -20,6 +20,7 @@
 :root {
   --primary: #4f46e5;
   --primary-lighter: #6366f1;
+  --background-white:  rgb(248 250 252);
 }
 
 body {

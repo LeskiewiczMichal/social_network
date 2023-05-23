@@ -3,37 +3,44 @@ import { Document, Schema, Model, model } from 'mongoose';
 export interface UserInterface extends Document {
   firstName: string;
   lastName: string;
-  password: string;
+  password?: string;
   email: string;
   country: string;
   city: string;
   postalCode: string;
   about: string;
   friends: Schema.Types.ObjectId[];
-  friendRequests: Schema.Types.ObjectId[];
+  friendRequests?: Schema.Types.ObjectId[];
   birthday: Date;
   profilePicture: string;
   googleId?: string;
   socketId?: string | null;
 }
 
+export interface UserInterfaceWithFriendRequests extends UserInterface {
+  friendRequests: Schema.Types.ObjectId[];
+}
+
 const userSchema: Schema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  password: { type: String, required: false },
+  password: { type: String, required: false, select: false },
   email: { type: String, required: true },
   country: { type: String, required: true },
   city: { type: String, required: true },
   postalCode: { type: String, required: true },
   about: { type: String, required: true },
   friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  friendRequests: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  friendRequests: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    select: false,
+  },
   birthday: { type: Date, required: false },
   profilePicture: {
     type: String,
     default: '/photos/profilePictures/default.png',
   },
-  googleId: { type: String, requried: false },
+  googleId: { type: String, requried: false, select: false },
   socketId: { type: String, required: false, default: null },
 });
 

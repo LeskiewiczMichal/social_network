@@ -31,7 +31,6 @@ const UsersController = __importStar(require("../controllers/usersController"));
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 // Friend requests
-router.get('/friendRequests', middleware_1.verifyToken, UsersController.getFriendRequests);
 router.post('/friendRequests/:friendId', middleware_1.verifyToken, UsersController.sendFriendRequest);
 router.delete('/friendRequests/:friendId', middleware_1.verifyToken, UsersController.deleteFriendRequest);
 // Friends
@@ -43,5 +42,5 @@ router.post('/profile-picture', middleware_1.verifyToken, middleware_1.FileUploa
 router.put('/', middleware_1.verifyToken, UsersController.updateUserData);
 router.delete('/', middleware_1.verifyToken, UsersController.deleteUser);
 router.get('/:userId', UsersController.getUserById);
-router.get('/', UsersController.getAllUsers);
+router.get('/', UsersController.getUsers);
 exports.default = router;

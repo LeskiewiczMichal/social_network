@@ -3,6 +3,12 @@ import { Request, Response } from 'express';
 import { UserInterface } from '../models';
 
 // Requests
+interface GetUsersRequest extends Request {
+  body: {
+    usersList?: string[];
+  };
+}
+
 interface GetUserByIdRequest extends Request {
   params: {
     userId: string;
@@ -48,7 +54,7 @@ interface RequestDeleteFriendRequest extends Request {
   };
 }
 
-type GetAllUsersResponse = Response<{ users: UserInterface[] }>;
+type GetUsersResponse = Response<{ users: UserInterface[] }>;
 type GetUserByIdResponse = Response<{ user: UserInterface }>;
 type UpdateUserDataResponse = Response<{
   message: string;
@@ -56,7 +62,7 @@ type UpdateUserDataResponse = Response<{
 }>;
 type DeleteUserResponse = Response<{ message: string }>;
 type GetFriendsResponse = Response<{ users: mongoose.Schema.Types.ObjectId[] }>;
-type AddFriendResponse = Response<{ message: string; user: UserInterface }>;
+type AddFriendResponse = Response<{ message: string }>;
 type DeleteFriendResponse = Response<{ message: string; user: UserInterface }>;
 type SendFriendRequestResponse = Response<{ message: string }>;
 type GetFriendRequestsResponse = Response<{
@@ -68,6 +74,7 @@ type DeleteFriendRequestResponse = Response<{
 }>;
 
 export {
+  GetUsersRequest,
   GetUserByIdRequest,
   UpdateUserDataRequest,
   GetFriendsRequest,
@@ -75,7 +82,7 @@ export {
   DeleteFriendRequest,
   RequestSendFriendRequest,
   RequestDeleteFriendRequest,
-  GetAllUsersResponse,
+  GetUsersResponse,
   GetUserByIdResponse,
   UpdateUserDataResponse,
   DeleteUserResponse,

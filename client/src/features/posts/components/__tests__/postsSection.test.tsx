@@ -4,26 +4,26 @@ import en from 'javascript-time-ago/locale/en.json';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 
-import Home from '../Home';
-import { MOCKS, renderWithProviders } from '../../utils/test_utils';
+import PostsSection from '../PostsSection';
+import { MOCKS, renderWithProviders } from '../../../../utils/test_utils';
 
 TimeAgo.addLocale(en);
 
 // Mock redux
 const mockUseAppDispatch = jest.fn();
 const mockUseAppSelector = jest.fn();
-jest.mock('../../hooks', () => ({
+jest.mock('../../../../hooks', () => ({
   useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
 // Mock Post component
-jest.mock('../../features/posts/components/Post', () => {
+jest.mock('../Post', () => {
   return function Post() {
     return <div data-testid="mock-post" />;
   };
 });
 // Mock LoadingSpinner component
-jest.mock('../../components/LoadingSpinner', () => {
+jest.mock('../../../../components/LoadingSpinner', () => {
   return function LoadingSpinner() {
     return <div data-testid="mock-spinner" />;
   };
@@ -67,7 +67,7 @@ describe('Comments section', () => {
         ],
       });
 
-    renderWithProviders(<Home />);
+    renderWithProviders(<PostsSection />);
 
     await waitFor(() => {
       expect(screen.getByTestId('mock-post')).toBeInTheDocument();
@@ -78,7 +78,7 @@ describe('Comments section', () => {
   });
 
   test('Renders loading while getting posts from server', () => {
-    renderWithProviders(<Home />);
+    renderWithProviders(<PostsSection />);
 
     expect(screen.getByTestId('mock-spinner')).toBeInTheDocument();
   });

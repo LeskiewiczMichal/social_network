@@ -37,7 +37,7 @@ const bcrypt = __importStar(require("bcryptjs"));
 const models_1 = require("../../models");
 const localStrategy = new passport_local_1.Strategy({ usernameField: 'email' }, (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = (yield models_1.User.findOne({ email }));
+        const user = (yield models_1.User.findOne({ email }).select('+friendRequests +password'));
         if (!user) {
             return done(null, false, { error: 'Incorrect username' });
         }

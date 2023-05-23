@@ -11,5 +11,4 @@ export type UserState = {
   friendRequests: string[] | null;
   birthday: string | null;
   profilePicture: string | null;
-  googleId: string | null;
 };

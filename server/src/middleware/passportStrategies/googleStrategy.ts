@@ -26,7 +26,9 @@ const googleStrategy = new GoogleStrategy(
     done: any,
   ) => {
     try {
-      const user = await User.findOne({ googleId: profile.id });
+      const user = await User.findOne({ googleId: profile.id }).select(
+        '+friendRequests',
+      );
 
       if (!user) {
         const newUser = new User({

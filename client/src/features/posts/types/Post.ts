@@ -1,10 +1,10 @@
-import { UserTypes } from '../../users';
+import { UserInterface } from '../../users/types/user';
 
 export interface PostInterface {
   id: string;
   title: string;
   body: string;
-  author: UserTypes.UserInterface;
+  author: UserInterface;
   comments: string[];
   likes: string[];
   photo: string | null;

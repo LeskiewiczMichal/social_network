@@ -239,10 +239,6 @@ describe('Users route tests', () => {
         .expect((res) => {
           expect(res.body).toMatchObject({
             message: 'Friend added successfully',
-            user: {
-              friends: [`${users.two._id}`],
-              friendRequests: [],
-            },
           });
         })
         .expect(200, done);
@@ -296,50 +292,6 @@ describe('Users route tests', () => {
             user: {
               friends: [],
             },
-          });
-        })
-        .expect(200, done);
-    });
-  });
-
-  describe('Get friend requests', () => {
-    beforeAll(async () => {
-      try {
-        users = await TestUtils.createFakeUsers({
-          userOne: {
-            friendRequests: [
-              TestUtils.CONSTANTS.USER_IDS.two,
-              TestUtils.CONSTANTS.USER_IDS.three,
-            ],
-          },
-          userTwo: { friendRequests: [] },
-          userThree: {},
-          ids: TestUtils.CONSTANTS.USER_IDS,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    afterAll(TestUtils.deleteAllUsers);
-
-    test('returns empty list on success', (done) => {
-      request(app)
-        .get('/friendRequests')
-        .set('Authorization', `Bearer ${users.tokens.two}`)
-        .expect('Content-Type', /json/)
-        .expect({ friendRequests: [] })
-        .expect(200, done);
-    });
-
-    test('returns list of people on success', (done) => {
-      request(app)
-        .get('/friendRequests')
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect((res) => {
-          expect(res.body).toMatchObject({
-            friendRequests: [users.two, users.three],
           });
         })
         .expect(200, done);

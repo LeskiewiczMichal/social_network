@@ -176,7 +176,6 @@ describe('Auth route tests', () => {
                         firstName: 'Test',
                         lastName: 'Surname',
                         birthday: '1000-05-05T00:00:00.000Z',
-                        password: 'password123',
                         country: 'Poland',
                         city: 'Sieradz',
                         postalCode: '98-200',

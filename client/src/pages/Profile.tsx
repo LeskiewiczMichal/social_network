@@ -1,10 +1,11 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import { UserOverview } from '../features/users';
+import { UserOverview, UserDetails } from '../features/users';
 import getUser from '../features/users/actions/getUser';
 import { UserInterface } from '../features/users/types/user';
 import { useAppSelector } from '../hooks';
+import { PostsSection } from '../features/posts';
 
 export default function Profile() {
   const { userId } = useParams();
@@ -31,7 +32,7 @@ export default function Profile() {
   }, [userId]);
 
   return (
-    <main className="padding-top-header flex flex-col items-center">
+    <main className="padding-top-header flex flex-col items-center bg-background-white min-h-screen">
       <UserOverview
         firstName={currentUser.firstName}
         lastName={currentUser.lastName}
@@ -40,6 +41,15 @@ export default function Profile() {
         friends={currentUser.friends}
         profilePicture={currentUser.profilePicture}
       />
+      <UserDetails
+        friends={currentUser.friends}
+        id={currentUser.id}
+        country={currentUser.country}
+        birthday={currentUser.birthday}
+        city={currentUser.city}
+        email={currentUser.email}
+      />
+      <PostsSection authorId={currentUser.id} />
     </main>
   );
 }

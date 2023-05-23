@@ -1,9 +1,9 @@
-import { UserTypes } from '../../users';
+import { UserInterface } from '../../users/types/user';
 
 export interface CommentInterface {
   id: string;
   body: string;
-  author: UserTypes.UserInterface;
+  author: UserInterface;
   likes: string[];
   post: string;
   createdAt: Date;

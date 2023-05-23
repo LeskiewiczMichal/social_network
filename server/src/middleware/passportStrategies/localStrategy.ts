@@ -6,12 +6,14 @@ const localStrategy = new LocalStrategy(
   { usernameField: 'email' },
   async (email: string, password: string, done: any) => {
     try {
-      const user = (await User.findOne({ email })) as UserInterface;
+      const user = (await User.findOne({ email }).select(
+        '+friendRequests +password',
+      )) as UserInterface;
       if (!user) {
         return done(null, false, { error: 'Incorrect username' });
       }
 
-      const result = await bcrypt.compare(password, user.password);
+      const result = await bcrypt.compare(password, user.password!);
       if (!result) {
         return done(null, false, { errror: 'Incorrect password' });
       }

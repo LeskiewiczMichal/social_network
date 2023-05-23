@@ -18,7 +18,12 @@ const autoLogin =
         );
         const { user: userData } = response.data;
         const user = dataToUserObject({ ...userData });
-        dispatch(setUser(user));
+        dispatch(
+          setUser({
+            ...user,
+            friendRequests: userData.friendRequests,
+          }),
+        );
       }
     } catch (err: any) {
       /* empty */

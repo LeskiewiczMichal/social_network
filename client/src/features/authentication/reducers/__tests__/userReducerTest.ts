@@ -21,7 +21,6 @@ const expectedUser: UserState = {
   postalCode: 'test',
   about: 'test',
   profilePicture: 'test',
-  googleId: null,
 };
 
 describe('Auto Login thunk', () => {

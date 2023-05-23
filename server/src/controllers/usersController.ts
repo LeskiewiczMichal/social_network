@@ -1,15 +1,26 @@
 import { Request, Response } from 'express';
-import { User, UserInterface } from '../models';
+import {
+  User,
+  UserInterface,
+  UserInterfaceWithFriendRequests,
+} from '../models';
 import { ErrorTypes, UserTypes } from '../types';
 import { handleError } from '../utils';
 
-const getAllUsers = async (
-  req: Request,
-  res: UserTypes.GetAllUsersResponse,
-): Promise<UserTypes.GetAllUsersResponse> => {
+const getUsers = async (
+  req: UserTypes.GetUsersRequest,
+  res: UserTypes.GetUsersResponse,
+): Promise<UserTypes.GetUsersResponse> => {
   try {
-    const users = (await User.find()) as UserInterface[];
+    const { usersList } = req.query;
+    const dbQuery = User.find();
 
+    if (usersList) {
+      const usersArray = Array.isArray(usersList) ? usersList : [usersList];
+      dbQuery.where('_id').in(usersArray);
+    }
+
+    const users: UserInterface[] = (await dbQuery.exec()) as UserInterface[];
     return res.json({ users });
   } catch (error: any) {
     return handleError(error, res);
@@ -91,7 +102,7 @@ const addFriend = async (
 ): Promise<UserTypes.AddFriendResponse> => {
   try {
     const { friendId } = req.params;
-    const user = req.user as UserInterface;
+    const user = req.user as UserInterfaceWithFriendRequests;
     const { id: newFriendId } = (await User.findById(
       friendId,
     )) as UserInterface;
@@ -109,7 +120,7 @@ const addFriend = async (
     user.friends.push(newFriendId);
     await user.save();
 
-    return res.json({ message: 'Friend added successfully', user });
+    return res.json({ message: 'Friend added successfully' });
   } catch (error: any) {
     return handleError(error, res);
   }
@@ -150,7 +161,9 @@ const sendFriendRequest = async (
   try {
     const { id: userId } = req.user as UserInterface;
     const { friendId } = req.params;
-    const friend = (await User.findById(friendId)) as UserInterface;
+    const friend = (await User.findById(friendId).select(
+      '+friendRequests',
+    )) as UserInterfaceWithFriendRequests;
 
     if (friend.friendRequests.includes(userId)) {
       throw new ErrorTypes.BadRequestError('Friend request was already sent');
@@ -165,26 +178,12 @@ const sendFriendRequest = async (
   }
 };
 
-const getFriendRequests = async (
-  req: Request,
-  res: UserTypes.GetFriendRequestsResponse,
-): Promise<UserTypes.GetFriendRequestsResponse> => {
-  try {
-    const user = req.user as UserInterface;
-    await user.populate('friendRequests');
-
-    return res.json({ friendRequests: user.friendRequests });
-  } catch (error: any) {
-    return handleError(error, res);
-  }
-};
-
 const deleteFriendRequest = async (
   req: UserTypes.RequestDeleteFriendRequest,
   res: UserTypes.DeleteFriendRequestResponse,
 ): Promise<UserTypes.DeleteFriendRequestResponse> => {
   try {
-    const user = req.user as UserInterface;
+    const user = req.user as UserInterfaceWithFriendRequests;
     const { friendId } = req.params;
     const { id: friendRequestId } = (await User.findById(
       friendId,
@@ -229,12 +228,11 @@ export {
   updateUserData,
   deleteUser,
   getUserById,
-  getAllUsers,
+  getUsers,
   getFriends,
   addFriend,
   deleteFriend,
   sendFriendRequest,
-  getFriendRequests,
   deleteFriendRequest,
   uploadProfilePic,
 };

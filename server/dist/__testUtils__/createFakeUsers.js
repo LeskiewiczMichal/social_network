@@ -31,6 +31,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const jwt = __importStar(require("jsonwebtoken"));
 const models_1 = require("../models");
@@ -53,9 +64,9 @@ const createFakeUsers = (props) => __awaiter(void 0, void 0, void 0, function* (
     yield userOne.save();
     yield userTwo.save();
     yield userThree.save();
-    const expectedUserOne = Object.assign(Object.assign({}, defaultUserOne), { _id: props.ids.one.toString(), birthday: '1990-01-01T00:00:00.000Z' });
-    const expectedUserTwo = Object.assign(Object.assign({}, defaultUserTwo), { _id: props.ids.two.toString(), birthday: '1995-05-04T00:00:00.000Z' });
-    const expectedUserThree = Object.assign(Object.assign({}, defaultUserThree), { _id: props.ids.three.toString(), birthday: '2000-03-09T00:00:00.000Z' });
+    const _a = Object.assign(Object.assign({}, defaultUserOne), { _id: props.ids.one.toString(), birthday: '1990-01-01T00:00:00.000Z' }), { friendRequests: df1, googleId: dg1, password: dp1 } = _a, expectedUserOne = __rest(_a, ["friendRequests", "googleId", "password"]);
+    const _b = Object.assign(Object.assign({}, defaultUserTwo), { _id: props.ids.two.toString(), birthday: '1995-05-04T00:00:00.000Z' }), { friendRequests: df2, googleId: dg2, password: dp2 } = _b, expectedUserTwo = __rest(_b, ["friendRequests", "googleId", "password"]);
+    const _c = Object.assign(Object.assign({}, defaultUserThree), { _id: props.ids.three.toString(), birthday: '2000-03-09T00:00:00.000Z' }), { friendRequests: df3, googleId: dg3, password: dp3 } = _c, expectedUserThree = __rest(_c, ["friendRequests", "googleId", "password"]);
     return {
         one: expectedUserOne,
         two: expectedUserTwo,
