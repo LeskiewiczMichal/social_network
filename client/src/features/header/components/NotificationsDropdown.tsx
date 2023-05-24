@@ -1,15 +1,34 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import Notification from './Notification';
 import notificationsImage from '../../../assets/icons/notifications.svg';
 
 export default function NotificationsDropdown() {
-  const [isDropdownHidden, setIsDropdownHidden] = useState<Boolean>(false);
+  const [isDropdownVisible, setIsDropdownHidden] = useState<Boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleDropdown = () => {
     setIsDropdownHidden((oldState) => !oldState);
   };
+
+  useEffect(() => {
+    // Clicking outside of popup will close it
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        !isDropdownVisible &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownHidden(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="relative">
@@ -31,9 +50,10 @@ export default function NotificationsDropdown() {
 
       {/* Dropdown menu */}
       <div
+        ref={dropdownRef}
         id="dropdownNotification"
         className={`${
-          isDropdownHidden ? 'fixed sm:absolute' : 'hidden'
+          isDropdownVisible ? 'fixed sm:absolute' : 'hidden'
         } z-50 w-screen sm:w-80 bg-white divide-y divide-gray-100 rounded-lg left-0 sm:-left-72 top-14 sm:top-12 sm:border shadow dark:bg-gray-800 dark:divide-gray-700`}
         aria-label="notifcationsButton"
       >

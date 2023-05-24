@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAppSelector, useAppDispatch } from '../../../hooks';
@@ -8,10 +8,29 @@ export default function ProfileDropdown() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
   const [profileMenuOpen, setProfileMenuOpen] = useState<Boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleDropDown = () => {
     setProfileMenuOpen((oldState) => !oldState);
   };
+
+  useEffect(() => {
+    // Clicking outside of popup will close it
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        !profileMenuOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="relative">
@@ -32,6 +51,7 @@ export default function ProfileDropdown() {
 
       {/* Dropdown */}
       <nav
+        ref={dropdownRef}
         aria-labelledby="profileButton"
         className={`z-50 bg-white border divide-y divide-gray-100 rounded-lg shadow w-screen sm:w-44 left-0 sm:-left-36 top-14 sm:top-12 dark:bg-gray-700 dark:divide-gray-600 ${
           profileMenuOpen ? 'fixed sm:absolute' : 'hidden'
