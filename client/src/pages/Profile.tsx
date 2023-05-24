@@ -5,35 +5,39 @@ import {
   UserOverview,
   UserDetails,
   AllFriendsDisplay,
+  ProfilePageReducer,
+  UserTypes,
 } from '../features/users';
 import getUser from '../features/users/actions/getUser';
 import { useAppSelector, useAppDispatch } from '../hooks';
 import { PostsSection } from '../features/posts';
-import { setUser } from '../features/users/reducers/profilePageReducer';
 
 export default function Profile() {
   const { userId } = useParams();
   const dispatch = useAppDispatch();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loggedUser = useAppSelector((state) => state.user);
-  const displayedUser = useAppSelector((state) => state.profilePage);
 
   useEffect(() => {
     // When id from params changes, get user to display
-    const handleGetUser = async () => {
+    const handleGetProfile = async () => {
       try {
+        let user: UserTypes.UserInterface | null;
         if (userId) {
-          const user = await getUser({ userId });
-          if (user) {
-            dispatch(setUser(user));
-          }
+          user = await getUser({ userId });
+        } else {
+          // Display user profile
+          user = await getUser({ userId: loggedUser.id! });
+        }
+        if (user) {
+          dispatch(ProfilePageReducer.setUser(user));
         }
       } catch (err: any) {
         console.error(err);
       }
     };
 
-    handleGetUser();
+    handleGetProfile();
   }, [userId]);
 
   return (
@@ -43,7 +47,7 @@ export default function Profile() {
       <div className="flex flex-col items-center h-full md:col-start-2 md:col-end-5 col-start-1 col-end-2">
         <UserOverview />
         <UserDetails />
-        <PostsSection authorId={displayedUser.id} />
+        <PostsSection />
       </div>
     </main>
   );

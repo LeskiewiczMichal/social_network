@@ -14,15 +14,15 @@ export default function UserDetails() {
   const loggedUser = useAppSelector((state) => state.user);
   const [mutualFriendsCount, setMutualFriendsCount] = useState<number>(0);
   const [userFriends, setUserFriends] = useState<UserInterface[]>([]);
-  const displayedUser = useAppSelector((state) => state.profilePage);
+  const displayedProfile = useAppSelector((state) => state.profilePage);
 
   useEffect(() => {
     dispatch(setShowFriends(false));
-    // Get user's friends
+    // Get 3 user's friends to display
     const handleGetFriends = async () => {
       try {
         const queriedFriends = await getUsers({
-          usersList: displayedUser.friends,
+          usersList: displayedProfile.friends,
           limit: 3,
         });
         sortFriendsByMutual({
@@ -39,12 +39,12 @@ export default function UserDetails() {
     setMutualFriendsCount(
       countMutualFriends({
         myFriends: loggedUser.friends!,
-        usersFriends: displayedUser.friends,
+        usersFriends: displayedProfile.friends,
       }),
     );
 
     handleGetFriends();
-  }, [displayedUser.id]);
+  }, [displayedProfile.id]);
 
   return (
     <section className="w-full max-w-xl p-4 mt-4 bg-white border flex flex-col  justify-between border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -54,7 +54,9 @@ export default function UserDetails() {
           <span>{mutualFriendsCount} mutual friends</span>
           <button
             type="button"
-            onClick={() => dispatch(setShowFriends(!displayedUser.showFriends))}
+            onClick={() =>
+              dispatch(setShowFriends(!displayedProfile.showFriends))
+            }
             className="text-primary"
           >
             Click here to see all
@@ -89,19 +91,19 @@ export default function UserDetails() {
       <div className="flex flex-col items-center rounded-lg w-full">
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">Email: </span>
-          <span>{displayedUser.email}</span>
+          <span>{displayedProfile.email}</span>
         </div>
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">Birthday: </span>
-          <span>{displayedUser.birthday}</span>
+          <span>{displayedProfile.birthday}</span>
         </div>
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">Country: </span>
-          <span>{displayedUser.country}</span>
+          <span>{displayedProfile.country}</span>
         </div>
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">City: </span>
-          <span>{displayedUser.city}</span>
+          <span>{displayedProfile.city}</span>
         </div>
       </div>
     </section>

@@ -10,7 +10,7 @@ import sortFriendsByMutual from '../utils/sortFriendsByMutual';
 export default function AllFriendsDisplay() {
   const dispatch = useAppDispatch();
   const loggedUser = useAppSelector((state) => state.user);
-  const displayedUser = useAppSelector((state) => state.profilePage);
+  const displayedProfile = useAppSelector((state) => state.profilePage);
   const [userFriends, setUserFriends] = useState<UserInterface[]>([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function AllFriendsDisplay() {
     const handleGetFriends = async () => {
       try {
         const queriedFriends = await getUsers({
-          usersList: displayedUser.friends,
+          usersList: displayedProfile.friends,
         });
         sortFriendsByMutual({
           friends: queriedFriends,
@@ -31,21 +31,23 @@ export default function AllFriendsDisplay() {
     };
 
     handleGetFriends();
-  }, [displayedUser.id]);
+  }, [displayedProfile.id]);
 
   return (
     <section
       className={`${
-        displayedUser.showFriends ? 'fixed md:sticky' : 'hidden'
+        displayedProfile.showFriends ? 'fixed md:sticky' : 'hidden'
       } border border-gray-200 rounded-lg w-5/6 h-5/6 md:h-full md:max-h-[calc(100vh-4rem)] self-start md:w-full gap-2 flex flex-col shadow-xl bg-white md:bg-white/50 p-2 top-1/2 md:top-16 left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 -translate-y-1/2 md:translate-y-0 z-30`}
     >
       {/* Text and close button */}
       <div className="flex items-center justify-between border-b">
-        <span>{displayedUser.firstName}&apos;s friends:</span>
+        <span>{displayedProfile.firstName}&apos;s friends:</span>
         <button
           type="button"
           aria-label="close popup"
-          onClick={() => dispatch(setShowFriends(!displayedUser.showFriends))}
+          onClick={() =>
+            dispatch(setShowFriends(!displayedProfile.showFriends))
+          }
           className="bg-white md:bg-white/50 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
         >
           <svg

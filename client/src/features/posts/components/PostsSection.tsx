@@ -4,26 +4,22 @@ import { LoadingSpinner } from '../../../components';
 import Post from './Post';
 import { PostInterface } from '../types/Post';
 import getPosts from '../actions/getPosts';
+import { useAppSelector } from '../../../hooks';
 
-interface PostsSectionProps {
-  authorId?: string | null;
-}
-
-export default function PostsSection(props: PostsSectionProps) {
-  const { authorId } = props;
+export default function PostsSection() {
   const [posts, setPosts] = useState<PostInterface[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [offset, setOffset] = useState<number>(0);
+  const [offset, setOffset] = useState<number>(10);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const authorId = useAppSelector((state) => state.profilePage.id);
 
   useEffect(() => {
     // When user changes, reset state and query his posts
     const handleGetPosts = async () => {
       try {
+        const limit = 10;
         setIsLoading(true);
-        setOffset(0);
-        const queriedPosts = await getPosts({ offset: 0, authorId });
-        setOffset((oldOffset) => oldOffset + 10);
+        const queriedPosts = await getPosts({ offset: 0, authorId, limit });
         setPosts(queriedPosts);
         setIsLoading(false);
       } catch (err: any) {
@@ -33,6 +29,35 @@ export default function PostsSection(props: PostsSectionProps) {
 
     handleGetPosts();
   }, [authorId]);
+
+  // When scrolled to the bottom, query more posts
+  const handleScroll = async () => {
+    try {
+      if (
+        window.innerHeight + document.documentElement.scrollTop ===
+        document.documentElement.offsetHeight
+      ) {
+        const limit = 10;
+        const queriedPosts = await getPosts({
+          offset,
+          authorId,
+          limit,
+        });
+        setOffset((oldOffset) => oldOffset + limit);
+        setPosts((oldPosts) => {
+          return [...oldPosts, ...queriedPosts];
+        });
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
+  // Attach event to make scroll query more posts
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [offset]);
 
   if (isLoading) {
     return <LoadingSpinner />;
