@@ -55,6 +55,7 @@ export default function UserDetails() {
           <button
             type="button"
             onClick={() => dispatch(setShowFriends(!displayedUser.showFriends))}
+            className="text-primary"
           >
             Click here to see all
           </button>

@@ -6,7 +6,7 @@ export default function UserOverview() {
   const displayedUser = useAppSelector((state) => state.profilePage);
 
   return (
-    <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow shadow-primary dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-10 mt-5">
         {/* Prrofile picture */}
         <img

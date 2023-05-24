@@ -34,7 +34,7 @@ export default function NotificationsDropdown() {
         id="dropdownNotification"
         className={`${
           isDropdownHidden ? 'fixed sm:absolute' : 'hidden'
-        } z-20 w-screen sm:w-80 bg-white divide-y divide-gray-100 rounded-lg left-0 sm:-left-72 top-14 sm:top-12 sm:border shadow dark:bg-gray-800 dark:divide-gray-700`}
+        } z-50 w-screen sm:w-80 bg-white divide-y divide-gray-100 rounded-lg left-0 sm:-left-72 top-14 sm:top-12 sm:border shadow dark:bg-gray-800 dark:divide-gray-700`}
         aria-label="notifcationsButton"
       >
         <div className="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
