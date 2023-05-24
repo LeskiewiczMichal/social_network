@@ -14,11 +14,14 @@ export default function PostsSection(props: PostsSectionProps) {
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [offset, setOffset] = useState<number>(10);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [noMorePostsTextActive, setNoMorePostsTextActive] =
+    useState<boolean>(false);
 
   useEffect(() => {
     // Get posts from the server
     const handleGetPosts = async () => {
       try {
+        setNoMorePostsTextActive(false);
         const limit = 10;
         setIsLoading(true);
         const queriedPosts = await getPosts({ offset: 0, authorId, limit });
@@ -49,6 +52,10 @@ export default function PostsSection(props: PostsSectionProps) {
         setPosts((oldPosts) => {
           return [...oldPosts, ...queriedPosts];
         });
+        // If no posts added, show text
+        if (queriedPosts.length === 0) {
+          setNoMorePostsTextActive(true);
+        }
       }
     } catch (err: any) {
       console.error(err);
@@ -83,6 +90,7 @@ export default function PostsSection(props: PostsSectionProps) {
           />
         );
       })}
+      {noMorePostsTextActive && <p className="mb-4">No more posts to show</p>}
     </div>
   );
 }
