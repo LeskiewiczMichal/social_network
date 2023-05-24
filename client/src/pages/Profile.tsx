@@ -42,6 +42,7 @@ export default function Profile() {
         profilePicture={currentUser.profilePicture}
       />
       <UserDetails
+        firstName={currentUser.firstName}
         friends={currentUser.friends}
         id={currentUser.id}
         country={currentUser.country}

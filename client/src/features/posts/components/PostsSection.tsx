@@ -12,13 +12,17 @@ interface PostsSectionProps {
 export default function PostsSection(props: PostsSectionProps) {
   const { authorId } = props;
   const [posts, setPosts] = useState<PostInterface[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [offset, setOffset] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    // When user changes, reset state and query his posts
     const handleGetPosts = async () => {
       try {
-        const queriedPosts = await getPosts({ offset, authorId });
+        setIsLoading(true);
+        setOffset(0);
+        const queriedPosts = await getPosts({ offset: 0, authorId });
         setOffset((oldOffset) => oldOffset + 10);
         setPosts(queriedPosts);
         setIsLoading(false);
@@ -28,7 +32,7 @@ export default function PostsSection(props: PostsSectionProps) {
     };
 
     handleGetPosts();
-  }, []);
+  }, [authorId]);
 
   if (isLoading) {
     return <LoadingSpinner />;
