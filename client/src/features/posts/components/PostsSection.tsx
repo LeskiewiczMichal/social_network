@@ -4,17 +4,19 @@ import { LoadingSpinner } from '../../../components';
 import Post from './Post';
 import { PostInterface } from '../types/Post';
 import getPosts from '../actions/getPosts';
-import { useAppSelector } from '../../../hooks';
 
-export default function PostsSection() {
+interface PostsSectionProps {
+  authorId?: string;
+}
+
+export default function PostsSection(props: PostsSectionProps) {
+  const { authorId } = props;
   const [posts, setPosts] = useState<PostInterface[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [offset, setOffset] = useState<number>(10);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const authorId = useAppSelector((state) => state.profilePage.id);
 
   useEffect(() => {
-    // When user changes, reset state and query his posts
+    // Get posts from the server
     const handleGetPosts = async () => {
       try {
         const limit = 10;
@@ -53,7 +55,7 @@ export default function PostsSection() {
     }
   };
 
-  // Attach event to make scroll query more posts
+  // Attach scroll event
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);

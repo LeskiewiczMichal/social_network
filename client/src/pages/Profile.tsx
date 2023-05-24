@@ -17,6 +17,7 @@ export default function Profile() {
   const dispatch = useAppDispatch();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loggedUser = useAppSelector((state) => state.user);
+  const displayedUserId = useAppSelector((state) => state.profilePage.id);
 
   useEffect(() => {
     // When id from params changes, get user to display
@@ -47,7 +48,7 @@ export default function Profile() {
       <div className="flex flex-col items-center h-full md:col-start-2 md:col-end-5 col-start-1 col-end-2">
         <UserOverview />
         <UserDetails />
-        <PostsSection />
+        <PostsSection authorId={displayedUserId} />
       </div>
     </main>
   );
