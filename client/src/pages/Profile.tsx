@@ -1,26 +1,31 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { UserOverview, UserDetails } from '../features/users';
+import {
+  UserOverview,
+  UserDetails,
+  AllFriendsDisplay,
+} from '../features/users';
 import getUser from '../features/users/actions/getUser';
-import { UserInterface } from '../features/users/types/user';
-import { useAppSelector } from '../hooks';
+import { useAppSelector, useAppDispatch } from '../hooks';
 import { PostsSection } from '../features/posts';
+import { setUser } from '../features/users/reducers/profilePageReducer';
 
 export default function Profile() {
   const { userId } = useParams();
+  const dispatch = useAppDispatch();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loggedUser = useAppSelector((state) => state.user);
-  const [currentUser, setCurrentUser] = useState<UserInterface>({
-    ...(loggedUser as unknown as UserInterface),
-  });
+  const displayedUser = useAppSelector((state) => state.profilePage);
 
   useEffect(() => {
+    // When id from params changes, get user to display
     const handleGetUser = async () => {
       try {
         if (userId) {
           const user = await getUser({ userId });
           if (user) {
-            setCurrentUser(user);
+            dispatch(setUser(user));
           }
         }
       } catch (err: any) {
@@ -32,25 +37,14 @@ export default function Profile() {
   }, [userId]);
 
   return (
-    <main className="padding-top-header flex flex-col items-center bg-background-white min-h-screen">
-      <UserOverview
-        firstName={currentUser.firstName}
-        lastName={currentUser.lastName}
-        id={currentUser.id}
-        about={currentUser.about}
-        friends={currentUser.friends}
-        profilePicture={currentUser.profilePicture}
-      />
-      <UserDetails
-        firstName={currentUser.firstName}
-        friends={currentUser.friends}
-        id={currentUser.id}
-        country={currentUser.country}
-        birthday={currentUser.birthday}
-        city={currentUser.city}
-        email={currentUser.email}
-      />
-      <PostsSection authorId={currentUser.id} />
+    <main className="padding-top-header grid grid-cols-1 md:grid-cols-5 items-center bg-background-white min-h-screen">
+      <AllFriendsDisplay />
+
+      <div className="flex flex-col items-center h-full md:col-start-2 md:col-end-5 col-start-1 col-end-2">
+        <UserOverview />
+        <UserDetails />
+        <PostsSection authorId={displayedUser.id} />
+      </div>
     </main>
   );
 }

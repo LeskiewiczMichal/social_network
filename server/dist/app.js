@@ -34,8 +34,8 @@ const path_1 = __importDefault(require("path"));
 const middleware_1 = require("./middleware");
 const Routes = __importStar(require("./routes"));
 const EventHandlers = __importStar(require("./handlers"));
-/// TODO: exclude password from user responses ///
 /// TODO: on connection add socket and return user ///
+/// TODO: when creating user, capitalize first letter, etc... ///
 dotenv.config();
 (0, middleware_1.mongoConfig)();
 const app = (0, express_1.default)();

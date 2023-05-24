@@ -6,6 +6,7 @@ import { UserInterface } from '../models';
 interface GetUsersRequest extends Request {
   body: {
     usersList?: string[];
+    limit?: string;
   };
 }
 

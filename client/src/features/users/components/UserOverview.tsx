@@ -1,17 +1,9 @@
 import { useAppSelector } from '../../../hooks';
-import { UserInterface } from '../types/user';
 import StandardButton from '../../../components/StandardButton';
 
-interface UserOverviewProps
-  extends Pick<
-    UserInterface,
-    'firstName' | 'lastName' | 'friends' | 'id' | 'about' | 'profilePicture'
-  > {}
-
-export default function UserOverview(props: UserOverviewProps) {
+export default function UserOverview() {
   const loggedUserId = useAppSelector((state) => state.user.id);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { firstName, lastName, id, about, friends, profilePicture } = props;
+  const displayedUser = useAppSelector((state) => state.profilePage);
 
   return (
     <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -19,20 +11,20 @@ export default function UserOverview(props: UserOverviewProps) {
         {/* Prrofile picture */}
         <img
           className="w-24 h-24 mb-3 rounded-full shadow-lg"
-          src={`${process.env.REACT_APP_SERVER_URL}${profilePicture}`}
-          alt={`${firstName} ${lastName}`}
+          src={`${process.env.REACT_APP_SERVER_URL}${displayedUser.profilePicture}`}
+          alt={`${displayedUser.firstName} ${displayedUser.lastName}`}
         />
         {/* Name */}
         <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-          {firstName} {lastName}
+          {displayedUser.firstName} {displayedUser.lastName}
         </h5>
         {/* About user */}
         <span className="text-sm text-gray-500 dark:text-gray-400">
-          {about}
+          {displayedUser.about}
         </span>
         <div className="flex w-full px-8 mt-4 space-x-3 md:mt-6">
           {/* Remove or add friend button */}
-          {friends.includes(loggedUserId!) ? (
+          {displayedUser.friends.includes(loggedUserId!) ? (
             <StandardButton
               text="Remove friend"
               // eslint-disable-next-line @typescript-eslint/no-unused-vars

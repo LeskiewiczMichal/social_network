@@ -9,8 +9,8 @@ import * as Routes from './routes';
 import * as EventHandlers from './handlers';
 import { SocketTypes } from './types';
 
-/// TODO: exclude password from user responses ///
 /// TODO: on connection add socket and return user ///
+/// TODO: when creating user, capitalize first letter, etc... ///
 dotenv.config();
 mongoConfig();
 const app = express();

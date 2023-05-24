@@ -9,6 +9,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { UserInterface } from '../features/users/types/user';
 import userReducer from '../features/authentication/reducers/userReducer';
 import errorReducer from '../store/reducers/errorReducer';
+import profilePageReducer from '../features/users/reducers/profilePageReducer';
 import setupStore from '../store/store';
 import type { RootState } from '../types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,9 +72,27 @@ function renderWithProviders(
         loginError: null,
         registerError: null,
       },
+      profilePage: {
+        id: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        friends: [],
+        country: '',
+        city: '',
+        postalCode: '',
+        about: '',
+        birthday: '',
+        profilePicture: '',
+        showFriends: false,
+      },
     },
     store = configureStore({
-      reducer: { user: userReducer, error: errorReducer },
+      reducer: {
+        user: userReducer,
+        error: errorReducer,
+        profilePage: profilePageReducer,
+      },
       preloadedState,
     }),
     ...renderOptions
@@ -95,6 +114,7 @@ const createTestStore = () => {
     reducer: {
       user: userReducer,
       error: errorReducer,
+      profilePage: profilePageReducer,
     },
   });
 

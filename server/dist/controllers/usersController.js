@@ -15,8 +15,11 @@ const types_1 = require("../types");
 const utils_1 = require("../utils");
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { usersList } = req.query;
+        const { usersList, limit } = req.query;
         const dbQuery = models_1.User.find();
+        if (limit) {
+            dbQuery.limit(parseInt(limit, 10));
+        }
         if (usersList) {
             const usersArray = Array.isArray(usersList) ? usersList : [usersList];
             dbQuery.where('_id').in(usersArray);

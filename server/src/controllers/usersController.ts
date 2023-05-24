@@ -12,9 +12,12 @@ const getUsers = async (
   res: UserTypes.GetUsersResponse,
 ): Promise<UserTypes.GetUsersResponse> => {
   try {
-    const { usersList } = req.query;
+    const { usersList, limit } = req.query;
     const dbQuery = User.find();
 
+    if (limit) {
+      dbQuery.limit(parseInt(limit as string, 10));
+    }
     if (usersList) {
       const usersArray = Array.isArray(usersList) ? usersList : [usersList];
       dbQuery.where('_id').in(usersArray);

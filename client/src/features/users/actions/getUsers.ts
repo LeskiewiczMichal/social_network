@@ -1,5 +1,4 @@
 import axios from 'axios';
-import queryString from 'query-string';
 
 import dataToUserObject from '../utils/dataToUserObject';
 import { UserInterface } from '../types/user';
@@ -7,20 +6,18 @@ import { getToken } from '../../../utils';
 
 type GetUsersProps = {
   usersList?: string[];
+  limit?: number;
 };
 
 // eslint-disable-next-line consistent-return
 const getUsers = async (props: GetUsersProps): Promise<UserInterface[]> => {
   try {
-    const { usersList } = props;
+    const { usersList, limit } = props;
     axios.defaults.headers.common.Authorization = getToken();
     const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users`;
 
     const request = await axios.get(apiUrl, {
-      params: { usersList },
-      paramsSerializer: (params) => {
-        return queryString.stringify(params, { arrayFormat: 'bracket' });
-      },
+      params: { usersList, limit },
     });
     const { users: usersData } = request.data;
 
