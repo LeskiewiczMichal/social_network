@@ -8,7 +8,7 @@ export default function UserOverview() {
   return (
     <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow shadow-primary dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-10 mt-5">
-        {/* Prrofile picture */}
+        {/* Profile picture */}
         <img
           className="w-24 h-24 mb-3 rounded-full shadow-lg"
           src={`${process.env.REACT_APP_SERVER_URL}${displayedProfile.profilePicture}`}

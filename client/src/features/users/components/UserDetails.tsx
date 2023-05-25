@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { LoadingSpinner } from '../../../components';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { UserInterface } from '../types/user';
 import getUsers from '../actions/getUsers';
@@ -15,8 +16,10 @@ export default function UserDetails() {
   const [mutualFriendsCount, setMutualFriendsCount] = useState<number>(0);
   const [userFriends, setUserFriends] = useState<UserInterface[]>([]);
   const displayedProfile = useAppSelector((state) => state.profilePage);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     dispatch(setShowFriends(false));
     // Get 3 user's friends to display
     const handleGetFriends = async () => {
@@ -44,7 +47,11 @@ export default function UserDetails() {
     );
 
     handleGetFriends();
+    setIsLoading(false);
   }, [displayedProfile.id]);
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <section className="w-full max-w-xl p-4 mt-4 bg-white border flex flex-col  justify-between border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -64,7 +71,7 @@ export default function UserDetails() {
         </div>
         {/* A few friends */}
         <div className="flex gap-2 p-2">
-          {userFriends.slice(0, 3).map((user: UserInterface) => {
+          {userFriends.map((user: UserInterface) => {
             return (
               <Link
                 to={`/profile/${user.id}`}

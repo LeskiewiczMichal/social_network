@@ -25,13 +25,13 @@ const mockedUser: UserInterface = {
   firstName: 'firstName',
   lastName: 'lastName',
   email: 'test@mail.pl',
-  country: 'test',
-  city: 'test',
-  postalCode: 'test',
-  about: 'test',
+  country: 'testCountry',
+  city: 'testCity',
+  postalCode: 'testPostal',
+  about: 'testAbout',
   friends: [],
   birthday: 'January 1, 2020',
-  profilePicture: 'test',
+  profilePicture: 'testPicture',
 };
 
 const postProps = {

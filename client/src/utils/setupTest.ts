@@ -38,6 +38,7 @@ let mock: MockAdapter; // Axios mock
 // Mock to disable console error
 const consoleErrorSpy = jest.spyOn(console, 'error');
 consoleErrorSpy.mockImplementation(() => {});
+jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('ABCD'); // Mock localstorage to return something
 
 const setupMocks = () => {
   TimeAgo.addLocale(en); // Add time locale for files that do not have it

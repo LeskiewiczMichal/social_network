@@ -20,34 +20,28 @@ describe('Get user', () => {
     restoreMocks();
   });
 
-  describe('When API call is successfull', () => {
-    test('Returns user object', async () => {
-      jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('ABCD');
-      mock
-        .onGet(`${process.env.REACT_APP_SERVER_URL}/api/users/${MOCKS.USER.id}`)
-        .reply(200, {
-          user: {
-            ...MOCKS.USER,
-            _id: MOCKS.USER.id,
-          },
-        });
+  test('Returns user object when API call is successfull', async () => {
+    mock
+      .onGet(`${process.env.REACT_APP_SERVER_URL}/api/users/${MOCKS.USER.id}`)
+      .reply(200, {
+        user: {
+          ...MOCKS.USER,
+          _id: MOCKS.USER.id,
+        },
+      });
 
-      const user = await getUser({ userId: MOCKS.USER.id });
+    const user = await getUser({ userId: MOCKS.USER.id });
 
-      expect(user).toMatchObject(MOCKS.USER);
-    });
+    expect(user).toMatchObject(MOCKS.USER);
   });
 
-  describe('When API call fails', () => {
-    test('Returns nothing', async () => {
-      jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('ABCD');
-      mock
-        .onGet(`${process.env.REACT_APP_SERVER_URL}/api/users/${MOCKS.USER.id}`)
-        .reply(404);
+  test('Returns nothing when API call fails', async () => {
+    mock
+      .onGet(`${process.env.REACT_APP_SERVER_URL}/api/users/${MOCKS.USER.id}`)
+      .reply(404);
 
-      const user = await getUser({ userId: MOCKS.USER.id });
+    const user = await getUser({ userId: MOCKS.USER.id });
 
-      expect(user).toBeNull();
-    });
+    expect(user).toBeNull();
   });
 });
