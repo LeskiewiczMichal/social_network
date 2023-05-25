@@ -6,6 +6,7 @@ import createFakeComments from './createFakeComments';
 import deleteAllPosts from './deleteAllPosts';
 import deleteAllComments from './deleteAllComments';
 import * as CONSTANTS from './constants';
+import setupSocketServer from './setupSocketServer';
 
 export {
   deleteAllUsers,
@@ -16,4 +17,5 @@ export {
   deleteAllComments,
   createFakeComments,
   CONSTANTS,
+  setupSocketServer,
 };
