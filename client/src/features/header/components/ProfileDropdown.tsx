@@ -26,6 +26,7 @@ export default function ProfileDropdown() {
       }
     };
 
+    // Attach event
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);

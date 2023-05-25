@@ -24,6 +24,7 @@ export default function NotificationsDropdown() {
       }
     };
 
+    // Attach event
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);

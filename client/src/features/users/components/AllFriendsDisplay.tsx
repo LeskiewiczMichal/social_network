@@ -6,17 +6,20 @@ import { setShowFriends } from '../reducers/profilePageReducer';
 import { UserInterface } from '../types/user';
 import getUsers from '../actions/getUsers';
 import sortFriendsByMutual from '../utils/sortFriendsByMutual';
+import { LoadingSpinner } from '../../../components';
 
 export default function AllFriendsDisplay() {
   const dispatch = useAppDispatch();
   const loggedUser = useAppSelector((state) => state.user);
   const displayedProfile = useAppSelector((state) => state.profilePage);
   const [userFriends, setUserFriends] = useState<UserInterface[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Get all user's friends when displayed user changes
     const handleGetFriends = async () => {
       try {
+        setIsLoading(true);
         const queriedFriends = await getUsers({
           usersList: displayedProfile.friends,
         });
@@ -25,6 +28,7 @@ export default function AllFriendsDisplay() {
           myFriends: loggedUser.friends!,
         });
         setUserFriends(queriedFriends);
+        setIsLoading(false);
       } catch (err: any) {
         console.error(err);
       }
@@ -69,25 +73,33 @@ export default function AllFriendsDisplay() {
       </div>
       {/* List of friends */}
       <div className="flex flex-col overflow-y-scroll no-scrollbar gap-1">
-        {userFriends.map((user: UserInterface) => {
-          return (
-            <Link
-              to={`/profile/${user.id}`}
-              key={user.id}
-              className="w-full border-y-2 border-primary-lighter p-2 rounded-lg flex items-center gap-2"
-            >
-              <img
-                className="w-9 h-9 flex items-center rounded-full object-cover shadow mb-2 mt-2 md:mb-0"
-                src={`${process.env.REACT_APP_SERVER_URL}${user.profilePicture}`}
-                loading="lazy"
-                alt="avatar"
-              />
-              <span>
-                {user.firstName} {user.lastName}
-              </span>
-            </Link>
-          );
-        })}
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            {userFriends.map((user: UserInterface) => {
+              return (
+                <Link
+                  to={`/profile/${user.id}`}
+                  key={user.id}
+                  aria-label="friend's profile"
+                  className="w-full border-y-2 border-primary-lighter p-2 rounded-lg flex items-center gap-2"
+                >
+                  <img
+                    className="w-9 h-9 flex items-center rounded-full object-cover shadow mb-2 mt-2 md:mb-0"
+                    src={`${process.env.REACT_APP_SERVER_URL}${user.profilePicture}`}
+                    aria-label="friends profile picture"
+                    loading="lazy"
+                    alt="avatar"
+                  />
+                  <span>
+                    {user.firstName} {user.lastName}
+                  </span>
+                </Link>
+              );
+            })}
+          </>
+        )}
       </div>
     </section>
   );
