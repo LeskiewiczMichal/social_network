@@ -4,10 +4,11 @@ import { AddressInfo } from 'net';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { Socket as ClientSocket, Manager } from 'socket.io-client';
+
 import * as TestUtils from '../../__testUtils__';
 import { serverConfig } from '../../middleware';
 import { SocketTypes } from '../../types';
-import * as EventHanlers from '..';
+import * as EventHandlers from '..';
 import { Message } from '../../models';
 
 describe('Chat handlers', () => {
@@ -39,11 +40,10 @@ describe('Chat handlers', () => {
       });
       serverConfig(app);
 
-      io.use(EventHanlers.authenticationHandler);
-
+      io.use(EventHandlers.authenticationHandler);
       io.on('connection', (socket: SocketTypes.MySocket) => {
-        EventHanlers.registerChatHandlers(io, socket);
-        EventHanlers.registerDisconnectHandlers(io, socket);
+        EventHandlers.registerChatHandlers(io, socket);
+        EventHandlers.registerDisconnectHandlers(io, socket);
       });
 
       await new Promise<void>((resolve, reject) => {
@@ -53,10 +53,14 @@ describe('Chat handlers', () => {
             serverSocket = socket;
           });
           clientSocket = new Manager(`http://localhost:${port}`).socket('/', {
-            auth: { token: users.tokens.one },
+            auth: { token: `Bearer ${users.tokens.one}` },
           });
+
           clientSocket.on('connect', resolve);
-          clientSocket.on('connect-error', (error) => reject(error));
+          clientSocket.on('connect-error', (error) => {
+            console.error('Client socket connetion serror: ', error);
+            reject(error);
+          });
         });
       });
     } catch (error) {

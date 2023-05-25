@@ -53,7 +53,7 @@ describe('User authentication handlers', () => {
             serverSocket = socket;
           });
           clientSocket = new Manager(`http://localhost:${port}`).socket('/', {
-            auth: { token: users.tokens.one },
+            auth: { token: `Bearer ${users.tokens.one}` },
           });
           clientSocket.on('connect', resolve);
           clientSocket.on('connect-error', (error) => reject(error));
