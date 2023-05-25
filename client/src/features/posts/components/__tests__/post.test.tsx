@@ -1,20 +1,24 @@
 import { screen } from '@testing-library/react';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
 
 import Post from '../Post';
 import { renderWithProviders, MOCKS } from '../../../../utils/test_utils';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useAppDispatch } from '../../../../hooks';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+} from '../../../../utils/setupTest';
 
-TimeAgo.addLocale(en);
+beforeEach(() => {
+  setupMocks();
+});
 
-const mockUseAppDispatch = jest.fn();
-const mockUseAppSelector = jest.fn();
-jest.mock('../../../../hooks', () => ({
-  useAppSelector: () => mockUseAppSelector,
-  useAppDispatch: () => mockUseAppDispatch,
-}));
+afterEach(() => {
+  resetMocks();
+});
+
+afterAll(() => {
+  restoreMocks();
+});
 
 test('Rendes properly', () => {
   renderWithProviders(

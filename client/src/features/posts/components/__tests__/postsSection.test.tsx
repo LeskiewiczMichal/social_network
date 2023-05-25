@@ -1,21 +1,14 @@
 import { screen, waitFor } from '@testing-library/react';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
 
 import PostsSection from '../PostsSection';
 import { MOCKS, renderWithProviders } from '../../../../utils/test_utils';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+  mock,
+} from '../../../../utils/setupTest';
 
-TimeAgo.addLocale(en);
-
-// Mock redux
-const mockUseAppDispatch = jest.fn();
-const mockUseAppSelector = jest.fn();
-jest.mock('../../../../hooks', () => ({
-  useAppSelector: () => mockUseAppSelector,
-  useAppDispatch: () => mockUseAppDispatch,
-}));
 // Mock Post component
 jest.mock('../Post', () => {
   return function Post() {
@@ -30,25 +23,16 @@ jest.mock('../../../../components/LoadingSpinner', () => {
 });
 
 describe('Comments section', () => {
-  // Set up axios mock and disable console error
-  let mock: MockAdapter;
-  const consoleErrorSpy = jest.spyOn(console, 'error');
-
-  beforeAll(() => {
-    consoleErrorSpy.mockImplementation(() => {});
-  });
-
   beforeEach(() => {
-    mock = new MockAdapter(axios);
+    setupMocks();
   });
 
   afterEach(() => {
-    mock.reset();
+    resetMocks();
   });
 
   afterAll(() => {
-    mock.restore();
-    consoleErrorSpy.mockRestore();
+    restoreMocks();
   });
 
   test('Renders post properly', async () => {

@@ -1,36 +1,25 @@
 import { screen, waitFor } from '@testing-library/react';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
 
 import CommentsSection from '../CommentsSection';
 import { renderWithProviders, MOCKS } from '../../../../utils/test_utils';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useAppDispatch } from '../../../../hooks';
-
-TimeAgo.addLocale(en);
-
-const mockUseAppDispatch = jest.fn();
-const mockUseAppSelector = jest.fn();
-jest.mock('../../../../hooks', () => ({
-  useAppSelector: () => mockUseAppSelector,
-  useAppDispatch: () => mockUseAppDispatch,
-}));
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+  mock,
+} from '../../../../utils/setupTest';
 
 describe('Comments section', () => {
-  let mock: MockAdapter;
-
   beforeEach(() => {
-    mock = new MockAdapter(axios);
+    setupMocks();
   });
 
   afterEach(() => {
-    mock.reset();
+    resetMocks();
   });
 
   afterAll(() => {
-    mock.restore();
+    restoreMocks();
   });
 
   test('Renders properly', async () => {

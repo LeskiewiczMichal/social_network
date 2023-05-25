@@ -6,25 +6,32 @@ import { NavigateFunction } from 'react-router-dom';
 import { renderWithProviders } from '../../../../utils/test_utils';
 import RegistrationForm, { initialFormData } from '../RegistrationForm';
 import register from '../../actions/register';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+} from '../../../../utils/setupTest';
 
+// Mock hooks
 const mockUseAppSelector = jest.fn();
 const mockUseAppDispatch = jest.fn();
 jest.mock('../../../../hooks', () => ({
   useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
-// Mock register action
-jest.mock('../../actions/register', () => jest.fn());
+jest.mock('../../actions/register', () => jest.fn()); // Mock register action
 
 describe('Register form test', () => {
-  const consoleErrorSpy = jest.spyOn(console, 'error');
+  beforeEach(() => {
+    setupMocks();
+  });
 
-  beforeAll(() => {
-    consoleErrorSpy.mockImplementation(() => {});
+  afterEach(() => {
+    resetMocks();
   });
 
   afterAll(() => {
-    consoleErrorSpy.mockRestore();
+    restoreMocks();
   });
 
   test('Renders correctly', () => {

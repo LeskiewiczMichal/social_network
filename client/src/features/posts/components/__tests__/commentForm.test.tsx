@@ -1,23 +1,24 @@
-import { getByRole, screen, waitFor, fireEvent } from '@testing-library/react';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import { screen, fireEvent } from '@testing-library/react';
 
 import CommentForm from '../CommentForm';
 import { renderWithProviders, MOCKS } from '../../../../utils/test_utils';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useAppDispatch } from '../../../../hooks';
-import getComments from '../../actions/getComments';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+} from '../../../../utils/setupTest';
 
-TimeAgo.addLocale(en);
+beforeEach(() => {
+  setupMocks();
+});
 
-const mockUseAppDispatch = jest.fn();
-const mockUseAppSelector = jest.fn();
-jest.mock('../../../../hooks', () => ({
-  useAppSelector: () => mockUseAppSelector,
-  useAppDispatch: () => mockUseAppDispatch,
-}));
+afterEach(() => {
+  resetMocks();
+});
+
+afterAll(() => {
+  restoreMocks();
+});
 
 describe('Comment form tests', () => {
   beforeEach(() => {

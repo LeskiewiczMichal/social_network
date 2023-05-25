@@ -1,32 +1,14 @@
 import { screen, waitFor } from '@testing-library/react';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en.json';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
-import { AnyAction, ThunkMiddleware } from '@reduxjs/toolkit';
 
 import AllFriendsDisplay from '../AllFriendsDisplay';
+import { MOCKS, renderWithProviders } from '../../../../utils/test_utils';
 import {
-  MOCKS,
-  renderWithProviders,
-  createTestStore,
-} from '../../../../utils/test_utils';
-import { ProfilePageState } from '../../types/profilePageState';
-import { UserState } from '../../../authentication/types/userState';
-import { ErrorState } from '../../../../types/error';
-import { setUser as profilePageSetUser } from '../../reducers/profilePageReducer';
-import { setUser as userReducerSetUser } from '../../../authentication/reducers/userReducer';
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+  mock,
+} from '../../../../utils/setupTest';
 
-TimeAgo.addLocale(en);
-
-// Mock redux
-const mockUseAppDispatch = jest.fn();
-const mockUseAppSelector = jest.fn();
-jest.mock('../../../../hooks', () => ({
-  useAppSelector: () => mockUseAppSelector,
-  useAppDispatch: () => mockUseAppDispatch,
-}));
 // Mock LoadingSpinner component
 jest.mock('../../../../components/LoadingSpinner', () => {
   return function LoadingSpinner() {
@@ -35,50 +17,16 @@ jest.mock('../../../../components/LoadingSpinner', () => {
 });
 
 describe('All friends display', () => {
-  // Set up axios mock and disable console error
-  let mock: MockAdapter;
-  const consoleErrorSpy = jest.spyOn(console, 'error');
-  // Set up redux mocks
-  let store: ToolkitStore<
-    {
-      user: UserState;
-      error: ErrorState;
-      profilePage: ProfilePageState;
-    },
-    AnyAction,
-    [
-      ThunkMiddleware<
-        {
-          user: UserState;
-          error: ErrorState;
-        },
-        AnyAction
-      >,
-    ]
-  >;
-  let dispatch: jest.Mock<any, any>;
-  let mockExtraArguments: {};
-
   beforeEach(() => {
-    mock = new MockAdapter(axios);
-    store = createTestStore();
-    store.dispatch(profilePageSetUser(MOCKS.USER));
-    store.dispatch(userReducerSetUser({ ...MOCKS.USER, friendRequests: [] }));
-    dispatch = jest.fn();
-    mockExtraArguments = {};
+    setupMocks();
   });
 
   afterEach(() => {
-    mock.reset();
+    resetMocks();
   });
 
   afterAll(() => {
-    mock.restore();
-    consoleErrorSpy.mockRestore();
-  });
-
-  beforeAll(() => {
-    consoleErrorSpy.mockImplementation(() => {});
+    restoreMocks();
   });
 
   describe('When API call is succesfull', () => {

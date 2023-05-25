@@ -1,30 +1,24 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-
 import { MOCKS } from '../../../../utils/test_utils';
 import { DbQueries } from '../../../../types';
 import getPosts from '../getPosts';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+  mock,
+} from '../../../../utils/setupTest';
 
 describe('Get posts', () => {
-  // Set up axios mock and turn off console error
-  let mock: MockAdapter;
-  const consoleErrorSpy = jest.spyOn(console, 'error');
-
-  beforeAll(() => {
-    consoleErrorSpy.mockImplementation(() => {});
-  });
-
   beforeEach(() => {
-    mock = new MockAdapter(axios);
+    setupMocks();
   });
 
   afterEach(() => {
-    mock.reset();
+    resetMocks();
   });
 
   afterAll(() => {
-    mock.restore();
-    consoleErrorSpy.mockRestore();
+    restoreMocks();
   });
 
   describe('When API call is successfull', () => {

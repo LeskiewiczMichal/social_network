@@ -1,50 +1,28 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-import { AnyAction, ThunkMiddleware } from '@reduxjs/toolkit';
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
-
 import login from '../login';
 import { setUser } from '../../reducers/userReducer';
 import { setLoginError } from '../../../../store/reducers/errorReducer';
-import { createTestStore, MOCKS } from '../../../../utils/test_utils';
-import { ErrorState } from '../../../../types/error';
-import { UserState } from '../../types/userState';
+import { MOCKS } from '../../../../utils/test_utils';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+  mock,
+  dispatch,
+  mockExtraArguments,
+  store,
+} from '../../../../utils/setupTest';
 
 describe('Login thunk', () => {
-  let mock: MockAdapter;
-  let store: ToolkitStore<
-    {
-      user: UserState;
-      error: ErrorState;
-    },
-    AnyAction,
-    [
-      ThunkMiddleware<
-        {
-          user: UserState;
-          error: ErrorState;
-        },
-        AnyAction
-      >,
-    ]
-  >;
-  let dispatch: jest.Mock<any, any>;
-  let mockExtraArguments: {};
-
   beforeEach(() => {
-    // Set up API and store mocks
-    mock = new MockAdapter(axios);
-    store = createTestStore();
-    dispatch = jest.fn();
-    mockExtraArguments = {};
+    setupMocks();
   });
 
   afterEach(() => {
-    mock.reset();
+    resetMocks();
   });
 
   afterAll(() => {
-    mock.restore();
+    restoreMocks();
   });
 
   describe('When API call is successful', () => {

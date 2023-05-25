@@ -1,49 +1,28 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-import { AnyAction, ThunkMiddleware } from '@reduxjs/toolkit';
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
-
 import logout from '../logout';
 import { setUser } from '../../reducers/userReducer';
-import { createTestStore, MOCKS } from '../../../../utils/test_utils';
-import { ErrorState } from '../../../../types/error';
-import { UserState } from '../../types/userState';
+import { MOCKS } from '../../../../utils/test_utils';
+
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+  mock,
+  dispatch,
+  mockExtraArguments,
+  store,
+} from '../../../../utils/setupTest';
 
 describe('Logout', () => {
-  // Set up API and store mocks
-  let mock: MockAdapter;
-  let store: ToolkitStore<
-    {
-      user: UserState;
-      error: ErrorState;
-    },
-    AnyAction,
-    [
-      ThunkMiddleware<
-        {
-          user: UserState;
-          error: ErrorState;
-        },
-        AnyAction
-      >,
-    ]
-  >;
-  let dispatch: jest.Mock<any, any>;
-  let mockExtraArguments: {};
-
   beforeEach(() => {
-    mock = new MockAdapter(axios);
-    store = createTestStore();
-    dispatch = jest.fn();
-    mockExtraArguments = {};
+    setupMocks();
   });
 
   afterEach(() => {
-    mock.reset();
+    resetMocks();
   });
 
   afterAll(() => {
-    mock.restore();
+    restoreMocks();
   });
 
   test('should dispatch user to reducer', async () => {

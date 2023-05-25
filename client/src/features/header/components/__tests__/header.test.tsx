@@ -3,16 +3,32 @@ import { screen, fireEvent } from '@testing-library/react';
 import Header from '../Header';
 import { renderWithProviders } from '../../../../utils/test_utils';
 import { logout } from '../../../authentication';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useAppDispatch } from '../../../../hooks';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+} from '../../../../utils/setupTest';
 
+// Mock hooks
 const mockUseAppDispatch = jest.fn();
 const mockUseAppSelector = jest.fn();
 jest.mock('../../../../hooks', () => ({
   useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
-jest.mock('../../../authentication/actions/logout', () => jest.fn());
+jest.mock('../../../authentication/actions/logout', () => jest.fn()); // Mock logout function
+
+beforeEach(() => {
+  setupMocks();
+});
+
+afterEach(() => {
+  resetMocks();
+});
+
+afterAll(() => {
+  restoreMocks();
+});
 
 test('Rendes properly', () => {
   renderWithProviders(<Header />);

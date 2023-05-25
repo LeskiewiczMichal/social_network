@@ -3,25 +3,32 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProviders } from '../../../../utils/test_utils';
 import LoginForm from '../LoginForm';
 import login from '../../actions/login';
+import {
+  setupMocks,
+  resetMocks,
+  restoreMocks,
+} from '../../../../utils/setupTest';
 
+// Mock hooks
 const mockUseAppDispatch = jest.fn();
 const mockUseAppSelector = jest.fn();
 jest.mock('../../../../hooks', () => ({
   useAppSelector: () => mockUseAppSelector,
   useAppDispatch: () => mockUseAppDispatch,
 }));
-// Mock login function
-jest.mock('../../actions/login', () => jest.fn());
+jest.mock('../../actions/login', () => jest.fn()); // Mock login function
 
 describe('Login form test', () => {
-  const consoleErrorSpy = jest.spyOn(console, 'error');
+  beforeEach(() => {
+    setupMocks();
+  });
 
-  beforeAll(() => {
-    consoleErrorSpy.mockImplementation(() => {});
+  afterEach(() => {
+    resetMocks();
   });
 
   afterAll(() => {
-    consoleErrorSpy.mockRestore();
+    restoreMocks();
   });
 
   test('renders correctly', () => {
