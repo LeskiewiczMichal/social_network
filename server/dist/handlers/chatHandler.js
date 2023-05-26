@@ -21,7 +21,7 @@ const registerChatHandlers = (io, socket) => {
             });
             yield messageObject.save();
             if (receiver.socketId) {
-                yield (yield messageObject.populate('receiver')).populate('sender');
+                // await (await messageObject.populate('receiver')).populate('sender');
                 io.to(receiver.socketId).emit('message-received', messageObject);
             }
         }

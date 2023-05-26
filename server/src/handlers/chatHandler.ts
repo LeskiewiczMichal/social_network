@@ -16,7 +16,7 @@ const registerChatHandlers = (io: Server, socket: SocketTypes.MySocket) => {
       await messageObject.save();
 
       if (receiver.socketId) {
-        await (await messageObject.populate('receiver')).populate('sender');
+        // await (await messageObject.populate('receiver')).populate('sender');
         io.to(receiver.socketId).emit('message-received', messageObject);
       }
     } catch (error) {

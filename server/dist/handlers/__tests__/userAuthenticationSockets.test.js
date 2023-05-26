@@ -31,18 +31,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv = __importStar(require("dotenv"));
-const express_1 = __importDefault(require("express"));
-const http_1 = require("http");
-const socket_io_1 = require("socket.io");
-const socket_io_client_1 = require("socket.io-client");
 const TestUtils = __importStar(require("../../__testUtils__"));
-const middleware_1 = require("../../middleware");
-const EventHandlers = __importStar(require(".."));
 const models_1 = require("../../models");
 describe('User authentication handlers', () => {
     let io;
@@ -52,40 +42,12 @@ describe('User authentication handlers', () => {
     let users;
     // Config database and server
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            dotenv.config();
-            db = yield TestUtils.initializeMongoServer();
-            users = yield TestUtils.createFakeUsers(TestUtils.CONSTANTS.DEFAULT_USERS_PROPS);
-            const app = (0, express_1.default)();
-            const httpServer = (0, http_1.createServer)(app);
-            io = new socket_io_1.Server(httpServer, {
-                cors: {
-                    origin: '*',
-                },
-            });
-            (0, middleware_1.serverConfig)(app);
-            io.use(EventHandlers.authenticationHandler);
-            io.on('connection', (socket) => {
-                EventHandlers.registerChatHandlers(io, socket);
-                EventHandlers.registerDisconnectHandlers(io, socket);
-            });
-            yield new Promise((resolve, reject) => {
-                httpServer.listen(() => {
-                    const { port } = httpServer.address();
-                    io.on('connection', (socket) => {
-                        serverSocket = socket;
-                    });
-                    clientSocket = new socket_io_client_1.Manager(`http://localhost:${port}`).socket('/', {
-                        auth: { token: users.tokens.one },
-                    });
-                    clientSocket.on('connect', resolve);
-                    clientSocket.on('connect-error', (error) => reject(error));
-                });
-            });
-        }
-        catch (error) {
-            console.error(error);
-        }
+        const server = yield TestUtils.setupSocketServer();
+        io = server.io;
+        serverSocket = server.serverSocket;
+        clientSocket = server.clientSocket;
+        db = server.db;
+        users = server.users;
     }));
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
         io.close();

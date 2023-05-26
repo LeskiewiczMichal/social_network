@@ -4,6 +4,7 @@ import UserOverview from './components/UserOverview';
 import UserDetails from './components/UserDetails';
 import AllFriendsDisplay from './components/AllFriendsDisplay';
 import { setUser, setShowFriends } from './reducers/profilePageReducer';
+import getUsers from './actions/getUsers';
 
 const ProfilePageReducer = {
   setUser,
@@ -17,4 +18,5 @@ export {
   UserDetails,
   AllFriendsDisplay,
   ProfilePageReducer,
+  getUsers,
 };

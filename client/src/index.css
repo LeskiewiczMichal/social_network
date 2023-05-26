@@ -20,7 +20,7 @@
 :root {
   --primary: #4f46e5;
   --primary-lighter: #6366f1;
-  --background-white:  rgb(248 250 252);
+  --background-white: rgb(248 250 252);
 }
 
 body {
@@ -30,6 +30,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(248 250 252);
 }
 
 code {
@@ -40,4 +41,3 @@ code {
 .padding-top-header {
   padding-top: 4rem;
 }
-
