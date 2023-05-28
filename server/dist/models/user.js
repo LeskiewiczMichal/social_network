@@ -20,6 +20,11 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         default: '/photos/profilePictures/default.png',
     },
+    notifications: {
+        type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Notification' }],
+        select: false,
+        default: [],
+    },
     googleId: { type: String, requried: false, select: false },
     socketId: { type: String, required: false, default: null },
 });

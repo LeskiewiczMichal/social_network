@@ -52,6 +52,7 @@ io.use(EventHandlers.authenticationHandler);
 io.on('connection', (socket) => {
     EventHandlers.registerChatHandlers(io, socket);
     EventHandlers.registerDisconnectHandlers(io, socket);
+    EventHandlers.registerFriendHandlers(io, socket);
 });
 // Set up routes
 app.use('/photos', express_1.default.static(path_1.default.join(__dirname, '../uploads')));

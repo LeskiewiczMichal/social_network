@@ -44,8 +44,7 @@ describe('Chat handlers', () => {
 
     clientSocket.emit('send-message', {
       body: 'test',
-      receiver: TestUtils.CONSTANTS.USER_IDS.one,
-      sender: TestUtils.CONSTANTS.USER_IDS.one,
+      receiverId: TestUtils.CONSTANTS.USER_IDS.one,
     });
   });
 
@@ -72,8 +71,7 @@ describe('Chat handlers', () => {
 
     clientSocket.emit('send-message', {
       body: 'test',
-      receiver: TestUtils.CONSTANTS.USER_IDS.one,
-      sender: TestUtils.CONSTANTS.USER_IDS.one,
+      receiverId: TestUtils.CONSTANTS.USER_IDS.one,
     });
   });
 });

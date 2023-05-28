@@ -13,6 +13,7 @@ export interface UserInterface extends Document {
   friendRequests?: Schema.Types.ObjectId[];
   birthday: Date;
   profilePicture: string;
+  notifications: Schema.Types.ObjectId[];
   googleId?: string;
   socketId?: string | null;
 }
@@ -39,6 +40,11 @@ const userSchema: Schema = new Schema({
   profilePicture: {
     type: String,
     default: '/photos/profilePictures/default.png',
+  },
+  notifications: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
+    select: false,
+    default: [],
   },
   googleId: { type: String, requried: false, select: false },
   socketId: { type: String, required: false, default: null },
