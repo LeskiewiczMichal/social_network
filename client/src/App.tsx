@@ -5,7 +5,7 @@ import { Socket } from 'socket.io-client';
 import createSocket from './createSocket';
 import * as Pages from './pages';
 import { useAppDispatch } from './hooks';
-import { autoLogin } from './features/authentication';
+import { autoLogin, SocketReducer } from './features/authentication';
 import LoadingSpinner from './components/LoadingSpinner';
 import Header from './features/header';
 
@@ -30,14 +30,16 @@ function App() {
     socket = createSocket();
   }
 
-  // Websockets connection
+  // Socket.io connection
   useEffect(() => {
     if (socket && userLogged) {
       socket.on('connect', () => {
         console.log('POLACZONE');
+        SocketReducer.setSocket({ socket });
       });
       socket.on('disconnect', () => {
         console.log('DISCONNECTED');
+        SocketReducer.setSocket({ socket: null });
       });
     }
 

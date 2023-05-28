@@ -10,6 +10,7 @@ export default function Message(props: MessageProps) {
   const loggedUserId = useAppSelector((state) => state.user.id);
   const { body, sender } = props;
   //   const loggedUserId = sender.id;
+
   return (
     <div
       className={`${

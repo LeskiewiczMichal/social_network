@@ -14,6 +14,7 @@ import setupStore from '../store/store';
 import type { RootState } from '../types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useAppDispatch, useAppSelector } from '../hooks';
+import socketReducer from '../features/authentication/reducers/socketReducer';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: PreloadedState<RootState>;
@@ -86,12 +87,16 @@ function renderWithProviders(
         profilePicture: '',
         showFriends: false,
       },
+      socket: {
+        socket: null,
+      },
     },
     store = configureStore({
       reducer: {
         user: userReducer,
         error: errorReducer,
         profilePage: profilePageReducer,
+        socket: socketReducer,
       },
       preloadedState,
     }),

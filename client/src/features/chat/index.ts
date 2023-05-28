@@ -1,4 +1,5 @@
 import Message from './components/Message';
+import MessagesSection from './components/MessagesSection';
+import TopInfo from './components/TopInfo';
 
-// eslint-disable-next-line import/prefer-default-export
-export { Message };
+export { Message, MessagesSection, TopInfo };
