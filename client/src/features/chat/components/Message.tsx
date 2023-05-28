@@ -10,8 +10,8 @@ interface MessageProps {
 export default function Message(props: MessageProps) {
   const loggedUserId = useAppSelector((state) => state.user.id);
   const { body, sender } = props;
-  //   const loggedUserId = sender.id;
 
+  // If logged user is messages sneder, it aligns to the right, else to the left
   return (
     <div
       className={`${
@@ -22,9 +22,11 @@ export default function Message(props: MessageProps) {
         <img
           src={`${process.env.REACT_APP_SERVER_URL}${sender.profilePicture}`}
           alt="message author profile"
-          className="rounded-full w-4 h-4 self-end transform translate-y-1/2"
+          className="rounded-full border w-4 h-4 self-end transform translate-y-1/2"
+          loading="lazy"
         />
       )}
+      {/* Message text */}
       <span className="bg-primary-lighter py-2 px-4 w-fit max-w-full rounded-lg mx-2 text-white">
         {body}
       </span>

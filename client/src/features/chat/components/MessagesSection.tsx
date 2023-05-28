@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+import { v4 as uuidv4 } from 'uuid';
 import { UserTypes } from '../../users';
 import Message from './Message';
 import { useAppSelector } from '../../../hooks';
@@ -8,6 +9,8 @@ import { MessageInterface } from '../types/message';
 import sendMessage from '../eventHandlers/sendMessage';
 import { LoadingSpinner } from '../../../components';
 import { useSocket } from '../../authentication';
+import dataToMessageObject from '../utils/dataToMessageObject';
+import scrollToBottom from '../utils/scrollToBottom';
 
 interface MessagesSectionProps {
   chatUser: UserTypes.UserInterface;
@@ -17,26 +20,48 @@ export default function MessagesSection(props: MessagesSectionProps) {
   const { chatUser } = props;
   const socket = useSocket();
   const loggedUser = useAppSelector((state) => state.user);
-  const [newMessage, setNewMessage] = useState<string>('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [newMessageBody, setNewMessageBody] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const messagesEnd = useRef<HTMLDivElement | null>(null);
   const [messages, setMessages] = useState<MessageInterface[]>([]);
 
-  const scrollToBottom = () => {
-    if (!messagesEnd || !messagesEnd.current) {
-      return;
-    }
-    messagesEnd.current.scrollIntoView();
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
-    setNewMessage(e.target.value);
+    setNewMessageBody(e.target.value);
+  };
+
+  const handleSendMessage = async () => {
+    // Emit socket event
+    if (newMessageBody === '') {
+      return;
+    }
+    await sendMessage({
+      socket: socket!,
+      body: newMessageBody,
+      receiverId: chatUser.id,
+    });
+
+    // Create object for new message
+    const sentMessage: MessageInterface = {
+      id: uuidv4(),
+      body: newMessageBody,
+      receiver: chatUser.id,
+      sender: loggedUser.id!,
+      createdAt: new Date(Date.now()),
+    };
+
+    // Add to messages
+    setMessages((oldMessages) => {
+      const newMessages = [...oldMessages];
+      newMessages.push(sentMessage);
+      return newMessages;
+    });
+
+    setNewMessageBody('');
   };
 
   useEffect(() => {
-    // Get messages
+    // Get initial messages
     const handleGetMessages = async () => {
       setIsLoading(true);
       const queriedMessages = await getMessages({
@@ -44,29 +69,39 @@ export default function MessagesSection(props: MessagesSectionProps) {
         limit: 10,
         offset: 0,
       });
-      setMessages(queriedMessages);
+      setMessages(queriedMessages.reverse());
       setIsLoading(false);
     };
 
     handleGetMessages();
-    scrollToBottom(); // Scroll to bottom message on start
+    scrollToBottom({ animation: false, refElement: messagesEnd }); // Scroll to bottom message on start
   }, []);
+
+  // Scroll when new message added
+  useEffect(() => {
+    scrollToBottom({ animation: true, refElement: messagesEnd });
+  }, [messages]);
+
+  // Set socket to listen for new messages
+  useEffect(() => {
+    const receivedMessage = (messageData: any) => {
+      const messageObject = dataToMessageObject(messageData);
+      setMessages((oldMessages) => {
+        const newMessages = [...oldMessages];
+        newMessages.push(messageObject);
+        return newMessages;
+      });
+    };
+    socket?.on('message-received', receivedMessage);
+
+    return () => {
+      socket?.off('message-received', receivedMessage);
+    };
+  }, [socket]);
 
   if (isLoading) {
     return <LoadingSpinner />;
   }
-
-  // Set socket to listen for new messages
-  // useEffect(() => {
-  // socket?.on('');
-  // }, [socket]);
-
-  // useEffect(() => {
-  //   const element = elementRef.current;
-  //   if (!element) return;
-
-  //   element.scrollTop != element.scrollHeight;
-  // }, [isLoading]);
 
   return (
     <section className="h-[34rem] w-full bg-white flex flex-col p-2 border rounded-xl border-t-0 shadow">
@@ -89,20 +124,14 @@ export default function MessagesSection(props: MessagesSectionProps) {
         <textarea
           name="newMessageBody"
           id="newMessageBody"
-          value={newMessage}
+          value={newMessageBody}
           onChange={handleChange}
           className="bg-gray-100 focus:outline-primary w-full p-2 rounded-xl border no-scrollbar resize-none"
         />
         <button
           type="button"
           className="bg-primary-lighter p-2 h-fit rounded-lg text-white"
-          onClick={() =>
-            sendMessage({
-              socket: socket!,
-              body: newMessage,
-              receiverId: chatUser.id,
-            })
-          }
+          onClick={handleSendMessage}
         >
           Send
         </button>
