@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../../hooks';
 import StandardButton from '../../../components/StandardButton';
 
@@ -38,12 +39,14 @@ export default function UserOverview() {
             />
           )}
           {/* Message button */}
-          <StandardButton
-            text="Message"
-            whiteMode
+          <Link
+            to={`/chat/${displayedProfile.id}`}
+            className="w-full px-4 py-2 border flex justify-center gap-2 border-slate-300 rounded-lg dark:text-white text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
-          />
+            // handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
+          >
+            Message
+          </Link>
         </div>
       </div>
     </div>

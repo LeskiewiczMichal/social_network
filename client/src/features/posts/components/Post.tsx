@@ -84,6 +84,23 @@ export default function Post(props: PostInterface) {
           )}
 
           <div className="mb-2 flex justify-end items-center border-t border-b py-2">
+            {/* Comments button */}
+            <div className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center  px-4">
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                className="w-6 h-6 mr-1"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
+                />
+              </svg>
+              <span>{numberOfComments}</span>
+            </div>
             {/* Hearts button */}
             <button
               className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
@@ -106,27 +123,6 @@ export default function Post(props: PostInterface) {
                 />
               </svg>
               <span>{currentLikes.length}</span>
-            </button>
-            {/* Comments button */}
-            <button
-              className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
-              type="button"
-              aria-label="show all comments"
-            >
-              <svg
-                fill="none"
-                viewBox="0 0 24 24"
-                className="w-6 h-6 mr-1"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
-                />
-              </svg>
-              <span>{numberOfComments}</span>
             </button>
           </div>
           <CommentsSection
