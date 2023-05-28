@@ -63,6 +63,7 @@ const addComment = async (
     post.comments.push(comment._id);
     await post.save();
 
+    await comment.populate('author');
     return res.json({ message: 'Comment successfully created', comment });
   } catch (error) {
     return handleError(error, res);

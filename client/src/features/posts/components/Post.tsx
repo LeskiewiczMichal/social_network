@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 
@@ -7,20 +8,13 @@ import CommentsSection from './CommentsSection';
 
 export default function Post(props: PostInterface) {
   const { id, title, body, author, comments, likes, photo, createdAt } = props;
+  const [numberOfComments, setNumberOfComments] = useState<number>(
+    comments.length,
+  );
 
   return (
     <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
       <div className="flex flex-col md:flex-row items-start px-4 py-2 md:py-6">
-        {/* Profile picture */}
-        {/* <Link className="" to={`/profile/${author.id}`}>
-          <div className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0">
-            <img
-              className="w-12 h-12 rounded-full object-cover mr-4 shadow mb-4 md:mb-0"
-              src={`${process.env.REACT_APP_SERVER_URL}${author.profilePicture}`}
-              alt="avatar"
-            />
-          </div>
-        </Link> */}
         <ProfilePicture
           size={12}
           userId={author.id}
@@ -94,10 +88,14 @@ export default function Post(props: PostInterface) {
                   d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
                 />
               </svg>
-              <span>{comments.length}</span>
+              <span>{numberOfComments}</span>
             </button>
           </div>
-          <CommentsSection postId={id} numberOfComments={comments.length} />
+          <CommentsSection
+            postId={id}
+            numberOfComments={numberOfComments}
+            setNumberOfComments={setNumberOfComments}
+          />
         </div>
       </div>
     </div>

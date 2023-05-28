@@ -56,6 +56,7 @@ const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // Update post
         post.comments.push(comment._id);
         yield post.save();
+        yield comment.populate('author');
         return res.json({ message: 'Comment successfully created', comment });
     }
     catch (error) {
