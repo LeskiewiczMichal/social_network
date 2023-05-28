@@ -32,8 +32,8 @@ describe('Chat handlers', () => {
       try {
         expect(msg).toMatchObject({
           body: 'test',
-          sender: users.one,
-          receiver: users.one,
+          sender: TestUtils.CONSTANTS.USER_IDS.one.toString(),
+          receiver: TestUtils.CONSTANTS.USER_IDS.one.toString(),
         });
         done();
       } catch (err) {

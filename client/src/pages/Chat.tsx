@@ -11,7 +11,7 @@ export default function Chat() {
     null,
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const elementRef = useRef<HTMLDivElement>(null);
+  const messagesEnd = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -30,14 +30,24 @@ export default function Chat() {
     handleGetUser();
   }, []);
 
+  const scrollToBottom = () => {
+    if (!messagesEnd || !messagesEnd.current) {
+      return;
+    }
+    console.log(messagesEnd.current);
+    messagesEnd.current.scrollIntoView();
+  };
+
   useEffect(() => {
-    const element = elementRef.current;
-    if (!element) return;
+    scrollToBottom();
+  });
 
-    if (element.current) {
+  // useEffect(() => {
+  //   const element = elementRef.current;
+  //   if (!element) return;
 
-    } element.scrollTop != element.scrollHeight;
-  }, [isLoading]);
+  //   element.scrollTop != element.scrollHeight;
+  // }, [isLoading]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -83,10 +93,7 @@ export default function Chat() {
       {/* Chat */}
       <div className="h-[34rem] w-full bg-white flex flex-col p-2 border rounded-xl border-t-0 shadow">
         {/* Messages */}
-        <div
-          ref={elementRef}
-          className="flex flex-col gap-4 h-full w-full mb-2 border-2 rounded-xl p-2 no-scrollbar overflow-y-scroll"
-        >
+        <div className="flex flex-col gap-4 h-full w-full mb-2 px-2 py-1 border-2 rounded-xl  no-scrollbar overflow-y-scroll ">
           <Message
             body="I will be going to the festival tomorrow"
             sender={chatUser!}
@@ -114,6 +121,7 @@ export default function Chat() {
             body="I will be going to the festival tomorrow"
             sender={chatUser!}
           />
+          <div style={{ float: 'left', clear: 'both' }} ref={messagesEnd} />
         </div>
         {/* Message input */}
         <div className="flex w-full mt-auto h-17 gap-2 items-center">
