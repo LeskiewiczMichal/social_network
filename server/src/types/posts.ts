@@ -29,6 +29,9 @@ interface UpdatePostRequest extends Request {
   params: {
     postId: string;
   };
+  query: {
+    like?: string;
+  };
   body: {
     title?: string;
     body?: string;

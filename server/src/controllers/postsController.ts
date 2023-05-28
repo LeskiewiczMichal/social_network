@@ -94,10 +94,28 @@ const updatePost = async (
   try {
     const { id: userId } = req.user as UserInterface;
     const { title, body } = req.body;
+    const { like } = req.query;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
     if (post.author.toString() !== userId.toString()) {
       throw new ErrorTypes.UnauthorizedError();
+    }
+
+    // If user is not author, can't change some elemnets
+    if (title || body) {
+      if (post.author.toString() !== userId.toString()) {
+        throw new ErrorTypes.UnauthorizedError();
+      }
+    }
+
+    if (like) {
+      if (post.likes.includes(userId)) {
+        post.likes = post.likes.filter(
+          (id) => id.toString() !== userId.toString(),
+        );
+      } else {
+        post.likes.push(userId);
+      }
     }
 
     if (title) {
@@ -136,50 +154,6 @@ const deletePost = async (
   }
 };
 
-const likePost = async (
-  req: PostTypes.LikePostRequest,
-  res: PostTypes.LikePostResponse,
-): Promise<PostTypes.LikePostResponse> => {
-  try {
-    const { id: userId } = req.user as UserInterface;
-    const { postId } = req.params;
-    const post = (await Post.findById(postId)) as PostInterface;
-
-    if (post.likes.includes(userId)) {
-      throw new ErrorTypes.BadRequestError('Post is already liked');
-    }
-
-    post.likes.push(userId);
-    await post.save();
-
-    return res.json({ message: 'Post liked successfully' });
-  } catch (error) {
-    return handleError(error, res);
-  }
-};
-
-const unlikePost = async (
-  req: PostTypes.UnlikePostRequest,
-  res: PostTypes.UnlikePostResponse,
-): Promise<PostTypes.UnlikePostResponse> => {
-  try {
-    const { id: userId } = req.user as UserInterface;
-    const { postId } = req.params;
-    const post = (await Post.findById(postId)) as PostInterface;
-
-    if (!post.likes.includes(userId)) {
-      throw new ErrorTypes.BadRequestError('Post is not liked');
-    }
-
-    post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
-    await post.save();
-
-    return res.json({ message: 'Post unliked successfully' });
-  } catch (error) {
-    return handleError(error, res);
-  }
-};
-
 const uploadPhoto = async (req: Request, res: Response) => {
   try {
     const { file } = req;
@@ -202,7 +176,5 @@ export {
   getPostById,
   updatePost,
   deletePost,
-  likePost,
-  unlikePost,
   uploadPhoto,
 };

@@ -6,8 +6,6 @@ const router = express.Router();
 
 router.use(verifyToken);
 
-router.post('/:postId/likes', PostsController.likePost);
-router.delete('/:postId/likes', PostsController.unlikePost);
 router.get('/:postId', PostsController.getPostById);
 router.put('/:postId', PostsController.updatePost);
 router.delete('/:postId', PostsController.deletePost);

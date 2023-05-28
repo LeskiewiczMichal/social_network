@@ -31,8 +31,6 @@ const PostsController = __importStar(require("../controllers/postsController"));
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
 router.use(middleware_1.verifyToken);
-router.post('/:postId/likes', PostsController.likePost);
-router.delete('/:postId/likes', PostsController.unlikePost);
 router.get('/:postId', PostsController.getPostById);
 router.put('/:postId', PostsController.updatePost);
 router.delete('/:postId', PostsController.deletePost);

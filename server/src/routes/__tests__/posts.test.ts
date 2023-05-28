@@ -179,6 +179,36 @@ describe('Posts route tests', () => {
         })
         .expect(200, done);
     });
+
+    test('post liking functionality', (done) => {
+      request(app)
+        .put(`/${TestUtils.CONSTANTS.POST_IDS.one}?like=${users.one._id}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            post: {
+              likes: [users.one._id],
+            },
+          });
+        })
+        .expect(200, done);
+    });
+
+    test('posts disliking', (done) => {
+      request(app)
+        .put(`/${TestUtils.CONSTANTS.POST_IDS.one}?like=${users.one._id}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            post: {
+              likes: [],
+            },
+          });
+        })
+        .expect(200, done);
+    });
   });
 
   describe('Delete posts', () => {
@@ -236,106 +266,6 @@ describe('Posts route tests', () => {
         .set('Authorization', `Bearer ${users.tokens.one}`)
         .expect('Content-Type', /json/)
         .expect({ message: 'Post deleted successfully' })
-        .expect(200, done);
-    });
-  });
-
-  describe('Like post', () => {
-    beforeAll(async () => {
-      try {
-        posts = await TestUtils.createFakePosts({
-          postOne: {},
-          postTwo: {
-            likes: [
-              TestUtils.CONSTANTS.USER_IDS.two,
-              TestUtils.CONSTANTS.USER_IDS.three,
-            ],
-          },
-          postThree: {},
-          postIds: TestUtils.CONSTANTS.POST_IDS,
-          authorId: TestUtils.CONSTANTS.USER_IDS.one,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    afterAll(clearDB);
-
-    test('returns status 404 if post is not found', (done) => {
-      request(app)
-        .post('/000/likes')
-        .set('Authorization', `Bearer ${users.tokens.two}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Not found' })
-        .expect(404, done);
-    });
-
-    test('retuns status 400 if post already liked', (done) => {
-      request(app)
-        .post(`/${TestUtils.CONSTANTS.POST_IDS.two}/likes`)
-        .set('Authorization', `Bearer ${users.tokens.two}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Post is already liked' })
-        .expect(400, done);
-    });
-
-    test('retuns message on success', (done) => {
-      request(app)
-        .post(`/${TestUtils.CONSTANTS.POST_IDS.one}/likes`)
-        .set('Authorization', `Bearer ${users.tokens.two}`)
-        .expect('Content-Type', /json/)
-        .expect({ message: 'Post liked successfully' })
-        .expect(200, done);
-    });
-  });
-
-  describe('Dislike post', () => {
-    beforeAll(async () => {
-      try {
-        posts = await TestUtils.createFakePosts({
-          postOne: {},
-          postTwo: {
-            likes: [
-              TestUtils.CONSTANTS.USER_IDS.two,
-              TestUtils.CONSTANTS.USER_IDS.three,
-            ],
-          },
-          postThree: {},
-          postIds: TestUtils.CONSTANTS.POST_IDS,
-          authorId: TestUtils.CONSTANTS.USER_IDS.one,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    afterAll(clearDB);
-
-    test('returns status 404 if post is not found', (done) => {
-      request(app)
-        .delete('/000/likes')
-        .set('Authorization', `Bearer ${users.tokens.two}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Not found' })
-        .expect(404, done);
-    });
-
-    test('retuns status 400 if post is not liked', (done) => {
-      request(app)
-        .delete(`/${TestUtils.CONSTANTS.POST_IDS.two}/likes`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Post is not liked' })
-        .expect(400, done);
-    });
-
-    test('retuns message on success', (done) => {
-      request(app)
-        .delete(`/${TestUtils.CONSTANTS.POST_IDS.two}/likes`)
-        .set('Authorization', `Bearer ${users.tokens.two}`)
-        .expect('Content-Type', /json/)
-        .expect({ message: 'Post unliked successfully' })
         .expect(200, done);
     });
   });

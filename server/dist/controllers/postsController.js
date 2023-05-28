@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPhoto = exports.unlikePost = exports.likePost = exports.deletePost = exports.updatePost = exports.getPostById = exports.getPosts = exports.createPost = void 0;
+exports.uploadPhoto = exports.deletePost = exports.updatePost = exports.getPostById = exports.getPosts = exports.createPost = void 0;
 const types_1 = require("../types");
 const models_1 = require("../models");
 const utils_1 = require("../utils");
@@ -88,9 +88,24 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { id: userId } = req.user;
         const { title, body } = req.body;
+        const { like } = req.query;
         const post = (yield models_1.Post.findById(req.params.postId));
         if (post.author.toString() !== userId.toString()) {
             throw new types_1.ErrorTypes.UnauthorizedError();
+        }
+        // If user is not author, can't change some elemnets
+        if (title || body) {
+            if (post.author.toString() !== userId.toString()) {
+                throw new types_1.ErrorTypes.UnauthorizedError();
+            }
+        }
+        if (like) {
+            if (post.likes.includes(userId)) {
+                post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
+            }
+            else {
+                post.likes.push(userId);
+            }
         }
         if (title) {
             post.title = title;
@@ -123,40 +138,6 @@ const deletePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deletePost = deletePost;
-const likePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id: userId } = req.user;
-        const { postId } = req.params;
-        const post = (yield models_1.Post.findById(postId));
-        if (post.likes.includes(userId)) {
-            throw new types_1.ErrorTypes.BadRequestError('Post is already liked');
-        }
-        post.likes.push(userId);
-        yield post.save();
-        return res.json({ message: 'Post liked successfully' });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.likePost = likePost;
-const unlikePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id: userId } = req.user;
-        const { postId } = req.params;
-        const post = (yield models_1.Post.findById(postId));
-        if (!post.likes.includes(userId)) {
-            throw new types_1.ErrorTypes.BadRequestError('Post is not liked');
-        }
-        post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
-        yield post.save();
-        return res.json({ message: 'Post unliked successfully' });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.unlikePost = unlikePost;
 const uploadPhoto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { file } = req;
