@@ -11,20 +11,27 @@ export default function Comment(props: CommentInterface) {
   const { body, author, createdAt, likes, id: commentId } = props;
   const userId = useAppSelector((state) => state.user.id);
   const [currentLikes, setCurrentLikes] = useState<string[]>(likes);
+  const [isLikeButtonDisabled, setIsLikeButtonDisabled] = useState(false);
 
-  const handleLikePost = () => {
-    likeComment({ commentId, userId: userId! });
-    if (currentLikes.includes(userId!)) {
-      setCurrentLikes((oldLikes) => {
-        const newLikes = oldLikes.filter(
-          (id) => id.toString() !== userId!.toString(),
-        );
-        return newLikes;
-      });
-    } else {
-      setCurrentLikes((oldLikes) => {
-        return [...oldLikes, userId!];
-      });
+  const handleLikePost = async () => {
+    try {
+      setIsLikeButtonDisabled(true);
+      await likeComment({ commentId, userId: userId! });
+      if (currentLikes.includes(userId!)) {
+        setCurrentLikes((oldLikes) => {
+          const newLikes = oldLikes.filter(
+            (id) => id.toString() !== userId!.toString(),
+          );
+          return newLikes;
+        });
+      } else {
+        setCurrentLikes((oldLikes) => {
+          return [...oldLikes, userId!];
+        });
+      }
+      setIsLikeButtonDisabled(false);
+    } catch (err: any) {
+      console.error(err);
     }
   };
 
@@ -60,6 +67,7 @@ export default function Comment(props: CommentInterface) {
             type="button"
             aria-label="like comment"
             onClick={handleLikePost}
+            disabled={isLikeButtonDisabled}
           >
             <svg
               fill={currentLikes.includes(userId!) ? '#4f46e5' : '#FFFFFF'}

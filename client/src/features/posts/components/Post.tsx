@@ -5,12 +5,48 @@ import ReactTimeAgo from 'react-time-ago';
 import { ProfilePicture } from '../../../components';
 import { PostInterface } from '../types/Post';
 import CommentsSection from './CommentsSection';
+import likePost from '../services/likePost';
+import { useAppSelector } from '../../../hooks';
 
 export default function Post(props: PostInterface) {
-  const { id, title, body, author, comments, likes, photo, createdAt } = props;
+  const {
+    id: postId,
+    title,
+    body,
+    author,
+    comments,
+    likes,
+    photo,
+    createdAt,
+  } = props;
+  const userId = useAppSelector((state) => state.user.id);
+  const [currentLikes, setCurrentLikes] = useState<string[]>(likes);
   const [numberOfComments, setNumberOfComments] = useState<number>(
     comments.length,
   );
+  const [isLikeButtonDisabled, setIsLikeButtonDisabled] = useState(false);
+
+  const handleLikePost = async () => {
+    try {
+      setIsLikeButtonDisabled(true);
+      await likePost({ postId, userId: userId! });
+      if (currentLikes.includes(userId!)) {
+        setCurrentLikes((oldLikes) => {
+          const newLikes = oldLikes.filter(
+            (id) => id.toString() !== userId!.toString(),
+          );
+          return newLikes;
+        });
+      } else {
+        setCurrentLikes((oldLikes) => {
+          return [...oldLikes, userId!];
+        });
+      }
+      setIsLikeButtonDisabled(false);
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
@@ -53,9 +89,11 @@ export default function Post(props: PostInterface) {
               className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
               type="button"
               aria-label="give a heart"
+              onClick={handleLikePost}
+              disabled={isLikeButtonDisabled}
             >
               <svg
-                fill="#4f46e5"
+                fill={currentLikes.includes(userId!) ? '#4f46e5' : '#FFFFFF'}
                 viewBox="0 0 24 24"
                 className="w-5 h-5 mr-1"
                 stroke="#4f46e5"
@@ -67,7 +105,7 @@ export default function Post(props: PostInterface) {
                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 />
               </svg>
-              <span>{likes.length}</span>
+              <span>{currentLikes.length}</span>
             </button>
             {/* Comments button */}
             <button
@@ -92,7 +130,7 @@ export default function Post(props: PostInterface) {
             </button>
           </div>
           <CommentsSection
-            postId={id}
+            postId={postId}
             numberOfComments={numberOfComments}
             setNumberOfComments={setNumberOfComments}
           />
