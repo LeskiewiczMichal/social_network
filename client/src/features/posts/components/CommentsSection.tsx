@@ -36,7 +36,12 @@ export default function CommentsSection(props: CommentsSectionProps) {
       } else {
         setOffset((oldOffset: number) => oldOffset + limit);
         setComments((oldComments) => {
-          return [...oldComments, ...queriedComments];
+          // Exclude comments witch already are added (needed when created new comment)
+          const oldCommentKeys = oldComments.map((comment) => comment.id);
+          const uniqueQueriedComments = queriedComments.filter(
+            (comment) => !oldCommentKeys.includes(comment.id),
+          );
+          return [...oldComments, ...uniqueQueriedComments];
         });
       }
       setIsLoading(false);
