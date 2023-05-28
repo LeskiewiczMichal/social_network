@@ -11,15 +11,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../models");
 const registerChatHandlers = (io, socket) => {
-    const newMessage = (message) => __awaiter(void 0, void 0, void 0, function* () {
+    const newMessage = (props) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const receiver = (yield models_1.User.findById(message.receiver));
+            if (!socket.user) {
+                return;
+            }
+            const { body, receiverId } = props;
+            const receiver = (yield models_1.User.findById(receiverId));
             const messageObject = new models_1.Message({
-                body: message.body,
-                sender: message.sender,
-                receiver: message.receiver,
+                body,
+                sender: socket.user.id,
+                receiver: receiverId,
             });
             yield messageObject.save();
+            // If receiver is active emit a notification
             if (receiver.socketId) {
                 // await (await messageObject.populate('receiver')).populate('sender');
                 io.to(receiver.socketId).emit('message-received', messageObject);

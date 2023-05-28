@@ -36,6 +36,7 @@ const Routes = __importStar(require("./routes"));
 const EventHandlers = __importStar(require("./handlers"));
 /// TODO: on connection add socket and return user ///
 /// TODO: when creating user, capitalize first letter, etc... ///
+// Set up server
 dotenv.config();
 (0, middleware_1.mongoConfig)();
 const app = (0, express_1.default)();
@@ -46,11 +47,13 @@ const io = new socket_io_1.Server(httpServer, {
     },
 });
 (0, middleware_1.serverConfig)(app);
+// Set up socket server handlers
 io.use(EventHandlers.authenticationHandler);
 io.on('connection', (socket) => {
     EventHandlers.registerChatHandlers(io, socket);
     EventHandlers.registerDisconnectHandlers(io, socket);
 });
+// Set up routes
 app.use('/photos', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
     res.send('Welcome');
@@ -59,6 +62,7 @@ app.use('/api/users/auth', Routes.authRouter);
 app.use('/api/users', Routes.usersRouter);
 app.use('/api/posts', Routes.postsRouter);
 app.use('/api/comments', Routes.commentsRouter);
+app.use('/api/messages', Routes.messageRouter);
 httpServer.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}`);
 });

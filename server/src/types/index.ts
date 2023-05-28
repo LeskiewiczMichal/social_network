@@ -4,6 +4,7 @@ import * as UserTypes from './users';
 import * as AuthTypes from './auth';
 import * as ErrorTypes from './errors';
 import * as SocketTypes from './sockets';
+import * as MessageTypes from './message';
 
 export {
   SocketTypes,
@@ -12,4 +13,5 @@ export {
   ErrorTypes,
   UserTypes,
   AuthTypes,
+  MessageTypes,
 };

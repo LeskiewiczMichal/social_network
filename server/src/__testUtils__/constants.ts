@@ -18,6 +18,12 @@ const COMMENT_IDS = {
   three: new mongoose.Types.ObjectId(),
 };
 
+const MESSAGE_IDS = {
+  one: new mongoose.Types.ObjectId(),
+  two: new mongoose.Types.ObjectId(),
+  three: new mongoose.Types.ObjectId(),
+};
+
 const DEFAULT_USERS_PROPS = {
   userOne: {},
   userTwo: {},
@@ -42,6 +48,16 @@ const DEFAULT_COMMENTS_PROPS = {
   postId: POST_IDS.one,
 };
 
+const DEFAULT_MESSAGES_PROPS = {
+  messageOne: {},
+  messageTwo: {},
+  messageThree: {},
+  messageIds: MESSAGE_IDS,
+  senderId: USER_IDS.one,
+  receiverId: USER_IDS.two,
+  userThreeId: USER_IDS.three,
+};
+
 export {
   USER_IDS,
   POST_IDS,
@@ -49,4 +65,6 @@ export {
   DEFAULT_POSTS_PROPS,
   COMMENT_IDS,
   DEFAULT_COMMENTS_PROPS,
+  MESSAGE_IDS,
+  DEFAULT_MESSAGES_PROPS,
 };

@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupSocketServer = exports.CONSTANTS = exports.createFakeComments = exports.deleteAllComments = exports.createFakePosts = exports.deleteAllPosts = exports.createFakeUsers = exports.initializeMongoServer = exports.deleteAllUsers = void 0;
+exports.deleteAllMessages = exports.createFakeMessages = exports.setupSocketServer = exports.CONSTANTS = exports.createFakeComments = exports.deleteAllComments = exports.createFakePosts = exports.deleteAllPosts = exports.createFakeUsers = exports.initializeMongoServer = exports.deleteAllUsers = void 0;
 const deleteAllUsers_1 = __importDefault(require("./deleteAllUsers"));
 exports.deleteAllUsers = deleteAllUsers_1.default;
 const mongoConfigTesting_1 = __importDefault(require("./mongoConfigTesting"));
@@ -45,3 +45,7 @@ const CONSTANTS = __importStar(require("./constants"));
 exports.CONSTANTS = CONSTANTS;
 const setupSocketServer_1 = __importDefault(require("./setupSocketServer"));
 exports.setupSocketServer = setupSocketServer_1.default;
+const createFakeMessages_1 = __importDefault(require("./createFakeMessages"));
+exports.createFakeMessages = createFakeMessages_1.default;
+const deleteAllMessages_1 = __importDefault(require("./deleteAllMessages"));
+exports.deleteAllMessages = deleteAllMessages_1.default;

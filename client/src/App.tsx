@@ -5,7 +5,7 @@ import { Socket } from 'socket.io-client';
 import createSocket from './createSocket';
 import * as Pages from './pages';
 import { useAppDispatch } from './hooks';
-import { autoLogin, SocketReducer } from './features/authentication';
+import { autoLogin, SocketProvider } from './features/authentication';
 import LoadingSpinner from './components/LoadingSpinner';
 import Header from './features/header';
 
@@ -35,11 +35,9 @@ function App() {
     if (socket && userLogged) {
       socket.on('connect', () => {
         console.log('POLACZONE');
-        SocketReducer.setSocket({ socket });
       });
       socket.on('disconnect', () => {
         console.log('DISCONNECTED');
-        SocketReducer.setSocket({ socket: null });
       });
     }
 
@@ -57,30 +55,32 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      {userLogged ? (
-        <>
-          <Header />
+    <SocketProvider socket={socket}>
+      <BrowserRouter>
+        {userLogged ? (
+          <>
+            <Header />
+            <Routes>
+              <Route path="/" element={<Pages.Home />} />
+              {/* Tymczasowo */}
+              <Route path="/login" element={<Pages.Login />} />
+              <Route path="/register" element={<Pages.Registration />} />{' '}
+              <Route path="/profile/:userId" element={<Pages.Profile />} />
+              <Route path="/profile" element={<Pages.Profile />} />
+              <Route path="/chat/:userId" element={<Pages.Chat />} />
+              <Route path="/chat" element={<Pages.ChatSelecion />} />
+              {/* Tymczasowo */}
+              {/* <button type="button" onClick={() => }>gowno</button> */}
+            </Routes>
+          </>
+        ) : (
           <Routes>
-            <Route path="/" element={<Pages.Home />} />
-            {/* Tymczasowo */}
-            <Route path="/login" element={<Pages.Login />} />
-            <Route path="/register" element={<Pages.Registration />} />{' '}
-            <Route path="/profile/:userId" element={<Pages.Profile />} />
-            <Route path="/profile" element={<Pages.Profile />} />
-            <Route path="/chat/:userId" element={<Pages.Chat />} />
-            <Route path="/chat" element={<Pages.ChatSelecion />} />
-            {/* Tymczasowo */}
-            {/* <button type="button" onClick={() => }>gowno</button> */}
+            <Route path="/" element={<Pages.Login />} />
+            <Route path="/register" element={<Pages.Registration />} />
           </Routes>
-        </>
-      ) : (
-        <Routes>
-          <Route path="/" element={<Pages.Login />} />
-          <Route path="/register" element={<Pages.Registration />} />
-        </Routes>
-      )}
-    </BrowserRouter>
+        )}
+      </BrowserRouter>
+    </SocketProvider>
   );
 }
 

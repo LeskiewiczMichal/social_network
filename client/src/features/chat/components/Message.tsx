@@ -1,9 +1,10 @@
 import { useAppSelector } from '../../../hooks';
+import { UserState } from '../../authentication/types/userState';
 import { UserTypes } from '../../users';
 
 interface MessageProps {
   body: string;
-  sender: UserTypes.UserInterface;
+  sender: UserTypes.UserInterface | UserState;
 }
 
 export default function Message(props: MessageProps) {
