@@ -137,7 +137,7 @@ describe('Comments route tests', () => {
                     message: 'Comment successfully created',
                     comment: {
                         body: requestBody.body,
-                        author: TestUtils.CONSTANTS.USER_IDS.one.toString(),
+                        author: users.one,
                         likes: [],
                         post: TestUtils.CONSTANTS.POST_IDS.one.toString(),
                     },
@@ -188,6 +188,32 @@ describe('Comments route tests', () => {
                 .expect((res) => {
                 expect(res.body).toMatchObject({
                     comment: { body: requestBody.body },
+                    message: 'Comment edited successfully',
+                });
+            })
+                .expect(200, done);
+        });
+        test('liking comments functionality', (done) => {
+            (0, supertest_1.default)(app)
+                .put(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}?like=${users.two._id}`)
+                .set('Authorization', `Bearer ${users.tokens.two}`)
+                .expect('Content-Type', /json/)
+                .expect((res) => {
+                expect(res.body).toMatchObject({
+                    comment: { likes: [users.two._id] },
+                    message: 'Comment edited successfully',
+                });
+            })
+                .expect(200, done);
+        });
+        test('disliking comments functionality', (done) => {
+            (0, supertest_1.default)(app)
+                .put(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}?like=${users.two._id}`)
+                .set('Authorization', `Bearer ${users.tokens.two}`)
+                .expect('Content-Type', /json/)
+                .expect((res) => {
+                expect(res.body).toMatchObject({
+                    comment: { likes: [] },
                     message: 'Comment edited successfully',
                 });
             })
@@ -245,80 +271,6 @@ describe('Comments route tests', () => {
                     done(error);
                 });
             });
-        });
-    });
-    describe('Liking comments', () => {
-        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-            comments = yield TestUtils.createFakeComments({
-                commentOne: {},
-                commentTwo: {},
-                commentThree: { likes: [TestUtils.CONSTANTS.USER_IDS.one] },
-                commentIds: TestUtils.CONSTANTS.COMMENT_IDS,
-                authorId: TestUtils.CONSTANTS.USER_IDS.one,
-                postId: TestUtils.CONSTANTS.POST_IDS.one,
-            });
-        }));
-        afterAll(clearDB);
-        test('returns status 404 if comment is not found', (done) => {
-            (0, supertest_1.default)(app)
-                .post(`/000/likes`)
-                .set('Authorization', `Bearer ${users.tokens.one}`)
-                .expect('Content-Type', /json/)
-                .expect({ error: 'Not found' })
-                .expect(404, done);
-        });
-        test('returns status 400 if comment is already liked', (done) => {
-            (0, supertest_1.default)(app)
-                .post(`/${TestUtils.CONSTANTS.COMMENT_IDS.three}/likes`)
-                .set('Authorization', `Bearer ${users.tokens.one}`)
-                .expect('Content-Type', /json/)
-                .expect({ error: 'Comment is already liked' })
-                .expect(400, done);
-        });
-        test('returns message on success', (done) => {
-            (0, supertest_1.default)(app)
-                .post(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}/likes`)
-                .set('Authorization', `Bearer ${users.tokens.one}`)
-                .expect('Content-Type', /json/)
-                .expect({ message: 'Comment liked successfully' })
-                .expect(200, done);
-        });
-    });
-    describe('Disliking comments', () => {
-        beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-            comments = yield TestUtils.createFakeComments({
-                commentOne: { likes: [TestUtils.CONSTANTS.USER_IDS.one] },
-                commentTwo: {},
-                commentThree: {},
-                commentIds: TestUtils.CONSTANTS.COMMENT_IDS,
-                authorId: TestUtils.CONSTANTS.USER_IDS.one,
-                postId: TestUtils.CONSTANTS.POST_IDS.one,
-            });
-        }));
-        afterAll(clearDB);
-        test('returns status 404 if comment is not found', (done) => {
-            (0, supertest_1.default)(app)
-                .delete(`/000/likes`)
-                .set('Authorization', `Bearer ${users.tokens.one}`)
-                .expect('Content-Type', /json/)
-                .expect({ error: 'Not found' })
-                .expect(404, done);
-        });
-        test('returns status 400 if comment is already liked', (done) => {
-            (0, supertest_1.default)(app)
-                .delete(`/${TestUtils.CONSTANTS.COMMENT_IDS.three}/likes`)
-                .set('Authorization', `Bearer ${users.tokens.one}`)
-                .expect('Content-Type', /json/)
-                .expect({ error: "Comment isn't liked" })
-                .expect(400, done);
-        });
-        test('returns message on success', (done) => {
-            (0, supertest_1.default)(app)
-                .delete(`/${TestUtils.CONSTANTS.COMMENT_IDS.one}/likes`)
-                .set('Authorization', `Bearer ${users.tokens.one}`)
-                .expect('Content-Type', /json/)
-                .expect({ message: 'Comment unliked successfully' })
-                .expect(200, done);
         });
     });
 });

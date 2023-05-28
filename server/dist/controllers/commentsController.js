@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dislikeComment = exports.likeComment = exports.deleteComment = exports.updateComment = exports.getComments = exports.addComment = void 0;
+exports.deleteComment = exports.updateComment = exports.getComments = exports.addComment = void 0;
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
@@ -67,13 +67,22 @@ exports.addComment = addComment;
 const updateComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { commentId } = req.params;
+        const { like } = req.query;
         const { body } = req.body;
         const { id: userId } = req.user;
         const comment = (yield models_1.Comment.findById(commentId));
-        if (comment.author.toString() !== userId.toString()) {
-            throw new types_1.ErrorTypes.UnauthorizedError();
+        if (like) {
+            if (comment.likes.includes(userId)) {
+                comment.likes = comment.likes.filter((id) => id.toString() !== userId.toString());
+            }
+            else {
+                comment.likes.push(userId);
+            }
         }
         if (body) {
+            if (comment.author.toString() !== userId.toString()) {
+                throw new types_1.ErrorTypes.UnauthorizedError();
+            }
             comment.body = body;
         }
         yield comment.save();
@@ -101,37 +110,3 @@ const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteComment = deleteComment;
-const likeComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { commentId } = req.params;
-        const { id: userId } = req.user;
-        const comment = (yield models_1.Comment.findById(commentId));
-        if (comment.likes.includes(userId)) {
-            throw new types_1.ErrorTypes.BadRequestError('Comment is already liked');
-        }
-        comment.likes.push(userId);
-        yield comment.save();
-        return res.json({ message: 'Comment liked successfully' });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.likeComment = likeComment;
-const dislikeComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { commentId } = req.params;
-        const { id: userId } = req.user;
-        const comment = (yield models_1.Comment.findById(commentId));
-        if (!comment.likes.includes(userId)) {
-            throw new types_1.ErrorTypes.BadRequestError("Comment isn't liked");
-        }
-        comment.likes = comment.likes.filter((id) => id.toString() !== userId.toString());
-        yield comment.save();
-        return res.json({ message: 'Comment unliked successfully' });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.dislikeComment = dislikeComment;

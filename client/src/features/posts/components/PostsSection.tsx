@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { LoadingSpinner } from '../../../components';
 import Post from './Post';
 import { PostInterface } from '../types/Post';
-import getPosts from '../actions/getPosts';
+import getPosts from '../services/getPosts';
 
 interface PostsSectionProps {
   authorId?: string;

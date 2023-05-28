@@ -16,7 +16,7 @@ export default function Post(props: PostInterface) {
     <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
       <div className="flex flex-col md:flex-row items-start px-4 py-2 md:py-6">
         <ProfilePicture
-          size={12}
+          size={11}
           userId={author.id}
           userPicture={author.profilePicture}
         />

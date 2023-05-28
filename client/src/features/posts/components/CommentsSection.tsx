@@ -4,7 +4,7 @@ import { useAppSelector } from '../../../hooks';
 import addComment from '../services/addComment';
 import { ReactComponent as SendMessageImg } from '../../../assets/icons/add-comment.svg';
 import Comment from './Comment';
-import getComments from '../actions/getComments';
+import getComments from '../services/getComments';
 import { CommentInterface } from '../types/Comment';
 import { LoadingSpinner, ProfilePicture } from '../../../components';
 
@@ -27,20 +27,23 @@ export default function CommentsSection(props: CommentsSectionProps) {
     setBody(e.target.value);
   };
 
-  useEffect(() => {
-    const handleGetComments = async () => {
-      try {
-        const queriedComments = await getComments({ postId, limit: 2, offset });
-        setOffset((oldOffset: number) => oldOffset + 2);
+  const handleGetComments = async (limit: number, initial: boolean) => {
+    try {
+      const queriedComments = await getComments({ postId, limit, offset });
+      if (initial) {
         setComments(queriedComments);
-        setIsLoading(false);
-      } catch (err: any) {
-        console.error(err);
+        setOffset(limit);
+      } else {
+        setOffset((oldOffset: number) => oldOffset + limit);
+        setComments((oldComments) => {
+          return [...oldComments, ...queriedComments];
+        });
       }
-    };
-
-    handleGetComments();
-  }, []);
+      setIsLoading(false);
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
 
   const handleAddComment = async () => {
     try {
@@ -58,6 +61,10 @@ export default function CommentsSection(props: CommentsSectionProps) {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    handleGetComments(2, true);
+  }, []);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -115,10 +122,12 @@ export default function CommentsSection(props: CommentsSectionProps) {
           />
         );
       })}
+      {/* Load more */}
       {comments.length < numberOfComments && (
         <button
           type="button"
           className="font-bold text-primary hover:text-primary-lighter"
+          onClick={() => handleGetComments(3, false)}
         >
           Load more comments...
         </button>

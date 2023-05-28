@@ -76,15 +76,25 @@ const updateComment = async (
 ): Promise<CommentTypes.UpdateCommentResponse> => {
   try {
     const { commentId } = req.params;
+    const { like } = req.query;
     const { body } = req.body;
     const { id: userId } = req.user as UserInterface;
     const comment = (await Comment.findById(commentId)) as CommentInterface;
 
-    if (comment.author.toString() !== userId.toString()) {
-      throw new ErrorTypes.UnauthorizedError();
+    if (like) {
+      if (comment.likes.includes(userId)) {
+        comment.likes = comment.likes.filter(
+          (id) => id.toString() !== userId.toString(),
+        );
+      } else {
+        comment.likes.push(userId);
+      }
     }
 
     if (body) {
+      if (comment.author.toString() !== userId.toString()) {
+        throw new ErrorTypes.UnauthorizedError();
+      }
       comment.body = body;
     }
 
@@ -120,57 +130,4 @@ const deleteComment = async (
   }
 };
 
-const likeComment = async (
-  req: CommentTypes.LikeCommentRequest,
-  res: CommentTypes.LikeCommentResponse,
-): Promise<CommentTypes.LikeCommentResponse> => {
-  try {
-    const { commentId } = req.params;
-    const { id: userId } = req.user as UserInterface;
-    const comment = (await Comment.findById(commentId)) as CommentInterface;
-
-    if (comment.likes.includes(userId)) {
-      throw new ErrorTypes.BadRequestError('Comment is already liked');
-    }
-
-    comment.likes.push(userId);
-    await comment.save();
-
-    return res.json({ message: 'Comment liked successfully' });
-  } catch (error) {
-    return handleError(error, res);
-  }
-};
-
-const dislikeComment = async (
-  req: CommentTypes.DislikeCommentRequest,
-  res: CommentTypes.DislikeCommentResponse,
-): Promise<CommentTypes.DislikeCommentResponse> => {
-  try {
-    const { commentId } = req.params;
-    const { id: userId } = req.user as UserInterface;
-    const comment = (await Comment.findById(commentId)) as CommentInterface;
-
-    if (!comment.likes.includes(userId)) {
-      throw new ErrorTypes.BadRequestError("Comment isn't liked");
-    }
-
-    comment.likes = comment.likes.filter(
-      (id) => id.toString() !== userId.toString(),
-    );
-    await comment.save();
-
-    return res.json({ message: 'Comment unliked successfully' });
-  } catch (error) {
-    return handleError(error, res);
-  }
-};
-
-export {
-  addComment,
-  getComments,
-  updateComment,
-  deleteComment,
-  likeComment,
-  dislikeComment,
-};
+export { addComment, getComments, updateComment, deleteComment };

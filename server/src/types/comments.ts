@@ -26,6 +26,9 @@ interface UpdateCommentRequest extends Request {
   body: {
     body?: string;
   };
+  query: {
+    like?: string;
+  };
   params: {
     commentId: string;
   };
