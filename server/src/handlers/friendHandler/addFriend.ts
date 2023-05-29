@@ -53,6 +53,7 @@ const addFriend = async (props: AddFriendRequestProps) => {
 
     // If receiver is active emit a notification
     if (friend.socketId) {
+      await newNotification.populate('sender');
       // await (await messageObject.populate('receiver')).populate('sender');
       io.to(friend.socketId).emit('new-notification', newNotification);
     }

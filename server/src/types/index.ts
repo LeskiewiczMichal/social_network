@@ -5,6 +5,7 @@ import * as AuthTypes from './auth';
 import * as ErrorTypes from './errors';
 import * as SocketTypes from './sockets';
 import * as MessageTypes from './message';
+import * as NotificationTypes from './notification';
 
 export {
   SocketTypes,
@@ -14,4 +15,5 @@ export {
   UserTypes,
   AuthTypes,
   MessageTypes,
+  NotificationTypes,
 };

@@ -1,6 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { UserState } from '../types/userState';
+import setUserReducer from './functions/setUser';
+import addFriendRequestReducer from './functions/addFriendRequest';
+import addFriendReducer from './functions/addFriend';
+import removeFriendReducer from './functions/removeFriend';
+import removeFriendRequestReducer from './functions/removeFriendRequest';
 
 const initialState: UserState = {
   id: null,
@@ -17,29 +22,24 @@ const initialState: UserState = {
   profilePicture: null,
 };
 
-const setUserReducer = (state: any, action: PayloadAction<UserState>) => {
-  state.id = action.payload.id;
-  state.firstName = action.payload.firstName;
-  state.lastName = action.payload.lastName;
-  state.email = action.payload.email;
-  state.friends = action.payload.friends;
-  state.friendRequests = action.payload.friendRequests;
-  state.birthday = action.payload.birthday;
-  state.profilePicture = action.payload.profilePicture;
-  state.country = action.payload.country;
-  state.city = action.payload.city;
-  state.postalCode = action.payload.postalCode;
-  state.about = action.payload.about;
-};
-
 export const userSlice = createSlice({
   name: 'User',
   initialState,
   reducers: {
     setUser: setUserReducer,
+    addFriend: addFriendReducer,
+    removeFriend: removeFriendReducer,
+    addFriendRequest: addFriendRequestReducer,
+    removeFriendRequest: removeFriendRequestReducer,
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const {
+  setUser,
+  addFriend,
+  addFriendRequest,
+  removeFriend,
+  removeFriendRequest,
+} = userSlice.actions;
 
 export default userSlice.reducer;

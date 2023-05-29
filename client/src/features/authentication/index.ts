@@ -4,6 +4,7 @@ import autoLogin from './actions/autoLogin';
 import logout from './actions/logout';
 import { TokenEnum } from './types/token';
 import { SocketProvider, useSocket } from './socketContext';
+import * as UserSlice from './reducers/userReducer';
 
 export {
   LoginForm,
@@ -13,4 +14,5 @@ export {
   TokenEnum,
   SocketProvider,
   useSocket,
+  UserSlice,
 };

@@ -58,7 +58,9 @@ export default function UserDetails() {
       {/* Mutual friends */}
       <div className="w-full text-center p-2">
         <div className="flex justify-between text-gray-700 dark:text-gray-400 px-2">
-          <span>{mutualFriendsCount} mutual friends</span>
+          {loggedUser.id !== displayedProfile.id && (
+            <span>{mutualFriendsCount} mutual friends</span>
+          )}
           <button
             type="button"
             onClick={() =>

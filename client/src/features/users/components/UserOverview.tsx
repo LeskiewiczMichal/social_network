@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import StandardButton from '../../../components/StandardButton';
 import sendFriendRequest from '../services/sendFriendRequest';
-import { useSocket } from '../../authentication';
+import { useSocket, UserSlice } from '../../authentication';
 import addFriend from '../services/addFriend';
 import removeFriend from '../services/removeFriend';
 import * as ProfilePageSlice from '../reducers/profilePageReducer';
@@ -16,11 +16,14 @@ export default function UserOverview() {
 
   const handleAddFriend = () => {
     dispatch(ProfilePageSlice.addFriend(loggedUser.id!));
+    dispatch(UserSlice.addFriend(displayedProfile.id));
+    dispatch(UserSlice.removeFriendRequest(displayedProfile.id));
     addFriend({ newFriendId: displayedProfile.id, socket });
   };
 
   const handleRemoveFriend = () => {
     dispatch(ProfilePageSlice.removeFriend(loggedUser.id!));
+    dispatch(UserSlice.removeFriend(displayedProfile.id));
     removeFriend({ friendToRemove: displayedProfile.id });
   };
 
@@ -28,6 +31,8 @@ export default function UserOverview() {
     dispatch(ProfilePageSlice.addFriendRequest(loggedUser.id!));
     sendFriendRequest({ newFriendId: displayedProfile.id, socket });
   };
+
+  // When accepting request, remove id from friend requests
 
   let befriendButton: JSX.Element;
   if (displayedProfile.friends.includes(loggedUser.id!)) {

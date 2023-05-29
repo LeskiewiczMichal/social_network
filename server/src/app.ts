@@ -47,6 +47,7 @@ app.use('/api/users', Routes.usersRouter);
 app.use('/api/posts', Routes.postsRouter);
 app.use('/api/comments', Routes.commentsRouter);
 app.use('/api/messages', Routes.messageRouter);
+app.use('/api/notifications', Routes.notificationsRouter);
 
 httpServer.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}`);
