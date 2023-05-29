@@ -14,7 +14,7 @@ const notification_1 = require("../../models/notification");
 const newFriendRequest = (props) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { socket, io, newFriendId } = props;
-        if (!socket.user) {
+        if (!socket.user || newFriendId === socket.user.id) {
             return;
         }
         const userId = socket.user.id;

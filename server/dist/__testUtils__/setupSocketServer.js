@@ -62,6 +62,7 @@ function setupSocketServer() {
         io.on('connection', (socket) => {
             EventHandlers.registerChatHandlers(io, socket);
             EventHandlers.registerDisconnectHandlers(io, socket);
+            EventHandlers.registerFriendHandlers(io, socket);
         });
         let serverSocket;
         let clientSocket;

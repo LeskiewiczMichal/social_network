@@ -19,9 +19,10 @@ const addFriend = async (props: AddFriendRequestProps) => {
   try {
     const { newFriendId, io, socket } = props;
     const { user } = socket;
-    if (!user) {
+    if (!user || newFriendId === user.id) {
       return;
     }
+
     const friend = (await User.findById(newFriendId)) as UserInterface;
 
     // Remove from friend requests

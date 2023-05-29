@@ -34,6 +34,7 @@ export default async function setupSocketServer() {
   io.on('connection', (socket: SocketTypes.MySocket) => {
     EventHandlers.registerChatHandlers(io, socket);
     EventHandlers.registerDisconnectHandlers(io, socket);
+    EventHandlers.registerFriendHandlers(io, socket);
   });
 
   let serverSocket: SocketTypes.MySocket;

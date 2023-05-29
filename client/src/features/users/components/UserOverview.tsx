@@ -3,9 +3,35 @@ import { useAppSelector } from '../../../hooks';
 import StandardButton from '../../../components/StandardButton';
 
 export default function UserOverview() {
-  const loggedUserId = useAppSelector((state) => state.user.id);
+  const loggedUser = useAppSelector((state) => state.user);
   const displayedProfile = useAppSelector((state) => state.profilePage);
 
+  let befriendButton: JSX.Element;
+  if (displayedProfile.friends.includes(loggedUser.id!)) {
+    befriendButton = (
+      <StandardButton
+        text="Remove friend"
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
+      />
+    );
+  } else if (loggedUser.friendRequests?.includes(displayedProfile.id)) {
+    befriendButton = (
+      <StandardButton
+        text="Add friend"
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
+      />
+    );
+  } else {
+    befriendButton = (
+      <StandardButton
+        text="Send friend request"
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
+      />
+    );
+  }
   return (
     <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow shadow-primary dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-10 mt-5">
@@ -25,19 +51,7 @@ export default function UserOverview() {
         </span>
         <div className="flex w-full px-8 mt-4 space-x-3 md:mt-6">
           {/* Remove or add friend button */}
-          {displayedProfile.friends.includes(loggedUserId!) ? (
-            <StandardButton
-              text="Remove friend"
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
-            />
-          ) : (
-            <StandardButton
-              text="Add friend"
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
-            />
-          )}
+          {befriendButton}
           {/* Message button */}
           <Link
             to={`/chat/${displayedProfile.id}`}

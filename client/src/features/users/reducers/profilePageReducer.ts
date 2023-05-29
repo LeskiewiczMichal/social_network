@@ -20,7 +20,7 @@ const initialState: ProfilePageState = {
 };
 
 export const profilePageSlice = createSlice({
-  name: 'User',
+  name: 'ProfilePage',
   initialState,
   reducers: {
     setUser: setUserReducer,

@@ -18,7 +18,7 @@ interface NewFriendRequestProps {
 const newFriendRequest = async (props: NewFriendRequestProps) => {
   try {
     const { socket, io, newFriendId } = props;
-    if (!socket.user) {
+    if (!socket.user || newFriendId === socket.user.id) {
       return;
     }
     const userId = socket.user.id;

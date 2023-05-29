@@ -17,7 +17,7 @@ const addFriend = (props) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { newFriendId, io, socket } = props;
         const { user } = socket;
-        if (!user) {
+        if (!user || newFriendId === user.id) {
             return;
         }
         const friend = (yield models_1.User.findById(newFriendId));
