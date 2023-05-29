@@ -12,7 +12,7 @@ const getUsers = async (
   res: UserTypes.GetUsersResponse,
 ): Promise<UserTypes.GetUsersResponse> => {
   try {
-    const { usersList, limit } = req.query;
+    const { usersList, limit, friendRequests } = req.query;
     const dbQuery = User.find();
 
     if (limit) {
@@ -21,6 +21,13 @@ const getUsers = async (
     if (usersList) {
       const usersArray = Array.isArray(usersList) ? usersList : [usersList];
       dbQuery.where('_id').in(usersArray);
+    }
+    if (friendRequests) {
+      dbQuery.select('+friendRequests');
+      const users: UserInterfaceWithFriendRequests[] =
+        (await dbQuery.exec()) as UserInterfaceWithFriendRequests[];
+
+      return res.json({ users });
     }
 
     const users: UserInterface[] = (await dbQuery.exec()) as UserInterface[];
@@ -48,9 +55,40 @@ const updateUserData = async (
   res: UserTypes.UpdateUserDataResponse,
 ): Promise<UserTypes.UpdateUserDataResponse> => {
   try {
-    const user = req.user as UserInterface;
+    const user = req.user as UserInterfaceWithFriendRequests;
+    const { removeFriend, removeFriendRequest } = req.query;
     const { email, firstName, lastName, birthday } = req.body;
 
+    if (removeFriendRequest) {
+      const { id: friendRequestId } = (await User.findById(
+        removeFriendRequest,
+      )) as UserInterface;
+
+      if (!user.friendRequests.includes(friendRequestId)) {
+        throw new ErrorTypes.BadRequestError(
+          'User was not on friend requests list',
+        );
+      }
+
+      user.friendRequests = user.friendRequests.filter(
+        (id) => id.toString() !== friendRequestId.toString(),
+      );
+    }
+    if (removeFriend) {
+      const friend = (await User.findById(removeFriend)) as UserInterface;
+
+      if (!user.friends.includes(friend.id)) {
+        throw new ErrorTypes.BadRequestError("User's were not friends");
+      }
+
+      user.friends = user.friends.filter(
+        (id) => id.toString() !== friend.id.toString(),
+      );
+      friend.friends = friend.friends.filter(
+        (id) => id.toString() !== user.id.toString(),
+      );
+      await friend.save();
+    }
     if (email) {
       user.email = email;
     }
@@ -129,85 +167,6 @@ const addFriend = async (
   }
 };
 
-const deleteFriend = async (
-  req: UserTypes.DeleteFriendRequest,
-  res: UserTypes.DeleteFriendResponse,
-): Promise<UserTypes.DeleteFriendResponse> => {
-  try {
-    const user = req.user as UserInterface;
-    const { friendId } = req.params;
-    const friend = (await User.findById(friendId)) as UserInterface;
-
-    if (!user.friends.includes(friend.id)) {
-      throw new ErrorTypes.BadRequestError("User's were not friends");
-    }
-
-    user.friends = user.friends.filter(
-      (id) => id.toString() !== friend.id.toString(),
-    );
-    friend.friends = friend.friends.filter(
-      (id) => id.toString() !== user.id.toString(),
-    );
-    await user.save();
-    await friend.save();
-
-    return res.json({ message: 'Friend deleted successfully', user });
-  } catch (error: any) {
-    return handleError(error, res);
-  }
-};
-
-const sendFriendRequest = async (
-  req: UserTypes.RequestSendFriendRequest,
-  res: UserTypes.SendFriendRequestResponse,
-): Promise<UserTypes.SendFriendRequestResponse> => {
-  try {
-    const { id: userId } = req.user as UserInterface;
-    const { friendId } = req.params;
-    const friend = (await User.findById(friendId).select(
-      '+friendRequests',
-    )) as UserInterfaceWithFriendRequests;
-
-    if (friend.friendRequests.includes(userId)) {
-      throw new ErrorTypes.BadRequestError('Friend request was already sent');
-    }
-
-    friend.friendRequests.push(userId);
-    await friend.save();
-
-    return res.json({ message: 'Friend request was sent successfully' });
-  } catch (error: any) {
-    return handleError(error, res);
-  }
-};
-
-const deleteFriendRequest = async (
-  req: UserTypes.RequestDeleteFriendRequest,
-  res: UserTypes.DeleteFriendRequestResponse,
-): Promise<UserTypes.DeleteFriendRequestResponse> => {
-  try {
-    const user = req.user as UserInterfaceWithFriendRequests;
-    const { friendId } = req.params;
-    const { id: friendRequestId } = (await User.findById(
-      friendId,
-    )) as UserInterface;
-
-    if (!user.friendRequests.includes(friendRequestId)) {
-      throw new ErrorTypes.NotFoundError();
-    }
-
-    user.friendRequests = user.friendRequests.filter(
-      (id) => id.toString() !== friendRequestId.toString(),
-    );
-
-    await user.save();
-
-    return res.json({ message: 'Friend request deleted', user });
-  } catch (error: any) {
-    return handleError(error, res);
-  }
-};
-
 const uploadProfilePic = async (req: Request, res: Response) => {
   try {
     const user = req.user as UserInterface;
@@ -234,8 +193,5 @@ export {
   getUsers,
   getFriends,
   addFriend,
-  deleteFriend,
-  sendFriendRequest,
-  deleteFriendRequest,
   uploadProfilePic,
 };

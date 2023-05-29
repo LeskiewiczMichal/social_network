@@ -30,12 +30,8 @@ const express_1 = __importDefault(require("express"));
 const UsersController = __importStar(require("../controllers/usersController"));
 const middleware_1 = require("../middleware");
 const router = express_1.default.Router();
-// Friend requests
-router.post('/friendRequests/:friendId', middleware_1.verifyToken, UsersController.sendFriendRequest);
-router.delete('/friendRequests/:friendId', middleware_1.verifyToken, UsersController.deleteFriendRequest);
 // Friends
 router.post('/friends/:friendId', middleware_1.verifyToken, UsersController.addFriend);
-router.delete('/friends/:friendId', middleware_1.verifyToken, UsersController.deleteFriend);
 router.get('/:userId/friends', middleware_1.verifyToken, UsersController.getFriends);
 // User
 router.post('/profile-picture', middleware_1.verifyToken, middleware_1.FileUploads.profilePicture.single('picture'), UsersController.uploadProfilePic);

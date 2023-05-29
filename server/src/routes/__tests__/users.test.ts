@@ -78,9 +78,12 @@ describe('Users route tests', () => {
   describe('Update user data', () => {
     beforeAll(async () => {
       try {
-        users = await TestUtils.createFakeUsers(
-          TestUtils.CONSTANTS.DEFAULT_USERS_PROPS,
-        );
+        users = await TestUtils.createFakeUsers({
+          userOne: {},
+          userTwo: { friendRequests: [TestUtils.CONSTANTS.USER_IDS.one] },
+          userThree: { friends: [TestUtils.CONSTANTS.USER_IDS.one] },
+          ids: TestUtils.CONSTANTS.USER_IDS,
+        });
       } catch (error) {
         console.error(error);
       }
@@ -111,6 +114,62 @@ describe('Users route tests', () => {
           });
         })
         .expect(200, done);
+    });
+
+    test('removes user friend', (done) => {
+      request(app)
+        .put(`/?removeFriend=${TestUtils.CONSTANTS.USER_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.three}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            user: {
+              friends: [],
+            },
+          });
+        })
+        .expect(200, done);
+    });
+
+    test('removes friend request', (done) => {
+      request(app)
+        .put(`/?removeFriendRequest=${TestUtils.CONSTANTS.USER_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.two}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            user: {
+              friendRequests: [],
+            },
+          });
+        })
+        .expect(200, done);
+    });
+
+    test('returns status 400 if removing friend not on friend list', (done) => {
+      request(app)
+        .put(`/?removeFriend=${TestUtils.CONSTANTS.USER_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            error: "User's were not friends",
+          });
+        })
+        .expect(400, done);
+    });
+
+    test('returns status 400 if removing friend request not on friend requests list', (done) => {
+      request(app)
+        .put(`/?removeFriendRequest=${TestUtils.CONSTANTS.USER_IDS.one}`)
+        .set('Authorization', `Bearer ${users.tokens.one}`)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(res.body).toMatchObject({
+            error: 'User was not on friend requests list',
+          });
+        })
+        .expect(400, done);
     });
   });
 
@@ -239,152 +298,6 @@ describe('Users route tests', () => {
         .expect((res) => {
           expect(res.body).toMatchObject({
             message: 'Friend added successfully',
-          });
-        })
-        .expect(200, done);
-    });
-  });
-
-  describe('Delete friend', () => {
-    beforeAll(async () => {
-      try {
-        users = await TestUtils.createFakeUsers({
-          userOne: {
-            friends: [TestUtils.CONSTANTS.USER_IDS.two],
-          },
-          userTwo: {},
-          userThree: {},
-          ids: TestUtils.CONSTANTS.USER_IDS,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    afterAll(TestUtils.deleteAllUsers);
-
-    test("delete friend returns 404 if the user doesn't exist", (done) => {
-      request(app)
-        .delete('/friends/000')
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Not found' })
-        .expect(404, done);
-    });
-
-    test('delete friend returns 400 if users were not friends', (done) => {
-      request(app)
-        .delete(`/friends/${users.one._id}`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: "User's were not friends" })
-        .expect(400, done);
-    });
-
-    test('delete friend from user', (done) => {
-      request(app)
-        .delete(`/friends/${users.two._id}`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect((res) => {
-          expect(res.body).toMatchObject({
-            message: 'Friend deleted successfully',
-            user: {
-              friends: [],
-            },
-          });
-        })
-        .expect(200, done);
-    });
-  });
-
-  describe('Send friend requests', () => {
-    beforeAll(async () => {
-      try {
-        users = await TestUtils.createFakeUsers({
-          userOne: {},
-          userTwo: { friendRequests: [TestUtils.CONSTANTS.USER_IDS.one] },
-          userThree: {},
-          ids: TestUtils.CONSTANTS.USER_IDS,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    afterAll(TestUtils.deleteAllUsers);
-
-    test('returns status 404 on wrong userId provided', (done) => {
-      request(app)
-        .post('/friendRequests/000')
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Not found' })
-        .expect(404, done);
-    });
-
-    test('returns 400 if friend request was already sent', (done) => {
-      request(app)
-        .post(`/friendRequests/${users.two._id}`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Friend request was already sent' })
-        .expect(400, done);
-    });
-
-    test('return message on success', (done) => {
-      request(app)
-        .post(`/friendRequests/${users.three._id}`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ message: 'Friend request was sent successfully' })
-        .expect(200, done);
-    });
-  });
-
-  describe('Delete friend request', () => {
-    beforeAll(async () => {
-      try {
-        users = await TestUtils.createFakeUsers({
-          userOne: { friendRequests: [TestUtils.CONSTANTS.USER_IDS.two] },
-          userTwo: {},
-          userThree: {},
-          ids: TestUtils.CONSTANTS.USER_IDS,
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    afterAll(TestUtils.deleteAllUsers);
-
-    test('returns 404 if wrong userId provided', (done) => {
-      request(app)
-        .delete(`/friendRequests/000`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Not found' })
-        .expect(404, done);
-    });
-
-    test('returns 404 if friend request not found', (done) => {
-      request(app)
-        .delete(`/friendRequests/${users.three._id}`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect({ error: 'Not found' })
-        .expect(404, done);
-    });
-
-    test('returns message and friend requests on success', (done) => {
-      request(app)
-        .delete(`/friendRequests/${users.two._id}`)
-        .set('Authorization', `Bearer ${users.tokens.one}`)
-        .expect('Content-Type', /json/)
-        .expect((req) => {
-          expect(req.body).toMatchObject({
-            message: 'Friend request deleted',
-            user: { friendRequests: [] },
           });
         })
         .expect(200, done);

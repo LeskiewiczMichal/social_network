@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadProfilePic = exports.deleteFriendRequest = exports.sendFriendRequest = exports.deleteFriend = exports.addFriend = exports.getFriends = exports.getUsers = exports.getUserById = exports.deleteUser = exports.updateUserData = void 0;
+exports.uploadProfilePic = exports.addFriend = exports.getFriends = exports.getUsers = exports.getUserById = exports.deleteUser = exports.updateUserData = void 0;
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { usersList, limit } = req.query;
+        const { usersList, limit, friendRequests } = req.query;
         const dbQuery = models_1.User.find();
         if (limit) {
             dbQuery.limit(parseInt(limit, 10));
@@ -23,6 +23,11 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (usersList) {
             const usersArray = Array.isArray(usersList) ? usersList : [usersList];
             dbQuery.where('_id').in(usersArray);
+        }
+        if (friendRequests) {
+            dbQuery.select('+friendRequests');
+            const users = (yield dbQuery.exec());
+            return res.json({ users });
         }
         const users = (yield dbQuery.exec());
         return res.json({ users });
@@ -45,7 +50,24 @@ exports.getUserById = getUserById;
 const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
+        const { removeFriend, removeFriendRequest } = req.query;
         const { email, firstName, lastName, birthday } = req.body;
+        if (removeFriendRequest) {
+            const { id: friendRequestId } = (yield models_1.User.findById(removeFriendRequest));
+            if (!user.friendRequests.includes(friendRequestId)) {
+                throw new types_1.ErrorTypes.BadRequestError('User was not on friend requests list');
+            }
+            user.friendRequests = user.friendRequests.filter((id) => id.toString() !== friendRequestId.toString());
+        }
+        if (removeFriend) {
+            const friend = (yield models_1.User.findById(removeFriend));
+            if (!user.friends.includes(friend.id)) {
+                throw new types_1.ErrorTypes.BadRequestError("User's were not friends");
+            }
+            user.friends = user.friends.filter((id) => id.toString() !== friend.id.toString());
+            friend.friends = friend.friends.filter((id) => id.toString() !== user.id.toString());
+            yield friend.save();
+        }
         if (email) {
             user.email = email;
         }
@@ -111,59 +133,6 @@ const addFriend = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addFriend = addFriend;
-const deleteFriend = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const user = req.user;
-        const { friendId } = req.params;
-        const friend = (yield models_1.User.findById(friendId));
-        if (!user.friends.includes(friend.id)) {
-            throw new types_1.ErrorTypes.BadRequestError("User's were not friends");
-        }
-        user.friends = user.friends.filter((id) => id.toString() !== friend.id.toString());
-        friend.friends = friend.friends.filter((id) => id.toString() !== user.id.toString());
-        yield user.save();
-        yield friend.save();
-        return res.json({ message: 'Friend deleted successfully', user });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.deleteFriend = deleteFriend;
-const sendFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id: userId } = req.user;
-        const { friendId } = req.params;
-        const friend = (yield models_1.User.findById(friendId).select('+friendRequests'));
-        if (friend.friendRequests.includes(userId)) {
-            throw new types_1.ErrorTypes.BadRequestError('Friend request was already sent');
-        }
-        friend.friendRequests.push(userId);
-        yield friend.save();
-        return res.json({ message: 'Friend request was sent successfully' });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.sendFriendRequest = sendFriendRequest;
-const deleteFriendRequest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const user = req.user;
-        const { friendId } = req.params;
-        const { id: friendRequestId } = (yield models_1.User.findById(friendId));
-        if (!user.friendRequests.includes(friendRequestId)) {
-            throw new types_1.ErrorTypes.NotFoundError();
-        }
-        user.friendRequests = user.friendRequests.filter((id) => id.toString() !== friendRequestId.toString());
-        yield user.save();
-        return res.json({ message: 'Friend request deleted', user });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.deleteFriendRequest = deleteFriendRequest;
 const uploadProfilePic = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;

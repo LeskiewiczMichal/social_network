@@ -13,7 +13,6 @@ const models_1 = require("../../models");
 const notification_1 = require("../../models/notification");
 const types_1 = require("../../types");
 const addFriend = (props) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         const { newFriendId, io, socket } = props;
         const { user } = socket;
@@ -22,7 +21,7 @@ const addFriend = (props) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const friend = (yield models_1.User.findById(newFriendId));
         // Remove from friend requests
-        const friendIdIndex = (_a = user.friendRequests) === null || _a === void 0 ? void 0 : _a.indexOf(friend.id);
+        const friendIdIndex = user.friendRequests.indexOf(friend.id);
         if (friendIdIndex !== -1) {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             user.friendRequests.splice(friendIdIndex, 1)[0];
@@ -32,7 +31,9 @@ const addFriend = (props) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Add to friends
         user.friends.push(friend.id);
+        friend.friends.push(user.id);
         yield user.save();
+        yield friend.save();
         // Create notification
         const newNotification = new models_1.Notification({
             receiver: friend.id,

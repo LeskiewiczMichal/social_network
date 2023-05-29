@@ -7,6 +7,7 @@ interface GetUsersRequest extends Request {
   body: {
     usersList?: string[];
     limit?: string;
+    friendRequests?: string;
   };
 }
 
@@ -17,6 +18,10 @@ interface GetUserByIdRequest extends Request {
 }
 
 interface UpdateUserDataRequest extends Request {
+  query: {
+    removeFriend?: string;
+    removeFriendRequest?: string;
+  };
   body: {
     email?: string;
     firstName?: string;
@@ -32,24 +37,6 @@ interface GetFriendsRequest extends Request {
 }
 
 interface AddFriendRequest extends Request {
-  params: {
-    friendId: string;
-  };
-}
-
-interface DeleteFriendRequest extends Request {
-  params: {
-    friendId: string;
-  };
-}
-
-interface RequestSendFriendRequest extends Request {
-  params: {
-    friendId: string;
-  };
-}
-
-interface RequestDeleteFriendRequest extends Request {
   params: {
     friendId: string;
   };
@@ -80,9 +67,6 @@ export {
   UpdateUserDataRequest,
   GetFriendsRequest,
   AddFriendRequest,
-  DeleteFriendRequest,
-  RequestSendFriendRequest,
-  RequestDeleteFriendRequest,
   GetUsersResponse,
   GetUserByIdResponse,
   UpdateUserDataResponse,

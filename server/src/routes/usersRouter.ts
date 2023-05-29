@@ -4,21 +4,8 @@ import { verifyToken, FileUploads } from '../middleware';
 
 const router = express.Router();
 
-// Friend requests
-router.post(
-  '/friendRequests/:friendId',
-  verifyToken,
-  UsersController.sendFriendRequest,
-);
-router.delete(
-  '/friendRequests/:friendId',
-  verifyToken,
-  UsersController.deleteFriendRequest,
-);
-
 // Friends
 router.post('/friends/:friendId', verifyToken, UsersController.addFriend);
-router.delete('/friends/:friendId', verifyToken, UsersController.deleteFriend);
 router.get('/:userId/friends', verifyToken, UsersController.getFriends);
 
 // User

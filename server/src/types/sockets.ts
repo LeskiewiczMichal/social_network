@@ -1,8 +1,12 @@
 import { Socket } from 'socket.io';
-import { MessageInterface, UserInterface } from '../models';
+import {
+  MessageInterface,
+  UserInterface,
+  UserInterfaceWithFriendRequests,
+} from '../models';
 
 interface MySocket extends Socket {
-  user?: UserInterface;
+  user?: UserInterfaceWithFriendRequests;
 }
 
 interface ServerToClientEvents {

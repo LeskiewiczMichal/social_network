@@ -12,6 +12,7 @@ interface SetUserReducerArgs {
   about: string;
   birthday: string;
   profilePicture: string;
+  friendRequests: string[];
 }
 
 const setUserReducer = (
@@ -29,6 +30,7 @@ const setUserReducer = (
   state.city = action.payload.city;
   state.postalCode = action.payload.postalCode;
   state.about = action.payload.about;
+  state.friendRequests = action.payload.friendRequests;
 };
 
 export default setUserReducer;

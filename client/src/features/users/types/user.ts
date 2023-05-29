@@ -10,4 +10,5 @@ export interface UserInterface {
   friends: string[];
   birthday: string;
   profilePicture: string;
+  friendRequests?: string[];
 }

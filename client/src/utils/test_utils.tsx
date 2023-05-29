@@ -85,6 +85,7 @@ function renderWithProviders(
         birthday: '',
         profilePicture: '',
         showFriends: false,
+        friendRequests: [],
       },
     },
     store = configureStore({

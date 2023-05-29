@@ -1,10 +1,33 @@
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../../../hooks';
+
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import StandardButton from '../../../components/StandardButton';
+import sendFriendRequest from '../services/sendFriendRequest';
+import { useSocket } from '../../authentication';
+import addFriend from '../services/addFriend';
+import removeFriend from '../services/removeFriend';
+import * as ProfilePageSlice from '../reducers/profilePageReducer';
 
 export default function UserOverview() {
+  const dispatch = useAppDispatch();
   const loggedUser = useAppSelector((state) => state.user);
   const displayedProfile = useAppSelector((state) => state.profilePage);
+  const socket = useSocket();
+
+  const handleAddFriend = () => {
+    dispatch(ProfilePageSlice.addFriend(loggedUser.id!));
+    addFriend({ newFriendId: displayedProfile.id, socket });
+  };
+
+  const handleRemoveFriend = () => {
+    dispatch(ProfilePageSlice.removeFriend(loggedUser.id!));
+    removeFriend({ friendToRemove: displayedProfile.id });
+  };
+
+  const handleSendFriendRequest = () => {
+    dispatch(ProfilePageSlice.addFriendRequest(loggedUser.id!));
+    sendFriendRequest({ newFriendId: displayedProfile.id, socket });
+  };
 
   let befriendButton: JSX.Element;
   if (displayedProfile.friends.includes(loggedUser.id!)) {
@@ -12,7 +35,9 @@ export default function UserOverview() {
       <StandardButton
         text="Remove friend"
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
+        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          handleRemoveFriend();
+        }}
       />
     );
   } else if (loggedUser.friendRequests?.includes(displayedProfile.id)) {
@@ -20,16 +45,26 @@ export default function UserOverview() {
       <StandardButton
         text="Add friend"
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
+        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          handleAddFriend();
+        }}
+      />
+    );
+  } else if (!displayedProfile.friendRequests.includes(loggedUser.id!)) {
+    befriendButton = (
+      <StandardButton
+        text="Send request"
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          handleSendFriendRequest();
+        }}
       />
     );
   } else {
     befriendButton = (
-      <StandardButton
-        text="Send friend request"
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
-      />
+      <span className="w-full bg-primary text-white flex items-center justify-center font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150">
+        Request sent
+      </span>
     );
   }
   return (
@@ -49,19 +84,19 @@ export default function UserOverview() {
         <span className="text-sm text-gray-500 dark:text-gray-400">
           {displayedProfile.about}
         </span>
-        <div className="flex w-full px-8 mt-4 space-x-3 md:mt-6">
-          {/* Remove or add friend button */}
-          {befriendButton}
-          {/* Message button */}
-          <Link
-            to={`/chat/${displayedProfile.id}`}
-            className="w-full px-4 py-2 border flex justify-center gap-2 border-slate-300 rounded-lg dark:text-white text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            // handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {}}
-          >
-            Message
-          </Link>
-        </div>
+        {loggedUser.id !== displayedProfile.id && (
+          <div className="flex w-full px-8 mt-4 space-x-3 md:mt-6">
+            {/* Remove or add friend button */}
+            {befriendButton}
+            {/* Message button */}
+            <Link
+              to={`/chat/${displayedProfile.id}`}
+              className="w-full px-4 py-2 border flex justify-center gap-2 border-slate-300 rounded-lg dark:text-white text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
+            >
+              Message
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

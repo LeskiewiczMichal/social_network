@@ -26,7 +26,8 @@ const addFriend = async (props: AddFriendRequestProps) => {
     const friend = (await User.findById(newFriendId)) as UserInterface;
 
     // Remove from friend requests
-    const friendIdIndex = user.friendRequests?.indexOf(friend.id);
+    const friendIdIndex = user.friendRequests!.indexOf(friend.id);
+
     if (friendIdIndex !== -1) {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       user.friendRequests!.splice(friendIdIndex!, 1)[0];
@@ -38,7 +39,9 @@ const addFriend = async (props: AddFriendRequestProps) => {
 
     // Add to friends
     user.friends.push(friend.id);
+    friend.friends.push(user.id);
     await user.save();
+    await friend.save();
 
     // Create notification
     const newNotification: NotificationInterface = new Notification({

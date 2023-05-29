@@ -47,7 +47,7 @@ const setupMocks = () => {
   mock = new MockAdapter(axios);
   // Set up redux mocks
   store = createTestStore();
-  store.dispatch(profilePageSetUser(MOCKS.USER));
+  store.dispatch(profilePageSetUser({ ...MOCKS.USER, friendRequests: [] }));
   store.dispatch(userReducerSetUser({ ...MOCKS.USER, friendRequests: [] }));
   dispatch = jest.fn();
   mockExtraArguments = {};

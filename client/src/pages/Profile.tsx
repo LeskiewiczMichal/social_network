@@ -8,7 +8,7 @@ import {
   ProfilePageReducer,
   UserTypes,
 } from '../features/users';
-import getUser from '../features/users/actions/getUser';
+import getUsers from '../features/users/actions/getUsers';
 import { useAppSelector, useAppDispatch } from '../hooks';
 import { PostsSection } from '../features/posts';
 
@@ -23,15 +23,26 @@ export default function Profile() {
     // When id from params changes, get user to display
     const handleGetProfile = async () => {
       try {
-        let user: UserTypes.UserInterface | null;
+        let user: UserTypes.UserInterface[];
         if (userId) {
-          user = await getUser({ userId });
+          user = await getUsers({
+            usersList: [userId],
+            friendRequests: 'true',
+          });
         } else {
           // Display user profile
-          user = await getUser({ userId: loggedUser.id! });
+          user = await getUsers({
+            usersList: [loggedUser.id!],
+            friendRequests: 'true',
+          });
         }
         if (user) {
-          dispatch(ProfilePageReducer.setUser(user));
+          dispatch(
+            ProfilePageReducer.setUser({
+              ...user[0],
+              friendRequests: user[0].friendRequests!,
+            }),
+          );
         }
       } catch (err: any) {
         console.error(err);

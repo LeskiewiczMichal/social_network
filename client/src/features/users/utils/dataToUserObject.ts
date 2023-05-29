@@ -12,6 +12,7 @@ type DataToUserObjectProps = {
   postalCode: string;
   about: string;
   profilePicture: string;
+  friendRequests?: string[];
 };
 
 const dataToUserObject = (props: DataToUserObjectProps): UserInterface => {
@@ -27,6 +28,7 @@ const dataToUserObject = (props: DataToUserObjectProps): UserInterface => {
     postalCode,
     about,
     profilePicture,
+    friendRequests,
   } = props;
 
   const user: UserInterface = {
@@ -46,6 +48,10 @@ const dataToUserObject = (props: DataToUserObjectProps): UserInterface => {
     about,
     profilePicture,
   };
+
+  if (friendRequests) {
+    user.friendRequests = friendRequests;
+  }
 
   return user;
 };

@@ -1,5 +1,9 @@
 import * as jwt from 'jsonwebtoken';
-import { User, UserInterface } from '../models';
+import {
+  User,
+  UserInterface,
+  UserInterfaceWithFriendRequests,
+} from '../models';
 import { SocketTypes } from '../types';
 
 const authenticationHandler = async (
@@ -28,7 +32,7 @@ const authenticationHandler = async (
       decodedToken.id,
       { socketId: socket.id },
       { new: true },
-    )) as UserInterface;
+    ).select('+friendRequests')) as UserInterfaceWithFriendRequests;
 
     if (!user) {
       socket.disconnect();

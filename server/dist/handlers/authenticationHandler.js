@@ -46,7 +46,7 @@ const authenticationHandler = (socket, next) => __awaiter(void 0, void 0, void 0
     try {
         const tokenString = token.substring(7, token.length);
         const decodedToken = jwt.verify(tokenString, process.env.SECRET);
-        const user = (yield models_1.User.findByIdAndUpdate(decodedToken.id, { socketId: socket.id }, { new: true }));
+        const user = (yield models_1.User.findByIdAndUpdate(decodedToken.id, { socketId: socket.id }, { new: true }).select('+friendRequests'));
         if (!user) {
             socket.disconnect();
             return;

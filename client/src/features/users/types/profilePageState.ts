@@ -11,4 +11,5 @@ export interface ProfilePageState {
   birthday: string;
   profilePicture: string;
   showFriends: boolean;
+  friendRequests: string[];
 }
