@@ -4,6 +4,8 @@ export enum NotificationType {
   FRIEND_REQUEST = 'friendRequest',
   NEW_FRIEND = 'newFriend',
   POST_LIKED = 'postLiked',
+  POST_COMMENTED = 'postCommented',
+  COMMENT_LIKED = 'commentLiked',
 }
 
 export interface NotificationInterface {

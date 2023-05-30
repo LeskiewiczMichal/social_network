@@ -29,15 +29,27 @@ export default function Notification(props: NotificationInterface) {
     message = 'liked your post.';
     icon = (
       <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-red-200 border border-white rounded-full dark:border-gray-800">
-        <HeartIcon className="w-3 h-3 text-primary" />
+        <HeartIcon className="w-3 h-3 text-black" />
+      </div>
+    );
+  } else if (type === NotificationType.COMMENT_LIKED) {
+    message = 'liked your comment.';
+    icon = (
+      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-800 border border-white rounded-full dark:border-gray-800">
+        <HeartIcon className="w-3 h-3 text-primary-lighter" />
+      </div>
+    );
+  } else if (type === NotificationType.POST_COMMENTED) {
+    message = 'commented your post.';
+    icon = (
+      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-blue-100 border border-white rounded-full dark:border-gray-800">
+        <CommentIcon className="w-3 h-3 text-green-500" />
       </div>
     );
   } else {
-    message = 'liked your post.';
+    message = '';
     icon = (
-      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-800">
-        <CommentIcon className="w-3 h-3 text-white" />
-      </div>
+      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-800" />
     );
   }
 

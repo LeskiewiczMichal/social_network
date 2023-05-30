@@ -46,6 +46,7 @@ const io = new socket_io_1.Server(httpServer, {
     },
 });
 (0, middleware_1.serverConfig)(app);
+(0, socketInstance_1.setIO)(io);
 // Set up socket server handlers
 io.use(EventHandlers.authenticationHandler);
 io.on('connection', (socket) => {
@@ -53,7 +54,6 @@ io.on('connection', (socket) => {
     EventHandlers.registerDisconnectHandlers(io, socket);
     EventHandlers.registerFriendHandlers(io, socket);
 });
-(0, socketInstance_1.setIO)(io);
 // Set up routes
 app.use('/photos', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 app.use('/api/users/auth', Routes.authRouter);

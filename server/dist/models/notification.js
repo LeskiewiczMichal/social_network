@@ -7,6 +7,8 @@ var NotificationTypes;
     NotificationTypes["FRIEND_REQUEST"] = "friendRequest";
     NotificationTypes["NEW_FRIEND"] = "newFriend";
     NotificationTypes["POST_LIKED"] = "postLiked";
+    NotificationTypes["POST_COMMENTED"] = "postCommented";
+    NotificationTypes["COMMENT_LIKED"] = "commentLiked";
 })(NotificationTypes = exports.NotificationTypes || (exports.NotificationTypes = {}));
 const notificationSchema = new mongoose_1.Schema({
     sender: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },

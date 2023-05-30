@@ -6,11 +6,11 @@ import { PostInterface } from '../types/Post';
 import getPosts from '../services/getPosts';
 
 interface PostsSectionProps {
-  authorId?: string;
+  author?: string;
 }
 
 export default function PostsSection(props: PostsSectionProps) {
-  const { authorId } = props;
+  const { author } = props;
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [offset, setOffset] = useState<number>(10);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -26,7 +26,7 @@ export default function PostsSection(props: PostsSectionProps) {
         setIsLoading(true);
         const queriedPosts = await getPosts({
           offset: 0,
-          authorId,
+          author,
           limit,
           inUserFriends: true,
         });
@@ -38,7 +38,7 @@ export default function PostsSection(props: PostsSectionProps) {
     };
 
     handleGetPosts();
-  }, [authorId]);
+  }, [author]);
 
   // When scrolled to the bottom, query more posts
   const handleScroll = async () => {
@@ -50,8 +50,9 @@ export default function PostsSection(props: PostsSectionProps) {
         const limit = 10;
         const queriedPosts = await getPosts({
           offset,
-          authorId,
+          author,
           limit,
+          inUserFriends: true,
         });
         setOffset((oldOffset) => oldOffset + limit);
         setPosts((oldPosts) => {
@@ -71,7 +72,7 @@ export default function PostsSection(props: PostsSectionProps) {
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [offset]);
+  }, [offset, author]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -111,5 +112,5 @@ export default function PostsSection(props: PostsSectionProps) {
 }
 
 PostsSection.defaultProps = {
-  authorId: null,
+  author: null,
 };

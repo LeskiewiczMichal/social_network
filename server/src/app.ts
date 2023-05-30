@@ -26,6 +26,7 @@ const io = new Server<
   },
 });
 serverConfig(app);
+setIO(io);
 
 // Set up socket server handlers
 io.use(EventHandlers.authenticationHandler);
@@ -34,8 +35,6 @@ io.on('connection', (socket: SocketTypes.MySocket) => {
   EventHandlers.registerDisconnectHandlers(io, socket);
   EventHandlers.registerFriendHandlers(io, socket);
 });
-
-setIO(io);
 
 // Set up routes
 app.use('/photos', express.static(path.join(__dirname, '../uploads')));

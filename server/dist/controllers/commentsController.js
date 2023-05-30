@@ -13,6 +13,7 @@ exports.deleteComment = exports.updateComment = exports.getComments = exports.ad
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
+const socketInstance_1 = require("../utils/socketInstance");
 const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { postId } = req.params;
@@ -43,12 +44,12 @@ const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!body) {
             throw new types_1.ErrorTypes.MissingBodyError('body');
         }
-        const { id: userId } = req.user;
+        const user = req.user;
         const post = (yield models_1.Post.findById(postParamId));
         // Create comment
         const comment = new models_1.Comment({
             body,
-            author: userId,
+            author: user.id,
             likes: [],
             post: post._id,
         });
@@ -56,6 +57,22 @@ const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // Update post
         post.comments.push(comment._id);
         yield post.save();
+        const receiver = (yield models_1.User.findById(post.author));
+        // Create notification
+        const newNotification = new models_1.Notification({
+            receiver: receiver.id,
+            sender: user.id,
+            type: models_1.NotificationTypes.POST_COMMENTED,
+        });
+        yield newNotification.save();
+        // If post author is active emit notification
+        if (receiver.socketId) {
+            const io = (0, socketInstance_1.getIO)();
+            if (io) {
+                yield newNotification.populate('sender');
+                io.to(receiver.socketId).emit('new-notification', newNotification);
+            }
+        }
         yield comment.populate('author');
         return res.json({ message: 'Comment successfully created', comment });
     }
@@ -77,6 +94,22 @@ const updateComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             }
             else {
                 comment.likes.push(userId);
+                const author = (yield models_1.User.findById(comment.author));
+                // Create notification
+                const newNotification = new models_1.Notification({
+                    receiver: author.id,
+                    sender: userId,
+                    type: models_1.NotificationTypes.COMMENT_LIKED,
+                });
+                yield newNotification.save();
+                // If post author is active emit notification
+                if (author.socketId) {
+                    const io = (0, socketInstance_1.getIO)();
+                    if (io) {
+                        yield newNotification.populate('sender');
+                        io.to(author.socketId).emit('new-notification', newNotification);
+                    }
+                }
             }
         }
         if (body) {

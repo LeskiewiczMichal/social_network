@@ -1,12 +1,17 @@
 import {
   Comment,
   CommentInterface,
+  NotificationInterface,
   Post,
   PostInterface,
+  User,
   UserInterface,
+  Notification,
+  NotificationTypes,
 } from '../models';
 import { CommentTypes, ErrorTypes } from '../types';
 import { handleError } from '../utils';
+import { getIO } from '../utils/socketInstance';
 
 const getComments = async (
   req: CommentTypes.GetAllCommentsRequest,
@@ -47,13 +52,13 @@ const addComment = async (
     if (!body) {
       throw new ErrorTypes.MissingBodyError('body');
     }
-    const { id: userId } = req.user as UserInterface;
+    const user = req.user as UserInterface;
     const post = (await Post.findById(postParamId)) as PostInterface;
 
     // Create comment
     const comment = new Comment({
       body,
-      author: userId,
+      author: user.id,
       likes: [],
       post: post._id,
     });
@@ -62,6 +67,24 @@ const addComment = async (
     // Update post
     post.comments.push(comment._id);
     await post.save();
+
+    const receiver = (await User.findById(post.author)) as UserInterface;
+
+    // Create notification
+    const newNotification: NotificationInterface = new Notification({
+      receiver: receiver.id,
+      sender: user.id,
+      type: NotificationTypes.POST_COMMENTED,
+    });
+    await newNotification.save();
+    // If post author is active emit notification
+    if (receiver.socketId) {
+      const io = getIO();
+      if (io) {
+        await newNotification.populate('sender');
+        io.to(receiver.socketId).emit('new-notification', newNotification);
+      }
+    }
 
     await comment.populate('author');
     return res.json({ message: 'Comment successfully created', comment });
@@ -88,6 +111,24 @@ const updateComment = async (
         );
       } else {
         comment.likes.push(userId);
+
+        const author = (await User.findById(comment.author)) as UserInterface;
+
+        // Create notification
+        const newNotification: NotificationInterface = new Notification({
+          receiver: author.id,
+          sender: userId,
+          type: NotificationTypes.COMMENT_LIKED,
+        });
+        await newNotification.save();
+        // If post author is active emit notification
+        if (author.socketId) {
+          const io = getIO();
+          if (io) {
+            await newNotification.populate('sender');
+            io.to(author.socketId).emit('new-notification', newNotification);
+          }
+        }
       }
     }
 

@@ -59,7 +59,7 @@ export default function Profile() {
       <div className="flex flex-col items-center h-full md:col-start-2 md:col-end-5 col-start-1 col-end-2">
         <UserOverview />
         <UserDetails />
-        <PostsSection authorId={displayedUserId} />
+        <PostsSection author={displayedUserId} />
       </div>
     </main>
   );
