@@ -5,6 +5,7 @@ import Profile from './Profile';
 import ChatSelecion from './ChatSelection';
 import Chat from './Chat';
 import Notifications from './Notifications';
+import ShowUsers from './ShowUsers';
 
 export {
   Home,
@@ -14,4 +15,5 @@ export {
   ChatSelecion,
   Chat,
   Notifications,
+  ShowUsers,
 };

@@ -87,7 +87,7 @@ export default function Notification(props: NotificationInterface) {
       <div className="">
         <Link to={`/profile/${sender.id}`}>
           <img
-            className="rounded-full w-11 h-11"
+            className="rounded-full w-11 h-11 border"
             src={`${process.env.REACT_APP_SERVER_URL}${sender.profilePicture}`}
             alt="Profile"
             loading="lazy"

@@ -108,15 +108,15 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         const hash = yield bcrypt.hash(password, 10);
         const user = new models_1.User({
-            firstName,
-            lastName,
+            firstName: (0, utils_1.capitalizeFirstLetter)(String(firstName)),
+            lastName: (0, utils_1.capitalizeFirstLetter)(String(lastName)),
             password: hash,
             email,
             firends: [],
             friendRequests: [],
             birthday,
             country,
-            city,
+            city: (0, utils_1.capitalizeFirstLetter)(String(city)),
             postalCode,
             about,
         });

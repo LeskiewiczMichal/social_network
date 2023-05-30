@@ -8,12 +8,14 @@ type GetUsersProps = {
   usersList?: string[];
   limit?: number;
   friendRequests?: string;
+  firstName?: string;
+  lastName?: string;
 };
 
 // eslint-disable-next-line consistent-return
 const getUsers = async (props: GetUsersProps): Promise<UserInterface[]> => {
   try {
-    const { usersList, limit, friendRequests } = props;
+    const { usersList, limit, friendRequests, firstName, lastName } = props;
     axios.defaults.headers.common.Authorization = getToken();
     const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users`;
 
@@ -22,7 +24,7 @@ const getUsers = async (props: GetUsersProps): Promise<UserInterface[]> => {
     }
 
     const request = await axios.get(apiUrl, {
-      params: { usersList, limit, friendRequests },
+      params: { usersList, limit, friendRequests, firstName, lastName },
     });
     const { users: usersData } = request.data;
     const usersObjects: UserInterface[] = usersData.map((user: any) => {

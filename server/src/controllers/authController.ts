@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import { AuthTypes, ErrorTypes } from '../types';
 import { User, UserInterface } from '../models';
-import { handleError } from '../utils';
+import { handleError, capitalizeFirstLetter } from '../utils';
 
 const login = (
   req: AuthTypes.LoginRequest,
@@ -107,15 +107,15 @@ const createAccount = async (
     const hash = await bcrypt.hash(password, 10);
 
     const user = new User({
-      firstName,
-      lastName,
+      firstName: capitalizeFirstLetter(String(firstName)),
+      lastName: capitalizeFirstLetter(String(lastName)),
       password: hash,
       email,
       firends: [],
       friendRequests: [],
       birthday,
       country,
-      city,
+      city: capitalizeFirstLetter(String(city)),
       postalCode,
       about,
     });

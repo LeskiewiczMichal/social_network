@@ -10,6 +10,7 @@ type GetPostsProps = {
   limit?: number;
   offset?: number;
   authorId?: string | null;
+  inUserFriends?: boolean;
 };
 
 const getPosts = async (props: GetPostsProps): Promise<PostInterface[]> => {
@@ -19,17 +20,19 @@ const getPosts = async (props: GetPostsProps): Promise<PostInterface[]> => {
       limit = 10,
       sortOrder = DbQueries.SortOrder.DESCENDING,
       authorId = null,
+      inUserFriends = false,
     } = props;
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${
-      process.env.REACT_APP_SERVER_URL
-    }/api/posts?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}${
-      authorId ? `&author=${authorId}` : ''
-    }`;
-
-    const request = await axios.get(apiUrl);
+    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts`;
+    let inFriends = 'false';
+    if (inUserFriends && !authorId) {
+      inFriends = 'true';
+    }
+    const request = await axios.get(apiUrl, {
+      params: { offset, authorId, sortOrder, limit, inFriends },
+    });
     const { posts: postsData } = request.data;
 
     const postsDataObjects: PostInterface[] = postsData.map((post: any) => {

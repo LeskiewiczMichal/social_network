@@ -22,8 +22,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ERROR_MESSAGE = exports.handleError = void 0;
+exports.capitalizeFirstLetter = exports.ERROR_MESSAGE = exports.handleError = void 0;
 const handleError_1 = __importStar(require("./handleError"));
 exports.handleError = handleError_1.default;
 Object.defineProperty(exports, "ERROR_MESSAGE", { enumerable: true, get: function () { return handleError_1.ERROR_MESSAGE; } });
+const capitalizeFirstLetter_1 = __importDefault(require("./capitalizeFirstLetter"));
+exports.capitalizeFirstLetter = capitalizeFirstLetter_1.default;

@@ -8,6 +8,8 @@ interface GetUsersRequest extends Request {
     usersList?: string[];
     limit?: string;
     friendRequests?: string;
+    firstName?: string;
+    lastName?: string;
   };
 }
 

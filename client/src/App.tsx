@@ -70,8 +70,8 @@ function App() {
               <Route path="/chat/:userId" element={<Pages.Chat />} />
               <Route path="/chat" element={<Pages.ChatSelecion />} />
               <Route path="/notifications" element={<Pages.Notifications />} />
+              <Route path="/users" element={<Pages.ShowUsers />} />
               {/* Tymczasowo */}
-              {/* <button type="button" onClick={() => }>gowno</button> */}
             </Routes>
           </>
         ) : (

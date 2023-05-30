@@ -15,7 +15,7 @@ const types_1 = require("../types");
 const utils_1 = require("../utils");
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { usersList, limit, friendRequests } = req.query;
+        const { usersList, limit, friendRequests, firstName, lastName } = req.query;
         const dbQuery = models_1.User.find();
         if (limit) {
             dbQuery.limit(parseInt(limit, 10));
@@ -23,6 +23,14 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (usersList) {
             const usersArray = Array.isArray(usersList) ? usersList : [usersList];
             dbQuery.where('_id').in(usersArray);
+        }
+        if (firstName) {
+            const formattedFirstName = (0, utils_1.capitalizeFirstLetter)(String(firstName));
+            dbQuery.where({ firstName: formattedFirstName });
+        }
+        if (lastName) {
+            const formattedLastName = (0, utils_1.capitalizeFirstLetter)(String(lastName));
+            dbQuery.where({ lastName: formattedLastName });
         }
         if (friendRequests) {
             dbQuery.select('+friendRequests');
@@ -62,10 +70,10 @@ const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function*
             user.email = email;
         }
         if (firstName) {
-            user.firstName = firstName;
+            user.firstName = (0, utils_1.capitalizeFirstLetter)(String(firstName));
         }
         if (lastName) {
-            user.lastName = lastName;
+            user.lastName = (0, utils_1.capitalizeFirstLetter)(String(lastName));
         }
         if (birthday) {
             user.birthday = birthday;

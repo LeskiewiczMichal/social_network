@@ -24,7 +24,12 @@ export default function PostsSection(props: PostsSectionProps) {
         setNoMorePostsTextActive(false);
         const limit = 10;
         setIsLoading(true);
-        const queriedPosts = await getPosts({ offset: 0, authorId, limit });
+        const queriedPosts = await getPosts({
+          offset: 0,
+          authorId,
+          limit,
+          inUserFriends: true,
+        });
         setPosts(queriedPosts);
         setIsLoading(false);
       } catch (err: any) {
@@ -74,6 +79,14 @@ export default function PostsSection(props: PostsSectionProps) {
 
   return (
     <div className="bg-slate-50 min-h-screen padding-top-header flex flex-col items-center">
+      {posts.length === 0 && (
+        <>
+          <span className="text-primary">
+            Currently there are no posts that we can show you
+          </span>
+          <span className="text-primary">Add some friends to see more</span>
+        </>
+      )}
       {posts.map((post: PostInterface) => {
         return (
           <Post
@@ -90,7 +103,9 @@ export default function PostsSection(props: PostsSectionProps) {
           />
         );
       })}
-      {noMorePostsTextActive && <p className="mb-4">No more posts to show</p>}
+      {noMorePostsTextActive && posts.length !== 0 && (
+        <p className="mb-4">No more posts to show</p>
+      )}
     </div>
   );
 }

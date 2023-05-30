@@ -1,4 +1,24 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 export default function FriendsSearchBar() {
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
+  };
+
+  const handleSearch = () => {
+    const params = userName.split(' ');
+
+    return navigate(
+      `/users?${params[0] ? `firstName=${params[0]}` : ''}${
+        params[1] ? `&lastName=${params[1]}` : ''
+      }`,
+    );
+  };
+
   return (
     <div className="relative sm:h-8 flex flex-nowrap items-stretch flex-auto px-6 sm:flex-none sm:w-2/5">
       <input
@@ -7,6 +27,8 @@ export default function FriendsSearchBar() {
         placeholder="Find friends..."
         aria-label="Search users"
         aria-describedby="button-addon1"
+        onChange={handleChange}
+        value={userName}
       />
 
       <button
@@ -15,6 +37,7 @@ export default function FriendsSearchBar() {
         id="button-addon1"
         data-te-ripple-init
         data-te-ripple-color="light"
+        onClick={handleSearch}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

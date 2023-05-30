@@ -5,14 +5,14 @@ import {
   UserInterfaceWithFriendRequests,
 } from '../models';
 import { ErrorTypes, UserTypes } from '../types';
-import { handleError } from '../utils';
+import { handleError, capitalizeFirstLetter } from '../utils';
 
 const getUsers = async (
   req: UserTypes.GetUsersRequest,
   res: UserTypes.GetUsersResponse,
 ): Promise<UserTypes.GetUsersResponse> => {
   try {
-    const { usersList, limit, friendRequests } = req.query;
+    const { usersList, limit, friendRequests, firstName, lastName } = req.query;
     const dbQuery = User.find();
 
     if (limit) {
@@ -22,6 +22,15 @@ const getUsers = async (
       const usersArray = Array.isArray(usersList) ? usersList : [usersList];
       dbQuery.where('_id').in(usersArray);
     }
+    if (firstName) {
+      const formattedFirstName = capitalizeFirstLetter(String(firstName));
+      dbQuery.where({ firstName: formattedFirstName });
+    }
+    if (lastName) {
+      const formattedLastName = capitalizeFirstLetter(String(lastName));
+      dbQuery.where({ lastName: formattedLastName });
+    }
+
     if (friendRequests) {
       dbQuery.select('+friendRequests');
       const users: UserInterfaceWithFriendRequests[] =
@@ -80,10 +89,10 @@ const updateUserData = async (
       user.email = email;
     }
     if (firstName) {
-      user.firstName = firstName;
+      user.firstName = capitalizeFirstLetter(String(firstName));
     }
     if (lastName) {
-      user.lastName = lastName;
+      user.lastName = capitalizeFirstLetter(String(lastName));
     }
     if (birthday) {
       user.birthday = birthday;
