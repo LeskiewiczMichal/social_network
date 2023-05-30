@@ -1,56 +1,25 @@
 import { Link } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 
-import { ReactComponent as FriendIcon } from '../assets/friend.svg';
-import { ReactComponent as HeartIcon } from '../assets/heart.svg';
-import { ReactComponent as CommentIcon } from '../assets/comment.svg';
 import { NotificationInterface, NotificationType } from '../types/notification';
+import NotificationIdentificatorIcon from './NotificationIdentificatorIcon';
 
 export default function Notification(props: NotificationInterface) {
   const { sender, type, createdAt } = props;
 
   let message: string;
-  let icon: JSX.Element;
   if (type === NotificationType.FRIEND_REQUEST) {
     message = 'sent a friend request.';
-    icon = (
-      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-green-200 border border-white rounded-full dark:border-gray-800">
-        <FriendIcon className="w-3 h-3 text-primary" />
-      </div>
-    );
   } else if (type === NotificationType.NEW_FRIEND) {
     message = 'is now your friend.';
-    icon = (
-      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-800">
-        <FriendIcon className="w-3 h-3 text-white" />
-      </div>
-    );
   } else if (type === NotificationType.POST_LIKED) {
     message = 'liked your post.';
-    icon = (
-      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-red-200 border border-white rounded-full dark:border-gray-800">
-        <HeartIcon className="w-3 h-3 text-black" />
-      </div>
-    );
   } else if (type === NotificationType.COMMENT_LIKED) {
     message = 'liked your comment.';
-    icon = (
-      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-800 border border-white rounded-full dark:border-gray-800">
-        <HeartIcon className="w-3 h-3 text-primary-lighter" />
-      </div>
-    );
   } else if (type === NotificationType.POST_COMMENTED) {
     message = 'commented your post.';
-    icon = (
-      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-blue-100 border border-white rounded-full dark:border-gray-800">
-        <CommentIcon className="w-3 h-3 text-green-500" />
-      </div>
-    );
   } else {
     message = '';
-    icon = (
-      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-800" />
-    );
   }
 
   return (
@@ -63,7 +32,7 @@ export default function Notification(props: NotificationInterface) {
             alt="Profile"
             loading="lazy"
           />
-          {icon}
+          <NotificationIdentificatorIcon type={type} />
         </Link>
       </div>
 
