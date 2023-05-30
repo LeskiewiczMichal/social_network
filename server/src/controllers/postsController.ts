@@ -97,10 +97,6 @@ const updatePost = async (
     const { like } = req.query;
     const post = (await Post.findById(req.params.postId)) as PostInterface;
 
-    if (post.author.toString() !== userId.toString()) {
-      throw new ErrorTypes.UnauthorizedError();
-    }
-
     // If user is not author, can't change some elemnets
     if (title || body) {
       if (post.author.toString() !== userId.toString()) {

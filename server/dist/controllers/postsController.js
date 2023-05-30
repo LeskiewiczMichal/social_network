@@ -90,9 +90,6 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { title, body } = req.body;
         const { like } = req.query;
         const post = (yield models_1.Post.findById(req.params.postId));
-        if (post.author.toString() !== userId.toString()) {
-            throw new types_1.ErrorTypes.UnauthorizedError();
-        }
         // If user is not author, can't change some elemnets
         if (title || body) {
             if (post.author.toString() !== userId.toString()) {
