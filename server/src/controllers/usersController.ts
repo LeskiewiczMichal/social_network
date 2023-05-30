@@ -37,19 +37,6 @@ const getUsers = async (
   }
 };
 
-const getUserById = async (
-  req: UserTypes.GetUserByIdRequest,
-  res: UserTypes.GetUserByIdResponse,
-): Promise<UserTypes.GetUserByIdResponse> => {
-  try {
-    const user = (await User.findById(req.params.userId)) as UserInterface;
-
-    return res.json({ user });
-  } catch (error: any) {
-    return handleError(error, res);
-  }
-};
-
 const updateUserData = async (
   req: UserTypes.UpdateUserDataRequest,
   res: UserTypes.UpdateUserDataResponse,
@@ -189,7 +176,6 @@ const uploadProfilePic = async (req: Request, res: Response) => {
 export {
   updateUserData,
   deleteUser,
-  getUserById,
   getUsers,
   getFriends,
   addFriend,

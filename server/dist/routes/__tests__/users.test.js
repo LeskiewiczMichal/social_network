@@ -82,17 +82,6 @@ describe('Users route tests', () => {
             })
                 .expect(200, done);
         });
-        test('Get single user by id', (done) => {
-            (0, supertest_1.default)(app)
-                .get(`/${TestUtils.CONSTANTS.USER_IDS.one}`)
-                .expect('Content-Type', /json/)
-                .expect((res) => {
-                expect(res.body).toMatchObject({
-                    user: users.one,
-                });
-            })
-                .expect(200, done);
-        });
         test("returns status 404 if user with given id doesn't exist", (done) => {
             (0, supertest_1.default)(app)
                 .get('/000')

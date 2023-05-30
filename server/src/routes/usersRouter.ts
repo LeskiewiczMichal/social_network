@@ -17,7 +17,6 @@ router.post(
 );
 router.put('/', verifyToken, UsersController.updateUserData);
 router.delete('/', verifyToken, UsersController.deleteUser);
-router.get('/:userId', UsersController.getUserById);
 router.get('/', UsersController.getUsers);
 
 export default router;

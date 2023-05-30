@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadProfilePic = exports.addFriend = exports.getFriends = exports.getUsers = exports.getUserById = exports.deleteUser = exports.updateUserData = void 0;
+exports.uploadProfilePic = exports.addFriend = exports.getFriends = exports.getUsers = exports.deleteUser = exports.updateUserData = void 0;
 const models_1 = require("../models");
 const types_1 = require("../types");
 const utils_1 = require("../utils");
@@ -37,16 +37,6 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUsers = getUsers;
-const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const user = (yield models_1.User.findById(req.params.userId));
-        return res.json({ user });
-    }
-    catch (error) {
-        return (0, utils_1.handleError)(error, res);
-    }
-});
-exports.getUserById = getUserById;
 const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;

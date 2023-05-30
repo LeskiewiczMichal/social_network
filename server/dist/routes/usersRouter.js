@@ -37,6 +37,5 @@ router.get('/:userId/friends', middleware_1.verifyToken, UsersController.getFrie
 router.post('/profile-picture', middleware_1.verifyToken, middleware_1.FileUploads.profilePicture.single('picture'), UsersController.uploadProfilePic);
 router.put('/', middleware_1.verifyToken, UsersController.updateUserData);
 router.delete('/', middleware_1.verifyToken, UsersController.deleteUser);
-router.get('/:userId', UsersController.getUserById);
 router.get('/', UsersController.getUsers);
 exports.default = router;
