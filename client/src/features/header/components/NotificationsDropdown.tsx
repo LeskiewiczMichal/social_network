@@ -13,6 +13,7 @@ import { useSocket } from '../../authentication';
 export default function NotificationsDropdown() {
   const [isDropdownVisible, setIsDropdownHidden] = useState<Boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [notifications, setNotifications] = useState<
     NotificationTypes.NotificationInterface[]
@@ -35,6 +36,7 @@ export default function NotificationsDropdown() {
       }
     };
 
+    // Get notifications from server
     const handleGetNotifications = async () => {
       try {
         const limit = 5;

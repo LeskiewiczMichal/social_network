@@ -4,7 +4,7 @@ import ReactTimeAgo from 'react-time-ago';
 import { NotificationInterface, NotificationType } from '../types/notification';
 
 export default function Notification(props: NotificationInterface) {
-  const { id, sender, receiver, type, createdAt } = props;
+  const { sender, type, createdAt } = props;
 
   let message: string;
   let icon: JSX.Element;
@@ -41,7 +41,7 @@ export default function Notification(props: NotificationInterface) {
       </div>
     );
   } else if (type === NotificationType.POST_LIKED) {
-    message = 'liked your post';
+    message = 'liked your post.';
     icon = (
       // Heart svg
       <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-red-600 border border-white rounded-full dark:border-gray-800">
@@ -104,11 +104,8 @@ export default function Notification(props: NotificationInterface) {
           {/* rest of message */} {message}
         </div>
 
-        {/* Time TODO: add time ago here */}
         <div className="text-xs text-blue-600 dark:text-blue-500">
-          {/* <small className="text-xs text-gray-700 flex flex-col items-center justify-center"> */}
           <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
-          {/* </small> */}
         </div>
       </div>
     </div>

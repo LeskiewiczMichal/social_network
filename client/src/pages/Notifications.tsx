@@ -1,9 +1,9 @@
-import { NotificationsList } from '../features/notifications';
+import { NotificationsDisplay } from '../features/notifications';
 
 export default function Notifications() {
   return (
-    <main className="padding-top-header grid grid-cols-1 md:grid-cols-5 items-center bg-background-white min-h-screen">
-      <NotificationsList />
+    <main className="padding-top-header px-8 flex justify-center bg-background-white min-h-screen">
+      <NotificationsDisplay />
     </main>
   );
 }

@@ -1,7 +1,15 @@
 import { Request, Response } from 'express';
-import { NotificationInterface } from '../models';
+import { NotificationInterface, NotificationTypes } from '../models';
 
-interface GetNotificationsRequest extends Request {}
+interface GetNotificationsRequest extends Request {
+  query: {
+    type?: NotificationTypes;
+    excludeType?: NotificationTypes;
+    limit?: string;
+    offset?: string;
+    sortOrder?: string;
+  };
+}
 
 type GetNotificationsResponse = Response<{
   notifications: NotificationInterface[];

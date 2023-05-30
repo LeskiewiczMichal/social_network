@@ -32,8 +32,6 @@ export default function UserOverview() {
     sendFriendRequest({ newFriendId: displayedProfile.id, socket });
   };
 
-  // When accepting request, remove id from friend requests
-
   let befriendButton: JSX.Element;
   if (displayedProfile.friends.includes(loggedUser.id!)) {
     befriendButton = (

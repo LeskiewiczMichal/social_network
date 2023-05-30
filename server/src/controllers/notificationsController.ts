@@ -8,7 +8,7 @@ const getNotifications = async (
 ): Promise<NotificationTypes.GetNotificationsResponse> => {
   try {
     const { id: userId } = req.user as UserInterface;
-    const { limit, offset, sortOrder } = req.query;
+    const { limit, offset, sortOrder, type, excludeType } = req.query;
 
     const dbQuery = Notification.find()
       .where({ receiver: userId })
@@ -23,6 +23,12 @@ const getNotifications = async (
     }
     if (sortOrder) {
       dbQuery.sort({ createdAt: sortOrder === 'asc' ? 1 : -1 });
+    }
+    if (type) {
+      dbQuery.where({ type });
+    }
+    if (excludeType) {
+      dbQuery.where({ type: { $ne: excludeType } });
     }
 
     const notifications: NotificationInterface[] =
