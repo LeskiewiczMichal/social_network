@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import login from '../actions/login';
 import { ReactComponent as Logo } from '../../../assets/logo.svg';
-import GoogleLogo from '../../../assets/google-icon.svg';
+// import GoogleLogo from '../../../assets/google-icon.svg';
 import SeparatorLine from '../../../components/SeparatorLine';
 import StandardButton from '../../../components/StandardButton';
 import StandardInput from '../../../components/StandardInput';
@@ -81,11 +81,11 @@ export default function LoginForm() {
         {/* Sign in */}
         <StandardButton text="Sign In" handleClick={handleSubmit} />
 
-        <SeparatorLine text="Or continue with" />
+        <SeparatorLine text="Or continue" />
 
         {/* Google */}
         <div className="flex justify-between">
-          <button
+          {/*  <button
             type="button"
             className="w-2/5 px-4 py-2 border flex justify-center gap-2 border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150"
           >
@@ -96,13 +96,14 @@ export default function LoginForm() {
               alt="google logo"
             />
             <span>Google</span>
-          </button>
+          </button> */}
 
           {/* Offline */}
           <StandardButton
             text="Offline"
             handleClick={handleSubmit}
-            width="2/5"
+            whiteMode
+            // width="2/5"
           />
         </div>
       </div>

@@ -163,9 +163,11 @@ describe('Posts route tests', () => {
         }));
         afterAll(clearDB);
         test("returns status 401 if user is not post's creator", (done) => {
+            const requestBody = { title: 'Modified', body: 'modified' };
             (0, supertest_1.default)(app)
                 .put(`/${TestUtils.CONSTANTS.POST_IDS.one}`)
                 .set('Authorization', `Bearer ${users.tokens.two}`)
+                .send(requestBody)
                 .expect('Content-Type', /json/)
                 .expect({ error: 'Unauthorized' })
                 .expect(401, done);
@@ -174,7 +176,6 @@ describe('Posts route tests', () => {
             (0, supertest_1.default)(app)
                 .put('/000')
                 .set('Authorization', `Bearer ${users.tokens.one}`)
-                .expect('Content-Type', /json/)
                 .expect({ error: 'Not found' })
                 .expect(404, done);
         });

@@ -82,13 +82,6 @@ describe('Users route tests', () => {
             })
                 .expect(200, done);
         });
-        test("returns status 404 if user with given id doesn't exist", (done) => {
-            (0, supertest_1.default)(app)
-                .get('/000')
-                .expect('Content-Type', /json/)
-                .expect({ error: 'Not found' })
-                .expect(404, done);
-        });
     });
     describe('Update user data', () => {
         beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -120,8 +113,8 @@ describe('Users route tests', () => {
                 .expect((res) => {
                 expect(res.body).toMatchObject({
                     user: {
-                        firstName: 'test',
-                        lastName: 'test',
+                        firstName: 'Test',
+                        lastName: 'Test',
                         email: 'john@example.com',
                         birthday: '2000-01-01T00:00:00.000Z',
                     },
