@@ -1,7 +1,17 @@
 import { Request, Response } from 'express';
 import { PostTypes, ErrorTypes } from '../types';
-import { Comment, Post, PostInterface, UserInterface } from '../models';
+import {
+  Comment,
+  NotificationInterface,
+  NotificationTypes,
+  Post,
+  PostInterface,
+  User,
+  UserInterface,
+  Notification,
+} from '../models';
 import { handleError } from '../utils';
+import { getIO } from '../utils/socketInstance';
 
 const getPosts = async (
   req: PostTypes.GetPostsRequest,
@@ -104,6 +114,7 @@ const updatePost = async (
       }
     }
 
+    // Like post
     if (like) {
       if (post.likes.includes(userId)) {
         post.likes = post.likes.filter(
@@ -111,6 +122,23 @@ const updatePost = async (
         );
       } else {
         post.likes.push(userId);
+        const author = (await User.findById(post.author)) as UserInterface;
+
+        // Create notification
+        const newNotification: NotificationInterface = new Notification({
+          receiver: author.id,
+          sender: userId,
+          type: NotificationTypes.POST_LIKED,
+        });
+        await newNotification.save();
+        // If post author is active emit notification
+        if (author.socketId) {
+          const io = getIO();
+          if (io) {
+            await newNotification.populate('sender');
+            io.to(author.socketId).emit('new-notification', newNotification);
+          }
+        }
       }
     }
 

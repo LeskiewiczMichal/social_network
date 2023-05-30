@@ -34,8 +34,7 @@ const path_1 = __importDefault(require("path"));
 const middleware_1 = require("./middleware");
 const Routes = __importStar(require("./routes"));
 const EventHandlers = __importStar(require("./handlers"));
-/// TODO: on connection add socket and return user ///
-/// TODO: when creating user, capitalize first letter, etc... ///
+const socketInstance_1 = require("./utils/socketInstance");
 // Set up server
 dotenv.config();
 (0, middleware_1.mongoConfig)();
@@ -54,11 +53,9 @@ io.on('connection', (socket) => {
     EventHandlers.registerDisconnectHandlers(io, socket);
     EventHandlers.registerFriendHandlers(io, socket);
 });
+(0, socketInstance_1.setIO)(io);
 // Set up routes
 app.use('/photos', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
-app.get('/', (req, res) => {
-    res.send('Welcome');
-});
 app.use('/api/users/auth', Routes.authRouter);
 app.use('/api/users', Routes.usersRouter);
 app.use('/api/posts', Routes.postsRouter);

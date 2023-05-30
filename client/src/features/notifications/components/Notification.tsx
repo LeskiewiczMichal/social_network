@@ -13,16 +13,32 @@ export default function Notification(props: NotificationInterface) {
   let icon: JSX.Element;
   if (type === NotificationType.FRIEND_REQUEST) {
     message = 'sent a friend request.';
-    icon = <FriendIcon className="w-3 h-3 text-white" />;
+    icon = (
+      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-green-200 border border-white rounded-full dark:border-gray-800">
+        <FriendIcon className="w-3 h-3 text-primary" />
+      </div>
+    );
   } else if (type === NotificationType.NEW_FRIEND) {
     message = 'is now your friend.';
-    icon = <FriendIcon className="w-3 h-3 text-white" />;
+    icon = (
+      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-800">
+        <FriendIcon className="w-3 h-3 text-white" />
+      </div>
+    );
   } else if (type === NotificationType.POST_LIKED) {
     message = 'liked your post.';
-    icon = <HeartIcon className="w-3 h-3 text-white" />;
+    icon = (
+      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-red-200 border border-white rounded-full dark:border-gray-800">
+        <HeartIcon className="w-3 h-3 text-primary" />
+      </div>
+    );
   } else {
     message = 'liked your post.';
-    icon = <CommentIcon className="w-3 h-3 text-white" />;
+    icon = (
+      <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-800">
+        <CommentIcon className="w-3 h-3 text-white" />
+      </div>
+    );
   }
 
   return (
@@ -35,9 +51,7 @@ export default function Notification(props: NotificationInterface) {
             alt="Profile"
             loading="lazy"
           />
-          <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-800">
-            {icon}
-          </div>
+          {icon}
         </Link>
       </div>
 

@@ -1,9 +1,6 @@
-import { Socket } from 'socket.io';
-import {
-  MessageInterface,
-  UserInterface,
-  UserInterfaceWithFriendRequests,
-} from '../models';
+import { Server, Socket } from 'socket.io';
+import { Request } from 'express';
+import { MessageInterface, UserInterfaceWithFriendRequests } from '../models';
 
 interface MySocket extends Socket {
   user?: UserInterfaceWithFriendRequests;
@@ -17,6 +14,10 @@ interface ClientToServerEvents {
   'send-message': (message: MessageInterface) => void;
 }
 
+interface RequestWithSocketServer extends Request {
+  io: Server;
+}
+
 interface InterServerEvents {}
 
 export {
@@ -24,4 +25,5 @@ export {
   ServerToClientEvents,
   ClientToServerEvents,
   InterServerEvents,
+  RequestWithSocketServer,
 };

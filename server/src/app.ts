@@ -8,9 +8,7 @@ import { mongoConfig, serverConfig } from './middleware';
 import * as Routes from './routes';
 import * as EventHandlers from './handlers';
 import { SocketTypes } from './types';
-
-/// TODO: on connection add socket and return user ///
-/// TODO: when creating user, capitalize first letter, etc... ///
+import { setIO } from './utils/socketInstance';
 
 // Set up server
 dotenv.config();
@@ -37,11 +35,10 @@ io.on('connection', (socket: SocketTypes.MySocket) => {
   EventHandlers.registerFriendHandlers(io, socket);
 });
 
+setIO(io);
+
 // Set up routes
 app.use('/photos', express.static(path.join(__dirname, '../uploads')));
-app.get('/', (req, res) => {
-  res.send('Welcome');
-});
 app.use('/api/users/auth', Routes.authRouter);
 app.use('/api/users', Routes.usersRouter);
 app.use('/api/posts', Routes.postsRouter);

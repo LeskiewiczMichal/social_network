@@ -8,9 +8,11 @@ import {
   dataToNotificationObject,
 } from '../../notifications';
 import notificationsImage from '../../../assets/icons/notifications.svg';
-import { useSocket } from '../../authentication';
+import { useSocket, UserSlice } from '../../authentication';
+import { useAppDispatch } from '../../../hooks';
 
 export default function NotificationsDropdown() {
+  const dispatch = useAppDispatch();
   const [isDropdownVisible, setIsDropdownHidden] = useState<Boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,18 +67,23 @@ export default function NotificationsDropdown() {
     // When received notification display it
     const handleNewNotification = (notification: any) => {
       const newNotification = dataToNotificationObject(notification);
+      console.log(notification);
       setNotifications((prevNotifications) => {
         const newNotifications = [...prevNotifications];
         newNotifications.unshift(newNotification);
         newNotifications.pop();
         return newNotifications;
       });
+      dispatch(UserSlice.addFriendRequest(notification.sender._id));
     };
+    if (!socket) {
+      return;
+    }
 
-    socket?.on('new-notification', handleNewNotification);
-
+    socket.on('new-notification', handleNewNotification);
+    // eslint-disable-next-line consistent-return
     return () => {
-      socket?.off('new-notification', handleNewNotification);
+      socket.off('new-notification', handleNewNotification);
     };
   }, [socket]);
 

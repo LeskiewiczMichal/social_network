@@ -13,6 +13,7 @@ exports.uploadPhoto = exports.deletePost = exports.updatePost = exports.getPostB
 const types_1 = require("../types");
 const models_1 = require("../models");
 const utils_1 = require("../utils");
+const socketInstance_1 = require("../utils/socketInstance");
 const getPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
@@ -96,12 +97,29 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 throw new types_1.ErrorTypes.UnauthorizedError();
             }
         }
+        // Like post
         if (like) {
             if (post.likes.includes(userId)) {
                 post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
             }
             else {
                 post.likes.push(userId);
+                const author = (yield models_1.User.findById(post.author));
+                // Create notification
+                const newNotification = new models_1.Notification({
+                    receiver: author.id,
+                    sender: userId,
+                    type: models_1.NotificationTypes.POST_LIKED,
+                });
+                yield newNotification.save();
+                // If post author is active emit notification
+                if (author.socketId) {
+                    const io = (0, socketInstance_1.getIO)();
+                    if (io) {
+                        yield newNotification.populate('sender');
+                        io.to(author.socketId).emit('new-notification', newNotification);
+                    }
+                }
             }
         }
         if (title) {
