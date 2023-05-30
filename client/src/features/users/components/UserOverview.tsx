@@ -102,7 +102,7 @@ export default function UserOverview(props: UserOverviewProps) {
             onChange={handleChangeUserData}
           />
         ) : (
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          <span className="text-sm text-center px-8 text-gray-500 dark:text-gray-400">
             {displayedProfile.about}
           </span>
         )}
