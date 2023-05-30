@@ -84,7 +84,7 @@ export default function Post(props: PostInterface) {
           )}
 
           <div className="mb-2 flex justify-end items-center border-t border-b py-2">
-            {/* Comments button */}
+            {/* Comments counter */}
             <div className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center  px-4">
               <svg
                 fill="none"

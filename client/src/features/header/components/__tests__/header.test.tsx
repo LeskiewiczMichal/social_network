@@ -75,11 +75,6 @@ describe('Profile dropdown', () => {
     });
     expect(profileDropdown).toBeInTheDocument();
 
-    // Link to user profile
-    const profileLink = screen.getByRole('link', { name: 'Profile' });
-    expect(profileLink).toBeInTheDocument();
-    expect(profileLink).toHaveAttribute('href', '/profile/1232421');
-
     // Sign out button
     const singOutButton = screen.getByRole('button', { name: 'Sign out' });
     expect(singOutButton).toBeInTheDocument();

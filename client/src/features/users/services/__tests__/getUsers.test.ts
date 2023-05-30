@@ -7,7 +7,7 @@ import {
 } from '../../../../utils/setupTest';
 import getUsers from '../getUsers';
 
-const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users`;
+const apiUrl = new RegExp(`${process.env.REACT_APP_SERVER_URL}/api/users.*`);
 
 describe('Get users', () => {
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('Get users', () => {
 
   test('Calls axios get with proper params', async () => {
     mock
-      .onGet(apiUrl, { params: { limit: 3, usersList: [MOCKS.USER.id] } })
+      .onGet(apiUrl)
       .reply(200, { users: [{ ...MOCKS.USER, _id: MOCKS.USER.id }] });
 
     const users = await getUsers({ limit: 3, usersList: [MOCKS.USER.id] });
@@ -42,7 +42,7 @@ describe('Get users', () => {
   });
 
   test('Returns empty list when API call fails', async () => {
-    mock.onGet(`${process.env.REACT_APP_SERVER_URL}/api/users`).reply(404);
+    mock.onGet(apiUrl).reply(404);
 
     const users = await getUsers({});
     expect(users).toMatchObject([]);

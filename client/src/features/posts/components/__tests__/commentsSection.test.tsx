@@ -42,8 +42,13 @@ describe('Comments section', () => {
         ],
       });
 
+    const setNumOfComments = jest.fn();
     renderWithProviders(
-      <CommentsSection numberOfComments={10} postId={MOCKS.POST.id} />,
+      <CommentsSection
+        numberOfComments={10}
+        postId={MOCKS.POST.id}
+        setNumberOfComments={setNumOfComments}
+      />,
     );
 
     await waitFor(() => {
@@ -70,7 +75,7 @@ describe('Comments section', () => {
     expect(body).toBeInTheDocument();
 
     // Hearts button
-    const heartsButton = screen.getByRole('button', { name: 'hearts' });
+    const heartsButton = screen.getByRole('button', { name: 'like comment' });
     expect(heartsButton).toBeInTheDocument();
     expect(heartsButton).toHaveTextContent('0');
   });

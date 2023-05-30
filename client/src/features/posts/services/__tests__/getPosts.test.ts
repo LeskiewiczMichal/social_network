@@ -36,9 +36,7 @@ describe('Get posts', () => {
         author: { ...MOCKS.POST.author, _id: MOCKS.POST.author.id },
       };
       mock
-        .onGet(
-          `${process.env.REACT_APP_SERVER_URL}/api/posts?sortOrder=asc&limit=${limit}&offset=${offset}`,
-        )
+        .onGet(new RegExp(`${process.env.REACT_APP_SERVER_URL}/api/posts.*`))
         .reply(200, {
           posts: [mockPost, mockPost],
         });

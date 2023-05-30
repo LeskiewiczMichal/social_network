@@ -5,14 +5,40 @@ import {
   setupMocks,
   resetMocks,
   restoreMocks,
-  store,
 } from '../../../../utils/setupTest';
-import { MOCKS, renderWithProviders } from '../../../../utils/test_utils';
+import {
+  MOCKS,
+  createTestStore,
+  renderWithProviders,
+} from '../../../../utils/test_utils';
+import { UserSlice } from '../../../authentication';
+import { profilePageSlice } from '../../reducers/profilePageReducer';
 
 describe('User overview component', () => {
   beforeEach(() => {
     setupMocks();
-    renderWithProviders(<UserOverview />, { store });
+    const store = createTestStore();
+    store.dispatch(UserSlice.setUser({ ...MOCKS.USER, friendRequests: [] }));
+    store.dispatch(
+      profilePageSlice.actions.setUser({ ...MOCKS.USER, friendRequests: [] }),
+    );
+    const formData = {
+      about: '',
+      city: '',
+      birthday: '',
+      country: '',
+      email: '',
+    };
+    const handleChangeData = jest.fn();
+    const handleConfirmChanges = jest.fn();
+    renderWithProviders(
+      <UserOverview
+        changeUserDataForm={formData}
+        handleChangeUserData={handleChangeData}
+        handleConfirmChanges={handleConfirmChanges}
+      />,
+      { store },
+    );
   });
 
   afterEach(() => {
@@ -44,13 +70,9 @@ describe('User overview component', () => {
       expect(screen.getByText(MOCKS.USER.about)).toBeInTheDocument();
     });
 
-    test('renders two buttons', () => {
+    test('renders edit prorfile when its your profile', () => {
       expect(
-        screen.getByRole('button', { name: 'Add friend' }),
-      ).toBeInTheDocument();
-
-      expect(
-        screen.getByRole('button', { name: 'Message' }),
+        screen.getByRole('button', { name: 'Edit profile' }),
       ).toBeInTheDocument();
     });
   });

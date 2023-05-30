@@ -29,7 +29,8 @@ const mockedUser: UserInterface = {
   city: 'testCity',
   postalCode: 'testPostal',
   about: 'testAbout',
-  friends: [],
+  friends: ['test'],
+  friendRequests: ['test'],
   birthday: 'January 1, 2020',
   profilePicture: 'testPicture',
 };

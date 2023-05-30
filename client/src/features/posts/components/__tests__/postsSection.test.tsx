@@ -22,7 +22,7 @@ jest.mock('../../../../components/LoadingSpinner', () => {
   };
 });
 
-describe('Comments section', () => {
+describe('Posts section', () => {
   beforeEach(() => {
     setupMocks();
   });
@@ -38,9 +38,7 @@ describe('Comments section', () => {
   test('Renders post properly', async () => {
     jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('ABCD');
     mock
-      .onGet(
-        `${process.env.REACT_APP_SERVER_URL}/api/posts?sortOrder=desc&limit=10&offset=0`,
-      )
+      .onGet(new RegExp(`${process.env.REACT_APP_SERVER_URL}/api/posts.*`))
       .reply(200, {
         posts: [
           {

@@ -57,11 +57,10 @@ test('Rendes properly', () => {
   const date = screen.getByText(/.* years ago/);
   expect(date).toBeInTheDocument();
 
-  // Hearts and comments buttons
+  // Hearts and comments
   const hearts = screen.getByRole('button', { name: 'give a heart' });
   expect(hearts).toBeInTheDocument();
   expect(hearts).toHaveTextContent('0');
-  const comments = screen.getByRole('button', { name: 'show all comments' });
-  expect(comments).toBeInTheDocument();
-  expect(comments).toHaveTextContent('0');
+  const commentsAndHearts = screen.getAllByText('0');
+  expect(commentsAndHearts).toHaveLength(2);
 });

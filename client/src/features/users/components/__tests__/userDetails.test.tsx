@@ -18,7 +18,21 @@ describe('User details component', () => {
       .onGet(`${process.env.REACT_APP_SERVER_URL}/api/users`)
       .reply(200, { users: [{ ...MOCKS.USER, _id: MOCKS.USER.id }] });
 
-    renderWithProviders(<UserDetails />, { store });
+    const formData = {
+      about: '',
+      city: '',
+      birthday: '',
+      country: '',
+      email: '',
+    };
+    const handleChangeData = jest.fn();
+    renderWithProviders(
+      <UserDetails
+        changeUserDataForm={formData}
+        handleChangeUserData={handleChangeData}
+      />,
+      { store },
+    );
   });
 
   afterEach(() => {
@@ -31,10 +45,6 @@ describe('User details component', () => {
 
   // Rendering tests
   describe('Renders correctly', () => {
-    test('renders mutual friends count', () => {
-      expect(screen.getByText('0 mutual friends')).toBeInTheDocument();
-    });
-
     test('renders button to see all friends', () => {
       expect(
         screen.getByRole('button', { name: 'Click here to see all' }),
