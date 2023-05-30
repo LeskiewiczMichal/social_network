@@ -80,6 +80,7 @@ export default function Post(props: PostInterface) {
               className="h-full max-h-80 sm:max-h-96 md:max-h-full mb-5 w-full"
               src={`${process.env.REACT_APP_SERVER_URL}${photo}`}
               alt={`${title} post`}
+              loading="lazy"
             />
           )}
 

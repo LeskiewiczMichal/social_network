@@ -7,7 +7,7 @@ export default function UserOnList(props: UserInterface) {
   const { id, firstName, lastName, profilePicture, city } = props;
 
   return (
-    <section className="w-full flex flex-col items-center bg-white shadow-lg rounded-lg p-2 mb-6">
+    <section className="w-full flex flex-col max-w-lg items-center bg-white shadow-lg rounded-lg p-2 mb-6">
       <img
         src={`${process.env.REACT_APP_SERVER_URL}${profilePicture}`}
         alt="user profile"

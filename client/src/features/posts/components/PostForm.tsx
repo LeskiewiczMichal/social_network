@@ -52,6 +52,9 @@ export default function PostForm() {
       file: postPhoto,
     });
     setPostCreatedMessage(message);
+    setPostTitle('');
+    setPostPhoto(null);
+    setPostBody('');
   };
 
   return (
