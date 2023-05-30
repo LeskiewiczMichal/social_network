@@ -1,6 +1,8 @@
 type StandardButtonProps = {
   text: string;
-  handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleClick:
+    | ((e: React.MouseEvent<HTMLButtonElement>) => void)
+    | (() => void);
   width?: string;
   bgColor?: string;
   hoverColor?: string;

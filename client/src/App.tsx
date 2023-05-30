@@ -34,10 +34,10 @@ function App() {
   useEffect(() => {
     if (socket && userLogged) {
       socket.on('connect', () => {
-        console.log('POLACZONE');
+        console.log('Connected to server');
       });
       socket.on('disconnect', () => {
-        console.log('DISCONNECTED');
+        console.log('Disconnected from server');
       });
     }
 

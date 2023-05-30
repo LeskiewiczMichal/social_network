@@ -114,7 +114,7 @@ const createAccount = async (
       firends: [],
       friendRequests: [],
       birthday,
-      country,
+      country: capitalizeFirstLetter(String(country)),
       city: capitalizeFirstLetter(String(city)),
       postalCode,
       about,

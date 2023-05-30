@@ -29,6 +29,9 @@ interface UpdateUserDataRequest extends Request {
     firstName?: string;
     lastName?: string;
     birthday?: Date;
+    about?: string;
+    city: string;
+    country: string;
   };
 }
 

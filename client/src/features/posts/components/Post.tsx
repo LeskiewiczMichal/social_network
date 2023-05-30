@@ -49,14 +49,14 @@ export default function Post(props: PostInterface) {
   };
 
   return (
-    <div className="flex bg-white shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
-      <div className="flex flex-col md:flex-row items-start px-4 py-2 md:py-6">
+    <div className="flex bg-white w-full shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
+      <div className="flex flex-col w-full md:flex-row items-start px-4 py-2 md:py-6">
         <ProfilePicture
           size={11}
           userId={author.id}
           userPicture={author.profilePicture}
         />
-        <div>
+        <div className="w-full">
           {/* User */}
           <div className="flex items-center justify-between">
             <Link to={`/profile/${author.id}`}>

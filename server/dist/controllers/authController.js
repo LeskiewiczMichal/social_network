@@ -115,7 +115,7 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             firends: [],
             friendRequests: [],
             birthday,
-            country,
+            country: (0, utils_1.capitalizeFirstLetter)(String(country)),
             city: (0, utils_1.capitalizeFirstLetter)(String(city)),
             postalCode,
             about,

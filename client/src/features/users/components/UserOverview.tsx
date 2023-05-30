@@ -7,13 +7,23 @@ import { useSocket, UserSlice } from '../../authentication';
 import addFriend from '../services/addFriend';
 import removeFriend from '../services/removeFriend';
 import * as ProfilePageSlice from '../reducers/profilePageReducer';
+import { EditUserData } from '../types/editUserDataForm';
 
-export default function UserOverview() {
+interface UserOverviewProps {
+  handleChangeUserData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  changeUserDataForm: EditUserData;
+  handleConfirmChanges: () => void;
+}
+
+export default function UserOverview(props: UserOverviewProps) {
+  const { handleConfirmChanges, handleChangeUserData, changeUserDataForm } =
+    props;
   const dispatch = useAppDispatch();
   const loggedUser = useAppSelector((state) => state.user);
   const displayedProfile = useAppSelector((state) => state.profilePage);
   const socket = useSocket();
 
+  // Handlers for different friend activities
   const handleAddFriend = () => {
     dispatch(ProfilePageSlice.addFriend(loggedUser.id!));
     dispatch(UserSlice.addFriend(displayedProfile.id));
@@ -32,13 +42,13 @@ export default function UserOverview() {
     sendFriendRequest({ newFriendId: displayedProfile.id, socket });
   };
 
+  // Selecting button based on your relationship with user
   let befriendButton: JSX.Element;
   if (displayedProfile.friends.includes(loggedUser.id!)) {
     befriendButton = (
       <StandardButton
         text="Remove friend"
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+        handleClick={() => {
           handleRemoveFriend();
         }}
       />
@@ -47,8 +57,7 @@ export default function UserOverview() {
     befriendButton = (
       <StandardButton
         text="Add friend"
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+        handleClick={() => {
           handleAddFriend();
         }}
       />
@@ -57,8 +66,7 @@ export default function UserOverview() {
     befriendButton = (
       <StandardButton
         text="Send request"
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        handleClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+        handleClick={() => {
           handleSendFriendRequest();
         }}
       />
@@ -70,6 +78,7 @@ export default function UserOverview() {
       </span>
     );
   }
+
   return (
     <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow shadow-primary dark:bg-gray-800 dark:border-gray-700">
       <div className="flex flex-col items-center pb-10 mt-5">
@@ -84,9 +93,20 @@ export default function UserOverview() {
           {displayedProfile.firstName} {displayedProfile.lastName}
         </h5>
         {/* About user */}
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          {displayedProfile.about}
-        </span>
+        {displayedProfile.editUserActive ? (
+          <input
+            type="text"
+            className="border p-1 border-primary rounded-lg"
+            name="about"
+            value={changeUserDataForm.about}
+            onChange={handleChangeUserData}
+          />
+        ) : (
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {displayedProfile.about}
+          </span>
+        )}
+
         {loggedUser.id !== displayedProfile.id && (
           <div className="flex w-full px-8 mt-4 space-x-3 md:mt-6">
             {/* Remove or add friend button */}
@@ -100,6 +120,38 @@ export default function UserOverview() {
             </Link>
           </div>
         )}
+        {/* If seeing your own profile, can edit it */}
+        {loggedUser.id === displayedProfile.id &&
+          !displayedProfile.editUserActive && (
+            <button
+              type="button"
+              className="text-primary text-sm mt-2"
+              onClick={() => dispatch(ProfilePageSlice.setEditUserActive(true))}
+            >
+              Edit profile
+            </button>
+          )}
+        {loggedUser.id === displayedProfile.id &&
+          displayedProfile.editUserActive && (
+            <div className="flex w-full px-8 mt-4 space-x-3 md:mt-6 justify-center">
+              <button
+                type="button"
+                className="text-primary text-sm mt-2"
+                onClick={handleConfirmChanges}
+              >
+                Confirm changes
+              </button>
+              <button
+                type="button"
+                className="text-primary text-sm mt-2"
+                onClick={() =>
+                  dispatch(ProfilePageSlice.setEditUserActive(false))
+                }
+              >
+                Cancel
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );

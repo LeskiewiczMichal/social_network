@@ -53,7 +53,8 @@ const updateUserData = async (
   try {
     const user = req.user as UserInterfaceWithFriendRequests;
     const { removeFriend, removeFriendRequest } = req.query;
-    const { email, firstName, lastName, birthday } = req.body;
+    const { email, firstName, lastName, birthday, about, city, country } =
+      req.body;
 
     if (removeFriendRequest) {
       const { id: friendRequestId } = (await User.findById(
@@ -85,6 +86,7 @@ const updateUserData = async (
       );
       await friend.save();
     }
+
     if (email) {
       user.email = email;
     }
@@ -96,6 +98,15 @@ const updateUserData = async (
     }
     if (birthday) {
       user.birthday = birthday;
+    }
+    if (about) {
+      user.about = about;
+    }
+    if (city) {
+      user.city = capitalizeFirstLetter(String(city));
+    }
+    if (country) {
+      user.country = capitalizeFirstLetter(String(country));
     }
 
     await user.save();

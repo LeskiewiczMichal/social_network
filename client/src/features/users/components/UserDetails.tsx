@@ -9,8 +9,15 @@ import sortFriendsByMutual from '../utils/sortFriendsByMutual';
 import SeparatorLine from '../../../components/SeparatorLine';
 import countMutualFriends from '../utils/countMutualFriends';
 import { setShowFriends } from '../reducers/profilePageReducer';
+import { EditUserData } from '../types/editUserDataForm';
 
-export default function UserDetails() {
+interface UserOverviewProps {
+  handleChangeUserData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  changeUserDataForm: EditUserData;
+}
+
+export default function UserDetails(props: UserOverviewProps) {
+  const { handleChangeUserData, changeUserDataForm } = props;
   const dispatch = useAppDispatch();
   const loggedUser = useAppSelector((state) => state.user);
   const [mutualFriendsCount, setMutualFriendsCount] = useState<number>(0);
@@ -54,7 +61,7 @@ export default function UserDetails() {
   }
 
   return (
-    <section className="w-full max-w-xl p-4 mt-4 bg-white border flex flex-col  justify-between border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <section className="w-full max-w-xl p-4 mt-4 mb-6 md:mb-12 bg-white border flex flex-col  justify-between border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       {/* Mutual friends */}
       <div className="w-full text-center p-2">
         <div className="flex justify-between text-gray-700 dark:text-gray-400 px-2">
@@ -97,22 +104,62 @@ export default function UserDetails() {
 
       <SeparatorLine text="User info" />
       {/* User info */}
-      <div className="flex flex-col items-center rounded-lg w-full">
+      <div className="flex flex-col items-center rounded-lg w-full ">
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">Email: </span>
-          <span>{displayedProfile.email}</span>
+          {displayedProfile.editUserActive ? (
+            <input
+              type="text"
+              name="email"
+              className="border p-1 border-primary rounded-lg"
+              value={changeUserDataForm.email}
+              onChange={handleChangeUserData}
+            />
+          ) : (
+            <span>{displayedProfile.email}</span>
+          )}
         </div>
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">Birthday: </span>
-          <span>{displayedProfile.birthday}</span>
+          {displayedProfile.editUserActive ? (
+            <input
+              type="date"
+              name="birthday"
+              className="border p-1 border-primary rounded-lg"
+              value={changeUserDataForm.birthday}
+              onChange={handleChangeUserData}
+            />
+          ) : (
+            <span>{displayedProfile.birthday}</span>
+          )}
         </div>
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">Country: </span>
-          <span>{displayedProfile.country}</span>
+          {displayedProfile.editUserActive ? (
+            <input
+              type="text"
+              name="country"
+              className="border p-1 border-primary rounded-lg"
+              value={changeUserDataForm.country}
+              onChange={handleChangeUserData}
+            />
+          ) : (
+            <span>{displayedProfile.country}</span>
+          )}
         </div>
         <div className="flex w-full justify-between">
           <span className="font-semibold text-gray-700">City: </span>
-          <span>{displayedProfile.city}</span>
+          {displayedProfile.editUserActive ? (
+            <input
+              type="text"
+              name="city"
+              className="border p-1 border-primary rounded-lg"
+              value={changeUserDataForm.city}
+              onChange={handleChangeUserData}
+            />
+          ) : (
+            <span>{displayedProfile.city}</span>
+          )}
         </div>
       </div>
     </section>

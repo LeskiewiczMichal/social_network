@@ -7,6 +7,7 @@ import addFriendReducer from './functions/addFriend';
 import removeFriendReducer from './functions/removeFriend';
 import addFriendRequestReducer from './functions/addFriendRequest';
 import removeFriendRequestReducer from './functions/removeFriendRequest';
+import setEditUserActiveReducer from './functions/setEditUserActive';
 
 const initialState: ProfilePageState = {
   id: '',
@@ -22,6 +23,7 @@ const initialState: ProfilePageState = {
   birthday: '',
   profilePicture: '',
   showFriends: false,
+  editUserActive: false,
 };
 
 export const profilePageSlice = createSlice({
@@ -34,6 +36,7 @@ export const profilePageSlice = createSlice({
     removeFriend: removeFriendReducer,
     addFriendRequest: addFriendRequestReducer,
     removeFriendRequest: removeFriendRequestReducer,
+    setEditUserActive: setEditUserActiveReducer,
   },
 });
 
@@ -44,6 +47,7 @@ export const {
   removeFriend,
   addFriendRequest,
   removeFriendRequest,
+  setEditUserActive,
 } = profilePageSlice.actions;
 
 export default profilePageSlice.reducer;

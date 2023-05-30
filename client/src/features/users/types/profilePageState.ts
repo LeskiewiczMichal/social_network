@@ -12,4 +12,5 @@ export interface ProfilePageState {
   profilePicture: string;
   showFriends: boolean;
   friendRequests: string[];
+  editUserActive: boolean;
 }

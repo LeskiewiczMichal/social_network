@@ -49,7 +49,7 @@ const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const user = req.user;
         const { removeFriend, removeFriendRequest } = req.query;
-        const { email, firstName, lastName, birthday } = req.body;
+        const { email, firstName, lastName, birthday, about, city, country } = req.body;
         if (removeFriendRequest) {
             const { id: friendRequestId } = (yield models_1.User.findById(removeFriendRequest));
             if (!user.friendRequests.includes(friendRequestId)) {
@@ -77,6 +77,15 @@ const updateUserData = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         if (birthday) {
             user.birthday = birthday;
+        }
+        if (about) {
+            user.about = about;
+        }
+        if (city) {
+            user.city = (0, utils_1.capitalizeFirstLetter)(String(city));
+        }
+        if (country) {
+            user.country = (0, utils_1.capitalizeFirstLetter)(String(country));
         }
         yield user.save();
         return res.json({ message: 'Update successfull', user });
