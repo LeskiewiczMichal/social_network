@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { LoadingSpinner } from '../../../components';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { UserInterface } from '../types/user';
-import getUsers from '../actions/getUsers';
+import getUsers from '../services/getUsers';
 import sortFriendsByMutual from '../utils/sortFriendsByMutual';
 import SeparatorLine from '../../../components/SeparatorLine';
 import countMutualFriends from '../utils/countMutualFriends';

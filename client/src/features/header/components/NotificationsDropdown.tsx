@@ -62,6 +62,7 @@ export default function NotificationsDropdown() {
   }, []);
 
   useEffect(() => {
+    // When received notification display it
     const handleNewNotification = (notification: any) => {
       const newNotification = dataToNotificationObject(notification);
       setNotifications((prevNotifications) => {
@@ -80,7 +81,7 @@ export default function NotificationsDropdown() {
   }, [socket]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       {/* Notifications button */}
       <button
         id="notifcationsButton"
@@ -94,12 +95,13 @@ export default function NotificationsDropdown() {
           src={notificationsImage}
           alt="notifications"
         />
-        <span className="absolute top-1 right-2.5 p-1 translate-x-1/2 bg-red-500 border border-white rounded-full text-xs text-white" />
+        {/* Red dot on notification button */}
+        {/* <span className="absolute top-1 right-2.5 p-1 translate-x-1/2 bg-red-500 border border-white rounded-full text-xs text-white" /> */}
       </button>
 
       {/* Dropdown menu */}
       <div
-        ref={dropdownRef}
+        // ref={dropdownRef}
         id="dropdownNotification"
         className={`${
           isDropdownVisible ? 'fixed sm:absolute' : 'hidden'

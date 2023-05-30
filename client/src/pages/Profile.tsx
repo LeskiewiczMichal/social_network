@@ -8,7 +8,7 @@ import {
   ProfilePageReducer,
   UserTypes,
 } from '../features/users';
-import getUsers from '../features/users/actions/getUsers';
+import getUsers from '../features/users/services/getUsers';
 import { useAppSelector, useAppDispatch } from '../hooks';
 import { PostsSection } from '../features/posts';
 

@@ -6,7 +6,7 @@ import Message from './Message';
 import { useAppSelector } from '../../../hooks';
 import getMessages from '../services/getMessages';
 import { MessageInterface } from '../types/message';
-import sendMessage from '../eventHandlers/sendMessage';
+import sendMessage from '../services/sendMessage';
 import { LoadingSpinner } from '../../../components';
 import { useSocket } from '../../authentication';
 import dataToMessageObject from '../utils/dataToMessageObject';

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { setShowFriends } from '../reducers/profilePageReducer';
 import { UserInterface } from '../types/user';
-import getUsers from '../actions/getUsers';
+import getUsers from '../services/getUsers';
 import sortFriendsByMutual from '../utils/sortFriendsByMutual';
 import { LoadingSpinner } from '../../../components';
 
