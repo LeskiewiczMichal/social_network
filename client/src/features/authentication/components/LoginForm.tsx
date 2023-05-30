@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import login from '../actions/login';
@@ -10,6 +10,7 @@ import StandardButton from '../../../components/StandardButton';
 import StandardInput from '../../../components/StandardInput';
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const error = useAppSelector((state) => state.error.loginError);
   const [email, setEmail] = useState('');
@@ -28,6 +29,13 @@ export default function LoginForm() {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     dispatch(login({ email, password }));
+    return navigate('/');
+  };
+
+  const handleOffline = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    dispatch(login({ email: 'OfflineProfile@mail.pl', password: 'abcd' }));
+    return navigate('/');
   };
 
   return (
@@ -101,7 +109,7 @@ export default function LoginForm() {
           {/* Offline */}
           <StandardButton
             text="Offline"
-            handleClick={handleSubmit}
+            handleClick={handleOffline}
             whiteMode
             // width="2/5"
           />

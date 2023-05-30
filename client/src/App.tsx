@@ -4,15 +4,14 @@ import { Socket } from 'socket.io-client';
 
 import createSocket from './createSocket';
 import * as Pages from './pages';
-import { useAppDispatch } from './hooks';
+import { useAppDispatch, useAppSelector } from './hooks';
 import { autoLogin, SocketProvider } from './features/authentication';
 import LoadingSpinner from './components/LoadingSpinner';
 import Header from './features/header';
 
 function App() {
   const dispatch = useAppDispatch();
-  // const userLogged = useAppSelector((state) => state.user.id);
-  const userLogged = true;
+  const userLogged = useAppSelector((state) => state.user.id);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   let socket: Socket | null = null;
 
@@ -62,21 +61,18 @@ function App() {
             <Header />
             <Routes>
               <Route path="/" element={<Pages.Home />} />
-              {/* Tymczasowo */}
-              <Route path="/login" element={<Pages.Login />} />
-              <Route path="/register" element={<Pages.Registration />} />{' '}
               <Route path="/profile/:userId" element={<Pages.Profile />} />
               <Route path="/profile" element={<Pages.Profile />} />
               <Route path="/chat/:userId" element={<Pages.Chat />} />
               <Route path="/chat" element={<Pages.ChatSelecion />} />
               <Route path="/notifications" element={<Pages.Notifications />} />
               <Route path="/users" element={<Pages.ShowUsers />} />
-              {/* Tymczasowo */}
             </Routes>
           </>
         ) : (
           <Routes>
             <Route path="/" element={<Pages.Login />} />
+            <Route path="/login" element={<Pages.Login />} />
             <Route path="/register" element={<Pages.Registration />} />
           </Routes>
         )}

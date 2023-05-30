@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAppSelector, useAppDispatch } from '../../../hooks';
 import { logout } from '../../authentication';
 
 export default function ProfileDropdown() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
   const [profileMenuOpen, setProfileMenuOpen] = useState<Boolean>(false);
@@ -86,7 +87,10 @@ export default function ProfileDropdown() {
           <button
             type="button"
             className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            onClick={() => dispatch(logout())}
+            onClick={() => {
+              dispatch(logout());
+              return navigate('/');
+            }}
           >
             Sign out
           </button>

@@ -108,7 +108,6 @@ export default function NotificationsDropdown() {
 
       {/* Dropdown menu */}
       <div
-        // ref={dropdownRef}
         id="dropdownNotification"
         className={`${
           isDropdownVisible ? 'fixed sm:absolute' : 'hidden'
