@@ -13,7 +13,7 @@ const likePost = async (props: LikePostProps): Promise<void> => {
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts/${postId}`;
+    const apiUrl = `/api/posts/${postId}`;
     await axios.put(
       apiUrl,
       {},

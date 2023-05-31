@@ -43,6 +43,7 @@ const httpServer = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(httpServer, {
     cors: {
         origin: '*',
+        credentials: true,
     },
 });
 (0, middleware_1.serverConfig)(app);

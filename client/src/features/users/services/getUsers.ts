@@ -17,7 +17,7 @@ const getUsers = async (props: GetUsersProps): Promise<UserInterface[]> => {
   try {
     const { usersList, limit, friendRequests, firstName, lastName } = props;
     axios.defaults.headers.common.Authorization = getToken();
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users`;
+    const apiUrl = `/api/users`;
 
     if (usersList && usersList.length === 0) {
       return [];

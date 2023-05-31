@@ -17,13 +17,10 @@ const login =
     try {
       const { email, password } = props;
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/api/users/auth/login`,
-        {
-          email,
-          password,
-        },
-      );
+      const response = await axios.post(`/api/users/auth/login`, {
+        email,
+        password,
+      });
 
       // Create user with data from request and get token
       const { token, user: userData } = response.data;

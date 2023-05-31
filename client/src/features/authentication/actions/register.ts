@@ -52,15 +52,11 @@ const register =
       }
       formData.append('password', password);
 
-      await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/api/users/auth/`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      await axios.post(`/api/users/auth/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
         },
-      );
+      });
 
       dispatch(setRegisterError(null));
       navigate('/');

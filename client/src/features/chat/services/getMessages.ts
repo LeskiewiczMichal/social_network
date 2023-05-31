@@ -25,7 +25,7 @@ const getMessages = async (
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/messages/`;
+    const apiUrl = `/api/messages/`;
 
     const request = await axios.get(apiUrl, {
       params: { friendId, sortOrder, limit, offset },

@@ -27,7 +27,7 @@ const getNotifications = async (
     } = props;
 
     axios.defaults.headers.common.Authorization = getToken();
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/notifications/`;
+    const apiUrl = `/api/notifications/`;
 
     const request = await axios.get(apiUrl, {
       params: { sortOrder, limit, offset, type, excludeType },

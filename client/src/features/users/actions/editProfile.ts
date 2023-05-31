@@ -13,7 +13,7 @@ const editProfile =
       const { about, birthday, city, country, email } = props;
 
       axios.defaults.headers.common.Authorization = getToken();
-      const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users`;
+      const apiUrl = `/api/users`;
 
       const result = await axios.put(apiUrl, {
         about,

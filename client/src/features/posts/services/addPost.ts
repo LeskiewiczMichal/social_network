@@ -21,7 +21,7 @@ const addPost = async (props: AddPostProps): Promise<string> => {
       formData.append('photo', file);
     }
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts`;
+    const apiUrl = `/api/posts`;
     await axios.post(apiUrl, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

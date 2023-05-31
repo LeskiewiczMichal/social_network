@@ -25,7 +25,7 @@ const getComments = async (
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/comments/${postId}?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}`;
+    const apiUrl = `/api/comments/${postId}?sortOrder=${sortOrder}&limit=${limit}&offset=${offset}`;
 
     const request = await axios.get(apiUrl);
 

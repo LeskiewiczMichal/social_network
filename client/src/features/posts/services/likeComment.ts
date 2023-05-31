@@ -13,7 +13,7 @@ const likeComment = async (props: LikeCommentProps): Promise<void> => {
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/comments/${commentId}`;
+    const apiUrl = `/api/comments/${commentId}`;
     await axios.put(
       apiUrl,
       {},

@@ -13,7 +13,7 @@
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "/home/michalleskiewicz/Programowanie/TOP/social_network/client/tsconfig.json"
+    "project": "/home/michalleskiewicz/Programowanie/social_network/client/tsconfig.json"
   },
   "plugins": ["react", "@typescript-eslint"],
   "rules": {

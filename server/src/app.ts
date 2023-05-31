@@ -23,6 +23,7 @@ const io = new Server<
 >(httpServer, {
   cors: {
     origin: '*',
+    credentials: true,
   },
 });
 serverConfig(app);

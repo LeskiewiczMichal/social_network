@@ -14,7 +14,7 @@ const addComment = async (props: AddCommentProps) => {
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/comments/${postId}`;
+    const apiUrl = `/api/comments/${postId}`;
     const request = await axios.post(apiUrl, { body });
 
     const { comment: commentData } = request.data;

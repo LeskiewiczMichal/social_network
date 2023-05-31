@@ -13,9 +13,7 @@ const autoLogin =
       if (token) {
         axios.defaults.headers.common.Authorization = token;
 
-        const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/api/users/auth/token`,
-        );
+        const response = await axios.get(`/api/users/auth/token`);
         const { user: userData } = response.data;
         const user = dataToUserObject({ ...userData });
         dispatch(

@@ -10,7 +10,7 @@ const removeFriend = async (props: RemoveFriendProps): Promise<void> => {
   try {
     const { friendToRemove } = props;
     axios.defaults.headers.common.Authorization = getToken();
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/users`;
+    const apiUrl = `/api/users`;
 
     await axios.put(
       apiUrl,

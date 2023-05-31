@@ -25,7 +25,7 @@ const getPosts = async (props: GetPostsProps): Promise<PostInterface[]> => {
 
     axios.defaults.headers.common.Authorization = getToken();
 
-    const apiUrl = `${process.env.REACT_APP_SERVER_URL}/api/posts`;
+    const apiUrl = `/api/posts`;
     let inFriends = 'false';
     if (inUserFriends && !author) {
       inFriends = 'true';
