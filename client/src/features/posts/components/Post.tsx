@@ -49,7 +49,7 @@ export default function Post(props: PostInterface) {
   };
 
   return (
-    <div className="flex bg-white w-full shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit max-w-md md:max-w-2xl mb-6 md:mb-12 dark:bg-background-dark">
+    <div className="flex bg-white w-full shadow-lg rounded-lg mx-4 md:mx-auto  max-w-md md:max-w-2xl mb-6 md:mb-12 dark:bg-background-dark">
       <div className="flex flex-col w-full md:flex-row items-start px-4 py-2 md:py-6">
         <ProfilePicture
           size={11}
@@ -79,7 +79,7 @@ export default function Post(props: PostInterface) {
           {/* Photo if available */}
           {photo && (
             <img
-              className="h-full max-h-80 sm:max-h-96 md:max-h-full mb-5 w-full"
+              className="h-auto max-h-80 sm:max-h-full md:max-h-full mb-5 w-full object-contain"
               src={`${process.env.REACT_APP_SERVER_URL}${photo}`}
               alt={`${title} post`}
               loading="lazy"
