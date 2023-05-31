@@ -15,6 +15,7 @@ This is a social media website that I built using React with TypeScript for the 
 - Live chat with other users
 - Make other users your friends
 - Fully responsive design
+- Dark mode support
 
 ## Technologies Used
 
