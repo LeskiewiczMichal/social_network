@@ -45,18 +45,18 @@ export default function Comment(props: CommentInterface) {
       <div className="w-full">
         {/* User */}
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-900">
+          <h2 className="text-sm font-semibold text-gray-900 dark:text-white-dark">
             <Link aria-label="author profile" to={`/profile/${author.id}`}>
               {author.firstName} {author.lastName}{' '}
             </Link>
           </h2>
-          <small className="text-xs text-gray-700 flex flex-col items-center justify-center">
+          <small className="text-xs text-gray-700 flex flex-col items-center justify-center dark:text-gray-dark">
             <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
           </small>
         </div>
 
         {/* Text */}
-        <p className="mt-1 text-gray-700 text-sm bg-gray-200 p-2 rounded-lg">
+        <p className="mt-1 text-gray-700 text-sm bg-gray-200 p-2 rounded-lg dark:bg-gray-500 dark:text-white-dark">
           {body}
         </p>
 
@@ -70,10 +70,12 @@ export default function Comment(props: CommentInterface) {
             disabled={isLikeButtonDisabled}
           >
             <svg
-              fill={currentLikes.includes(userId!) ? '#4f46e5' : '#FFFFFF'}
               viewBox="0 0 24 24"
-              className="w-5 h-5 mr-1"
-              stroke="#4f46e5"
+              className={`w-5 h-5 mr-1 stroke-primary dark:stroke-primary-lighter ${
+                currentLikes.includes(userId!)
+                  ? 'fill-primary text-primary dark:fill-primary-lighter dark:text-primary-lighter'
+                  : 'fill-white text-white dark:fill-background-dark dark:text-white'
+              }`}
             >
               <path
                 strokeLinecap="round"
@@ -82,7 +84,7 @@ export default function Comment(props: CommentInterface) {
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
               />
             </svg>
-            <span>{currentLikes.length}</span>
+            <span className="text-white-dark">{currentLikes.length}</span>
           </button>
         </div>
       </div>

@@ -118,7 +118,7 @@ export default function Profile() {
   }, [userId]);
 
   return (
-    <main className="padding-top-header grid grid-cols-1 md:grid-cols-5 items-center bg-background-white min-h-screen">
+    <main className="padding-top-header grid grid-cols-1 md:grid-cols-5 items-center bg-background-white min-h-screen dark:bg-gray-900">
       <AllFriendsDisplay />
 
       <div className="flex flex-col items-center h-full md:col-start-2 md:col-end-5 col-start-1 col-end-2">

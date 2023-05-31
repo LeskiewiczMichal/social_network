@@ -84,7 +84,7 @@ export default function UserDetails(props: UserOverviewProps) {
             return (
               <Link
                 to={`/profile/${user.id}`}
-                className="bg-gray-100 hover:bg-gray-200 flex flex-col rounded-lg items-center border w-1/3 dark:text-white dark:bg-gray-700 dark:hover:bg-gray-950"
+                className="bg-gray-100 hover:bg-gray-200 flex flex-col rounded-lg items-center border w-1/3 dark:text-white-dark dark:bg-gray-700 dark:hover:bg-gray-950"
                 key={user.id}
               >
                 <img
@@ -118,7 +118,9 @@ export default function UserDetails(props: UserOverviewProps) {
               onChange={handleChangeUserData}
             />
           ) : (
-            <span className="dark:text-white">{displayedProfile.email}</span>
+            <span className="dark:text-white-dark">
+              {displayedProfile.email}
+            </span>
           )}
         </div>
         <div className="flex w-full justify-between">
@@ -129,12 +131,14 @@ export default function UserDetails(props: UserOverviewProps) {
             <input
               type="date"
               name="birthday"
-              className="border p-1 border-primary rounded-lg dark:text-white"
+              className="border p-1 border-primary rounded-lg dark:text-white-dark"
               value={changeUserDataForm.birthday}
               onChange={handleChangeUserData}
             />
           ) : (
-            <span className="dark:text-white">{displayedProfile.birthday}</span>
+            <span className="dark:text-white-dark">
+              {displayedProfile.birthday}
+            </span>
           )}
         </div>
         <div className="flex w-full justify-between">
@@ -150,7 +154,9 @@ export default function UserDetails(props: UserOverviewProps) {
               onChange={handleChangeUserData}
             />
           ) : (
-            <span className="dark:text-white">{displayedProfile.country}</span>
+            <span className="dark:text-white-dark">
+              {displayedProfile.country}
+            </span>
           )}
         </div>
         <div className="flex w-full justify-between">
@@ -166,7 +172,9 @@ export default function UserDetails(props: UserOverviewProps) {
               onChange={handleChangeUserData}
             />
           ) : (
-            <span className="dark:text-white">{displayedProfile.city}</span>
+            <span className="dark:text-white-dark">
+              {displayedProfile.city}
+            </span>
           )}
         </div>
       </div>

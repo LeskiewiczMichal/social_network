@@ -7,7 +7,6 @@ import {
   NotificationTypes,
   dataToNotificationObject,
 } from '../../notifications';
-import notificationsImage from '../../../assets/icons/notifications.svg';
 import { useSocket, UserSlice } from '../../authentication';
 import { useAppDispatch } from '../../../hooks';
 
@@ -67,7 +66,6 @@ export default function NotificationsDropdown() {
     // When received notification display it
     const handleNewNotification = (notification: any) => {
       const newNotification = dataToNotificationObject(notification);
-      console.log(notification);
       setNotifications((prevNotifications) => {
         const newNotifications = [...prevNotifications];
         newNotifications.unshift(newNotification);
@@ -97,11 +95,26 @@ export default function NotificationsDropdown() {
         aria-label="Drop down notifications"
         onClick={handleDropdown}
       >
-        <img
-          className="w-10 h-10 rounded-full"
-          src={notificationsImage}
-          alt="notifications"
-        />
+        <svg
+          className="w-10 h-10 rounded-full fill-primary dark:fill-primary-lighter"
+          width="800px"
+          height="800px"
+          viewBox="0 0 24 24"
+          aria-label="notifications"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+
+          <g
+            id="SVGRepo_tracerCarrier"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          <g id="SVGRepo_iconCarrier">
+            <path d="M10,21h4a2,2,0,0,1-4,0ZM3.076,18.383a1,1,0,0,1,.217-1.09L5,15.586V10a7.006,7.006,0,0,1,6-6.92V2a1,1,0,0,1,2,0V3.08A7.006,7.006,0,0,1,19,10v5.586l1.707,1.707A1,1,0,0,1,20,19H4A1,1,0,0,1,3.076,18.383ZM6.414,17H17.586l-.293-.293A1,1,0,0,1,17,16V10A5,5,0,0,0,7,10v6a1,1,0,0,1-.293.707Z" />
+          </g>
+        </svg>
         {/* Red dot on notification button */}
         {/* <span className="absolute top-1 right-2.5 p-1 translate-x-1/2 bg-red-500 border border-white rounded-full text-xs text-white" /> */}
       </button>

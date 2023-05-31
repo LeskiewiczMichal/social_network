@@ -73,7 +73,7 @@ export default function Notification(props: NotificationProps) {
         <div className="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
           {/* Person name */}
           <Link to={`/profile/${userId}`}>
-            <span className="font-semibold text-gray-900 dark:text-white">
+            <span className="font-semibold text-gray-900 dark:text-white-dark">
               {firstName} {lastName}
             </span>
           </Link>

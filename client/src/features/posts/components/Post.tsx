@@ -69,7 +69,7 @@ export default function Post(props: PostInterface) {
             </small>
           </div>
 
-          <h4 className="mt-2 text-bold dark:text-gray-200">{title}</h4>
+          <h4 className="mt-2 text-bold dark:text-white-dark">{title}</h4>
 
           {/* Text */}
           <p className="mt-1 mb-5 text-gray-700 text-sm dark:text-gray-dark">
@@ -88,7 +88,7 @@ export default function Post(props: PostInterface) {
 
           <div className="mb-2 flex justify-end items-center border-t border-b py-2">
             {/* Comments counter */}
-            <div className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center px-4 dark:text-white">
+            <div className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center px-4 dark:text-white-dark">
               <svg
                 fill="none"
                 viewBox="0 0 24 24"

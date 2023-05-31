@@ -92,7 +92,7 @@ export default function CommentsSection(props: CommentsSectionProps) {
           <textarea
             name="body"
             id="body"
-            className="bg-gray-200 w-full px-2 focus:outline-none no-scrollbar resize-none dark:bg-gray-500 dark:text-white"
+            className="bg-gray-200 w-full px-2 focus:outline-none no-scrollbar resize-none dark:bg-gray-500 dark:text-white-dark"
             placeholder="Add a comment..."
             value={body}
             onChange={handleChange}

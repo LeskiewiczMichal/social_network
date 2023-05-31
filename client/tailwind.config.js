@@ -9,6 +9,7 @@ module.exports = {
         'background-white': 'var(--background-white)',
         'background-dark': 'var(--background-dark)',
         'gray-dark': 'var(--text-gray-dark)',
+        'white-dark': 'var(--white-dark)'
       },
     },
   },

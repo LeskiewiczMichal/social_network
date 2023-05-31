@@ -23,6 +23,7 @@
   --background-white: rgb(248 250 252);
   --background-dark: rgb(31 41 55);
   --text-gray-dark: rgb(156 163 175);
+  --white-dark: rgb(243 244 246);
 }
 
 body {

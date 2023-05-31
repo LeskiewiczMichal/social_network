@@ -79,7 +79,7 @@ export default function PostsSection(props: PostsSectionProps) {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen w-full flex flex-col items-center">
+    <div className="bg-slate-50 min-h-screen w-full flex flex-col items-center dark:bg-gray-900">
       {posts.length === 0 && (
         <>
           <span className="text-primary">
