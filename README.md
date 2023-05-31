@@ -4,7 +4,8 @@
 
 This is a social media website that I built using React with TypeScript for the frontend and Express with TypeScript for the backend. I also used Redux for state management and Socket.io for live features. The website is fully responsive and works well on different devices.
 
-[Click here to see a preview of the project](<URL>)
+[Click here to see a preview of the project](<https://social-network-77vt.onrender.com>)
+You will propably need to wait a minute for server cold start.
 
 ## Features
 
