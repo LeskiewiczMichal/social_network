@@ -49,7 +49,7 @@ export default function Post(props: PostInterface) {
   };
 
   return (
-    <div className="flex bg-white w-full shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit  max-w-md md:max-w-2xl mb-6 md:mb-12">
+    <div className="flex bg-white w-full shadow-lg rounded-lg mx-4 md:mx-auto min-h-fit max-w-md md:max-w-2xl mb-6 md:mb-12 dark:bg-background-dark">
       <div className="flex flex-col w-full md:flex-row items-start px-4 py-2 md:py-6">
         <ProfilePicture
           size={11}
@@ -60,19 +60,21 @@ export default function Post(props: PostInterface) {
           {/* User */}
           <div className="flex items-center justify-between">
             <Link to={`/profile/${author.id}`}>
-              <h2 className="text-lg font-semibold text-gray-900 ">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {author.firstName} {author.lastName}{' '}
               </h2>
             </Link>
-            <small className="text-xs text-gray-700 flex flex-col">
+            <small className="text-xs text-gray-700 flex flex-col dark:text-gray-dark">
               <ReactTimeAgo date={new Date(createdAt)} locale="en-US" />
             </small>
           </div>
 
-          <h4 className="mt-2 text-bold">{title}</h4>
+          <h4 className="mt-2 text-bold dark:text-gray-200">{title}</h4>
 
           {/* Text */}
-          <p className="mt-1 mb-5 text-gray-700 text-sm">{body}</p>
+          <p className="mt-1 mb-5 text-gray-700 text-sm dark:text-gray-dark">
+            {body}
+          </p>
 
           {/* Photo if available */}
           {photo && (
@@ -86,7 +88,7 @@ export default function Post(props: PostInterface) {
 
           <div className="mb-2 flex justify-end items-center border-t border-b py-2">
             {/* Comments counter */}
-            <div className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center  px-4">
+            <div className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center px-4 dark:text-white">
               <svg
                 fill="none"
                 viewBox="0 0 24 24"
@@ -104,17 +106,19 @@ export default function Post(props: PostInterface) {
             </div>
             {/* Hearts button */}
             <button
-              className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4"
+              className="flex text-gray-700 text-lg md:text-base mr-3 justify-center items-center border rounded-xl px-4 dark:text-white"
               type="button"
               aria-label="give a heart"
               onClick={handleLikePost}
               disabled={isLikeButtonDisabled}
             >
               <svg
-                fill={currentLikes.includes(userId!) ? '#4f46e5' : '#FFFFFF'}
                 viewBox="0 0 24 24"
-                className="w-5 h-5 mr-1"
-                stroke="#4f46e5"
+                className={`w-5 h-5 mr-1 stroke-primary dark:stroke-primary-lighter ${
+                  currentLikes.includes(userId!)
+                    ? 'fill-primary text-primary dark:fill-primary-lighter dark:text-primary-lighter'
+                    : 'fill-white text-white dark:fill-background-dark dark:text-white'
+                }`}
               >
                 <path
                   strokeLinecap="round"

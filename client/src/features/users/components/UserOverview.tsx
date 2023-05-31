@@ -80,7 +80,7 @@ export default function UserOverview(props: UserOverviewProps) {
   }
 
   return (
-    <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow shadow-primary dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow shadow-primary dark:bg-background-dark dark:border-gray-700">
       <div className="flex flex-col items-center pb-10 mt-5">
         {/* Profile picture */}
         <img
@@ -102,7 +102,7 @@ export default function UserOverview(props: UserOverviewProps) {
             onChange={handleChangeUserData}
           />
         ) : (
-          <span className="text-sm text-center px-8 text-gray-500 dark:text-gray-400">
+          <span className="text-sm text-center px-8 text-gray-500 dark:text-gray-dark">
             {displayedProfile.about}
           </span>
         )}
@@ -125,7 +125,7 @@ export default function UserOverview(props: UserOverviewProps) {
           !displayedProfile.editUserActive && (
             <button
               type="button"
-              className="text-primary text-sm mt-2"
+              className="text-primary text-sm mt-2 hover:text-primary-lighter dark:text-primary-lighter dark:hover:text-primary"
               onClick={() => dispatch(ProfilePageSlice.setEditUserActive(true))}
             >
               Edit profile
@@ -136,14 +136,14 @@ export default function UserOverview(props: UserOverviewProps) {
             <div className="flex w-full px-8 mt-4 space-x-3 md:mt-6 justify-center">
               <button
                 type="button"
-                className="text-primary text-sm mt-2"
+                className="text-primary text-sm mt-2  hover:text-primary-lighter dark:text-primary-lighter dark:hover:text-primary"
                 onClick={handleConfirmChanges}
               >
                 Confirm changes
               </button>
               <button
                 type="button"
-                className="text-primary text-sm mt-2"
+                className="text-primary text-sm mt-2  hover:text-primary-lighter dark:text-primary-lighter dark:hover:text-primary"
                 onClick={() =>
                   dispatch(ProfilePageSlice.setEditUserActive(false))
                 }

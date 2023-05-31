@@ -21,6 +21,8 @@
   --primary: #4f46e5;
   --primary-lighter: #6366f1;
   --background-white: rgb(248 250 252);
+  --background-dark: rgb(31 41 55);
+  --text-gray-dark: rgb(156 163 175);
 }
 
 body {

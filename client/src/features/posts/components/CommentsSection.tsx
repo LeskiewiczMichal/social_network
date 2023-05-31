@@ -86,13 +86,13 @@ export default function CommentsSection(props: CommentsSectionProps) {
         />
         <form
           aria-label="add comment"
-          className={`rounded-lg bg-gray-200 w-full px-2 pt-1 pb-2 flex flex-col  `}
+          className="rounded-lg bg-gray-200 w-full px-2 pt-1 pb-2 flex flex-col dark:bg-gray-500"
         >
           {/* Input */}
           <textarea
             name="body"
             id="body"
-            className="bg-gray-200 w-full px-2 focus:outline-none no-scrollbar resize-none"
+            className="bg-gray-200 w-full px-2 focus:outline-none no-scrollbar resize-none dark:bg-gray-500 dark:text-white"
             placeholder="Add a comment..."
             value={body}
             onChange={handleChange}
@@ -105,9 +105,8 @@ export default function CommentsSection(props: CommentsSectionProps) {
             onClick={handleAddComment}
           >
             <SendMessageImg
-              className="w-5 h-5 flex cursor-pointer items-center justify-center"
+              className="w-5 h-5 flex cursor-pointer items-center justify-center fill-primary text-primary dark:fill-primary-lighter dark:text-primary-lighter"
               viewBox="0 0 24 24"
-              fill="#4f46e5"
             />
           </button>
         </form>
@@ -131,7 +130,7 @@ export default function CommentsSection(props: CommentsSectionProps) {
       {comments.length < numberOfComments && (
         <button
           type="button"
-          className="font-bold text-primary hover:text-primary-lighter"
+          className="font-bold text-primary hover:text-primary-lighter dark:text-primary-lighter dark:hover:text-primary"
           onClick={() => handleGetComments(3, false)}
         >
           Load more comments...

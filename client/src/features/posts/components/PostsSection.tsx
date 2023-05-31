@@ -22,7 +22,6 @@ export default function PostsSection(props: PostsSectionProps) {
     const handleGetPosts = async () => {
       try {
         setNoMorePostsTextActive(false);
-        console.log('here');
         const limit = 10;
         setIsLoading(true);
         const queriedPosts = await getPosts({

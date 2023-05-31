@@ -7,6 +7,8 @@ module.exports = {
         primary: 'var(--primary)',
         'primary-lighter': 'var(--primary-lighter)',
         'background-white': 'var(--background-white)',
+        'background-dark': 'var(--background-dark)',
+        'gray-dark': 'var(--text-gray-dark)',
       },
     },
   },
