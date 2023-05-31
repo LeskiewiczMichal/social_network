@@ -4,8 +4,7 @@
 
 This is a social media website that I built using React with TypeScript for the frontend and Express with TypeScript for the backend. I also used Redux for state management and Socket.io for live features. The website is fully responsive and works well on different devices.
 
-[Click here to see a preview of the project](<https://social-network-77vt.onrender.com>)
-You will propably need to wait a minute for server cold start.
+[Click here to see a preview of the project](<https://social-network-77vt.onrender.com>), you will propably need to wait a minute for server cold start.
 
 ## Features
 
@@ -32,10 +31,11 @@ You will propably need to wait a minute for server cold start.
 To run this project locally, follow these steps:
 
 1. Clone the repository to your local machine.
-2. Install the dependencies by running `npm install` in client and server directories.
-3. Start the server by running `npm run dev` in the client directory.
-4. Start the client by running `npm run start` in the client directory.
-5. Open your browser and navigate to `http://localhost:3000` to see the website.
+2. Install the dependencies by running `npm install` server directory.
+3. Start the server by running `npm run dev` in the server directory.
+4. Open your browser and navigate to `http://localhost:8080` to see the website.
+
+Keep in mind that the app will still communicate with api from render if you don't change client/.env and client/package.json: "proxy", so you will propably need to wait a minute for the server to cold start.
 
 ### Credits:
     Phoenix logo: https://www.svgrepo.com/svg/354177/phoenix
