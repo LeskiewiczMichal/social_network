@@ -34,7 +34,7 @@ function StandardInput(props: StandardInputProps) {
     <>
       <label
         htmlFor={name}
-        className="block text-gray-700 text-sm font-bold mb-3"
+        className="block text-gray-700 text-sm font-bold mb-3 dark:text-gray-dark"
       >
         {labelText}
       </label>

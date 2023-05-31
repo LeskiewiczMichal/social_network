@@ -13,7 +13,7 @@ export default function CountrySelect(props: CountrySelectProps) {
     <div className="sm:col-span-3">
       <label
         htmlFor={fieldName}
-        className="block text-gray-700 text-sm font-bold mb-3"
+        className="block text-gray-700 text-sm font-bold mb-3 dark:text-gray-dark"
       >
         Country
       </label>

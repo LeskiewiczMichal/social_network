@@ -3,7 +3,7 @@ import LoginPhoto from '../assets/login-background.png';
 
 export default function Login() {
   return (
-    <div className="min-h-screen w-screen flex justify-center">
+    <div className="min-h-screen w-screen flex justify-center dark:bg-gray-900">
       <div className="w-5/6 sm:w-3/4 flex items-center justify-center">
         <LoginForm />
       </div>

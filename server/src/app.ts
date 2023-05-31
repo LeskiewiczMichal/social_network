@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
@@ -44,6 +44,9 @@ app.use('/api/posts', Routes.postsRouter);
 app.use('/api/comments', Routes.commentsRouter);
 app.use('/api/messages', Routes.messageRouter);
 app.use('/api/notifications', Routes.notificationsRouter);
+app.use('*', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../../client/build/', 'index.html'));
+});
 
 httpServer.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}`);

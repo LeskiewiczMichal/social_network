@@ -62,6 +62,9 @@ app.use('/api/posts', Routes.postsRouter);
 app.use('/api/comments', Routes.commentsRouter);
 app.use('/api/messages', Routes.messageRouter);
 app.use('/api/notifications', Routes.notificationsRouter);
+app.use('*', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../../client/build/', 'index.html'));
+});
 httpServer.listen(process.env.PORT, () => {
     console.log(`App listening on port ${process.env.PORT}`);
 });

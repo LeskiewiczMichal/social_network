@@ -6,11 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const path_1 = __importDefault(require("path"));
 const passportConfig_1 = __importDefault(require("./passportConfig"));
 const serverConfig = (app) => {
     app.use((0, cors_1.default)());
     app.use(passportConfig_1.default);
     app.use(body_parser_1.default.json());
     app.use(express_1.default.urlencoded({ extended: true }));
+    app.use(express_1.default.static(path_1.default.join(__dirname, '../../../client/build')));
 };
 exports.default = serverConfig;
