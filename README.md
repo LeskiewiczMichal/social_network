@@ -35,7 +35,8 @@ To run this project locally, follow these steps:
 3. Start the server by running `npm run dev` in the server directory.
 4. Open your browser and navigate to `http://localhost:8080` to see the website.
 
-Keep in mind that the app will still communicate with api from render if you don't change client/.env and client/package.json: "proxy", so you will propably need to wait a minute for the server to cold start.
+Keep in mind that the app will still communicate with api from render so you will propably need to wait a minute for the server to cold start.
+Alternatively, you can change client/.env and client/package.json: "proxy" values to "http://localhost:8080" and `run npm run build` to run from your local machine.
 
 ### Credits:
     Phoenix logo: https://www.svgrepo.com/svg/354177/phoenix
