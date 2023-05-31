@@ -96,7 +96,7 @@ export default function NotificationsDropdown() {
         onClick={handleDropdown}
       >
         <svg
-          className="w-10 h-10 rounded-full fill-primary dark:fill-primary-lighter"
+          className="w-10 h-10 rounded-full fill-primary"
           width="800px"
           height="800px"
           viewBox="0 0 24 24"

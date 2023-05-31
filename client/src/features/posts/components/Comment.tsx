@@ -56,7 +56,7 @@ export default function Comment(props: CommentInterface) {
         </div>
 
         {/* Text */}
-        <p className="mt-1 text-gray-700 text-sm bg-gray-200 p-2 rounded-lg dark:bg-gray-500 dark:text-white-dark">
+        <p className="mt-1 text-gray-700 text-sm bg-gray-200 p-2 rounded-lg dark:bg-gray-600 dark:text-white-dark">
           {body}
         </p>
 

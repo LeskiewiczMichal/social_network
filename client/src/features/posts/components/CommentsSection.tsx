@@ -86,13 +86,13 @@ export default function CommentsSection(props: CommentsSectionProps) {
         />
         <form
           aria-label="add comment"
-          className="rounded-lg bg-gray-200 w-full px-2 pt-1 pb-2 flex flex-col dark:bg-gray-500"
+          className="rounded-lg bg-gray-200 w-full px-2 pt-1 pb-2 flex flex-col dark:bg-gray-600"
         >
           {/* Input */}
           <textarea
             name="body"
             id="body"
-            className="bg-gray-200 w-full px-2 focus:outline-none no-scrollbar resize-none dark:bg-gray-500 dark:text-white-dark"
+            className="bg-gray-200 w-full px-2 focus:outline-none no-scrollbar resize-none dark:bg-gray-600 dark:text-white-dark"
             placeholder="Add a comment..."
             value={body}
             onChange={handleChange}

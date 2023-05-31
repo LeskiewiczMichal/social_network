@@ -14,7 +14,7 @@ export default function FriendsSearchBar() {
 
     return navigate(
       `/users?${params[0] ? `firstName=${params[0]}` : ''}${
-        params[1] ? `&lastName=${params[1]}` : ''
+        params[1] ? `lastName=${params[1]}` : ''
       }`,
     );
   };
@@ -23,7 +23,7 @@ export default function FriendsSearchBar() {
     <div className="relative sm:h-8 flex flex-nowrap items-stretch flex-auto px-6 sm:flex-none sm:w-2/5">
       <input
         type="search"
-        className=" m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l-lg border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_primary] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+        className=" m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l-lg border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_primary] focus:outline-none dark:border-neutral-600 dark:text-gray-dark dark:placeholder:text-gray-dark dark:focus:text-white-dark dark:focus:border-primary"
         placeholder="Find friends..."
         aria-label="Search users"
         aria-describedby="button-addon1"

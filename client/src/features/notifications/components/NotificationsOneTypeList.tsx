@@ -22,8 +22,10 @@ export default function NotificationsOneTypeList(
   } = props;
 
   return (
-    <div className="flex flex-col items-center w-full md:w-2/6 bg-white mb-2 border rounded-lg">
-      <h4 className="border-b my-2 text-gray-600">{header}:</h4>
+    <div className="flex flex-col items-center w-full md:w-2/6 bg-white mb-2 border rounded-lg dark:bg-background-dark">
+      <h4 className="border-b my-2 text-gray-600 dark:text-white-dark">
+        {header}:
+      </h4>
       <div className="flex flex-col items-center w-full divide-y divide-gray-100 dark:divide-gray-700">
         {notificationsToShow.map((notification: NotificationInterface) => {
           return (
@@ -48,7 +50,9 @@ export default function NotificationsOneTypeList(
           </button>
         )}
         {noMoreRequestsTextActive && (
-          <p className="mb-2 text-sm text-gray-600">No more posts to show</p>
+          <p className="mb-2 text-sm text-gray-600 dark:text-gray-dark">
+            No more posts to show
+          </p>
         )}
       </div>
     </div>
