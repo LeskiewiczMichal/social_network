@@ -35,8 +35,8 @@ export default function Chat() {
 
   return (
     <main
-      className={`flex flex-col w-full max-h-screen items-center top-16 absolute z-30 px-4 no-scrollbar py-4
-          `}
+      className={`flex flex-col w-full max-h-screen items-center padding-top-header absolute z-30 px-4 no-scrollbar py-4
+          dark:bg-gray-900`}
     >
       <div className="w-full max-w-3xl flex flex-col gap-2">
         {/* Top section */}

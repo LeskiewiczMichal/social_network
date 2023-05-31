@@ -116,8 +116,8 @@ export default function Post(props: PostInterface) {
                 viewBox="0 0 24 24"
                 className={`w-5 h-5 mr-1 stroke-primary dark:stroke-primary-lighter ${
                   currentLikes.includes(userId!)
-                    ? 'fill-primary text-primary dark:fill-primary-lighter dark:text-primary-lighter'
-                    : 'fill-white text-white dark:fill-background-dark dark:text-white'
+                    ? 'fill-primary text-primary dark:fill-primary-lighter dark:text-primary-lighter hover:fill-white dark:hover:fill-background-dark'
+                    : 'fill-white text-white dark:fill-background-dark dark:text-white hover:fill-primary dark:hover:fill-primary-lighter'
                 }`}
               >
                 <path

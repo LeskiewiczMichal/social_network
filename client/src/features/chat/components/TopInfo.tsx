@@ -10,7 +10,7 @@ export default function TopInfo(props: TopInfoProps) {
   const { chatUser } = props;
 
   return (
-    <div className="flex text-center bg-white w-full h-fit p-2 rounded-lg justify-between text-primary items-center border shadow border-b-0">
+    <div className="flex text-center bg-white w-full h-fit p-2 rounded-lg justify-between text-primary items-center border shadow border-b-0 dark:bg-gray-900">
       <div className="grow items-center">
         <Link
           to="/chat"
@@ -32,7 +32,7 @@ export default function TopInfo(props: TopInfoProps) {
           </div>
         </Link>
       </div>
-      <div className="grow flex justify-center items-center">
+      <div className="grow flex justify-center items-center dark:text-white-dark">
         <Link to={`/profile/${chatUser.id}`}>
           {chatUser.firstName} {chatUser.lastName}
         </Link>

@@ -35,7 +35,7 @@ export default function ProfileDropdown() {
   }, []);
 
   return (
-    <div className="relative">
+    <div ref={dropdownRef} className="relative">
       {/* User picture button */}
       <button
         id="profileButton"
@@ -53,7 +53,6 @@ export default function ProfileDropdown() {
 
       {/* Dropdown */}
       <nav
-        ref={dropdownRef}
         aria-labelledby="profileButton"
         className={`z-50 bg-white border divide-y divide-gray-100 rounded-lg shadow w-screen sm:w-44 left-0 sm:-left-36 top-14 sm:top-12 dark:bg-gray-700 dark:divide-gray-600 ${
           profileMenuOpen ? 'fixed sm:absolute' : 'hidden'

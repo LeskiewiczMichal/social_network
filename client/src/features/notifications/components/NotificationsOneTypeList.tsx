@@ -42,7 +42,7 @@ export default function NotificationsOneTypeList(
         {isLoading && <LoadingSpinner />}
         {!noMoreRequestsTextActive && (
           <button
-            className="mb-2 text-sm text-primary"
+            className="mb-2 text-sm text-primary hover:text-primary-lighter dark:text-primary-lighter dark:hover:text-primary"
             type="button"
             onClick={() => getMoreNotifications(5, false)}
           >

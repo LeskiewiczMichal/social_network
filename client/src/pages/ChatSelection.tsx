@@ -21,8 +21,8 @@ export default function ChatSelecion() {
   }, []);
 
   return (
-    <main className="bg-background-white flex flex-col w-full items-center padding-top-header gap-1">
-      <div className="bg-white border-2 rounded-lg w-full max-w-xl flex items-center justify-center p-2">
+    <main className="bg-background-white flex flex-col w-full items-center padding-top-header gap-1 min-h-screen dark:bg-gray-900">
+      <div className="bg-white border-2 rounded-lg w-full max-w-xl flex items-center justify-center p-2 dark:bg-gray-900 dark:text-white-dark">
         <span>{user.firstName}&apos;s friends:</span>
       </div>
       <div className="flex flex-col w-full items-center relative overflow-y-scroll no-scrollbar gap-1">
@@ -36,7 +36,7 @@ export default function ChatSelecion() {
                 <Link
                   to={`/chat/${friend.id}`}
                   key={friend.id}
-                  className="w-full max-w-xl border-y-2 border-primary-lighter p-2 rounded-lg flex items-center gap-2 hover:bg-gray-100"
+                  className="w-full max-w-xl border-y-2 border-primary-lighter p-2 rounded-lg flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-background-dark"
                 >
                   <img
                     className="w-9 h-9 flex items-center rounded-full object-cover shadow mb-2 mt-2 md:mb-0"
@@ -45,7 +45,7 @@ export default function ChatSelecion() {
                     loading="lazy"
                     alt="avatar"
                   />
-                  <span>
+                  <span className="dark:text-white-dark">
                     {friend.firstName} {friend.lastName}
                   </span>
                 </Link>

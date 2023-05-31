@@ -104,7 +104,7 @@ export default function MessagesSection(props: MessagesSectionProps) {
   }
 
   return (
-    <section className="h-[34rem] w-full bg-white flex flex-col p-2 border rounded-xl border-t-0 shadow">
+    <section className="h-[34rem] w-full bg-white flex flex-col p-2 border rounded-xl border-t-0 shadow dark:bg-gray-900">
       {/* Messages */}
       <div className="flex flex-col gap-4 h-full w-full mb-2 px-2 py-1 border-2 rounded-xl  no-scrollbar overflow-y-scroll ">
         {messages.map((message: MessageInterface) => {
@@ -126,7 +126,7 @@ export default function MessagesSection(props: MessagesSectionProps) {
           id="newMessageBody"
           value={newMessageBody}
           onChange={handleChange}
-          className="bg-gray-100 focus:outline-primary w-full p-2 rounded-xl border no-scrollbar resize-none"
+          className="bg-gray-100 focus:outline-primary w-full p-2 rounded-xl border no-scrollbar resize-none md:mx-6 dark:bg-gray-600 dark:text-white-dark"
         />
         <button
           type="button"

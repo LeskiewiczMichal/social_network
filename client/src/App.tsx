@@ -47,7 +47,7 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen w-screen flex justify-center items-center">
+      <div className="min-h-screen w-screen flex justify-center items-center dark:bg-gray-900">
         <LoadingSpinner />
       </div>
     );
